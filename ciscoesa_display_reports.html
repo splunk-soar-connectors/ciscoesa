@@ -1,0 +1,1124 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block title_color %}{{ title_color|default:'white' }}{% endblock %}
+{% block title_text_color %}{{ title_text_color|default:'rgb(101, 71, 150)' }}{% endblock %}
+{% block body_color %}{{ body_color|default:'white' }}{% endblock %}
+{% block body_text_color %}{{ body_text_color|default:'black' }}{% endblock %}
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!--
+File: ciscoesa/ciscoesa_display_reports.html
+
+Copyright (c) Phantom Cyber Corporation, 2017
+
+This unpublished material is proprietary to Phantom Cyber.
+All rights reserved. The methods and
+techniques described herein are considered trade secrets
+and/or confidential. Reproduction or distribution, in whole
+or in part, is forbidden except by express written permission
+of Phantom Cyber Corporation.
+-->
+
+<style>
+
+    .ciscoesa-report a:link {
+    color: black;
+    }
+
+    .ciscoesa-report a:hover {
+    text-decoration:underline;
+    }
+
+    .ciscoesa-report a:visited {
+    color: black;
+    }
+
+    .ciscoesa-report .wf-table-vertical {
+    width: initial;
+    font-size: 12px;
+    }
+
+    .ciscoesa-report .wf-table-vertical td{
+    padding: 5px;
+    border: 1px solid rgb(234, 234, 234);
+    }
+
+    .ciscoesa-report .wf-table-vertical tr td:first-child {
+    font-weight: bold;
+    }
+
+    .ciscoesa-report .wf-table-horizontal {
+    border: 1px solid rgb(234, 234, 234);
+    font-size: 12px;
+    }
+
+    .ciscoesa-report .wf-table-horizontal th {
+    text-align: center;
+    border: 1px solid rgb(234, 234, 234);
+    text-transform: uppercase;
+    font-weight: normal;
+    color: rgb(108, 129, 139);
+    padding: 5px;
+    }
+
+    .ciscoesa-report .wf-table-horizontal td {
+    border: 1px solid rgb(234, 234, 234);
+    padding: 5px;
+    padding-left: 4px;
+    }
+
+    .ciscoesa-report .wf-h3-style {
+    font-size : 20px
+    }
+
+    .ciscoesa-report .wf-h4-style {
+    font-size : 16px
+    }
+
+    .ciscoesa-report .collapse.in {
+        display: block !important;
+    }
+
+    .ciscoesa-report #mail_users_detail-table, #mail_users_detail_single-table, #incoming_ip_hostname_details_single-table, #incoming_ip_hostname_details-table, #incoming_domain_detail_single-table, #incoming_domain_detail-table, #incoming_network_detail_single-table, #incoming_network_detail-table, #mail_dlp_outgoing_policy_detail_single-table, #mail_dlp_outgoing_policy_detail-table, #mail_destination_domain_detail_single-table,
+    #mail_destination_domain_detail-table, #mail_sender_ip_hostname_detail_single-table, #mail_sender_ip_hostname_detail-table, #mail_sender_domain_detail_single-table, #mail_sender_domain_detail-table, #mail_content_filter_outgoing_single-table, #mail_content_filter_outgoing-table, #mail_virus_type_detail_single-table, #mail_virus_type_detail-table, #mail_authentication_incoming_domain_single-table, #mail_authentication_incoming_domain-table {
+        overflow-x: auto;
+    }
+
+    .ciscoesa-report .panel{
+        padding: 0px;
+        box-shadow: none;
+    }
+
+    .ciscoesa-report .panel-title {
+        font-size: 16px;
+    }
+
+    .ciscoesa-report .metadata_div {
+        padding: 10px;
+    }
+
+    .ciscoesa-report .metadata_div .panel-body{
+        margin-top:  0px;
+    }
+
+    .ciscoesa-report .metadata_div .panel-group {
+        margin-bottom: 0px;
+    }
+
+</style>
+
+<div class="ciscoesa-report" style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
+
+    {% for result in results %} <!-- loop for each result -->
+        {% if not result.data %}
+            <h4 class="wf-h4-style">No reports found</h4>
+        {% else %}
+            <div class="metadata_div">
+                <!--Internal Users-->
+                {% if result.param.report_type == "Internal Users" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_users_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Internal Users" %}
+                                <h4 class="wf-h4-style">Internal Users</h4>
+
+                                </div>
+                                <div id="mail_users_detail_single-table" class="panel-collapse collapse in">
+
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_users_detail" href="#mail_users_detail-table">Internal Users</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_users_detail-table" class="panel-collapse collapse in">
+                            {% endif %}
+                                {% if not result.data.mail_users_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Internal User</th>
+                                                <th>Incoming Spam Detected</th>
+                                                <th>Incoming Virus Detected</th>
+                                                <th>Incoming Detected by Advanced Malware Protection</th>
+                                                <th>Incoming Content Filter Matches</th>
+                                                <th>Incoming Stopped by Content Filter</th>
+                                                <th>Incoming Marketing</th>
+                                                <th>Incoming Social Networking</th>
+                                                <th>Incoming Bulk</th>
+                                                <th>Incoming Graymails</th>
+                                                <th>Incoming Clean</th>
+                                                <th>Outgoing Spam Detected</th>
+                                                <th>Outgoing Virus Detected</th>
+                                                <th>Outgoing Content Filter Matches</th>
+                                                <th>Outgoing Stopped by Content Filter</th>
+                                                <th>Outgoing Clean</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_users_detail %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['email'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_detected_spam'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_detected_amp'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_detected_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_marketing_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_social_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_bulk_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_graymail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'incoming_total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'outgoing_detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'outgoing_detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'outgoing_detected_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'outgoing_threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_users_detail|by_key:curr_key|by_key:'outgoing_total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Incoming Mail: IP Addresses-->
+                {% if result.param.report_type == "Incoming Mail: IP Addresses" or result.param.report_type == "All" %}
+                <div class="panel-group" id="incoming_ip_hostname_details">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Incoming Mail: IP Addresses" %}
+                                <h4 class="wf-h4-style">Incoming Mail: IP Addresses</h4>
+
+                                </div>
+                                <div id="incoming_ip_hostname_details_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="incoming_ip_hostname_details" href="#incoming_ip_hostname_details-table">Incoming Mail: IP Addresses</a>
+                                </h4>
+
+                                </div>
+                                <div id="incoming_ip_hostname_details-table" class="panel-collapse collapse">
+                            {% endif %}
+                                {% if not result.data.mail_incoming_ip_hostname_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Sender IP Address</th>
+                                                <th>DNS Verified</th>
+                                                <th>Last Sender Group Name</th>
+                                                <th>Total Attempted</th>
+                                                <th>Stopped by reputation filtering</th>
+                                                <th>Stopped as Invalid Recipients</th>
+                                                <th>Spam detected</th>
+                                                <th>Virus detected</th>
+                                                <th>Detected by Advanced Malware Protection</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>Stopped by DMARC</th>
+                                                <th>Total Threat</th>
+                                                <th>Marketing</th>
+                                                <th>Social</th>
+                                                <th>Bulk</th>
+                                                <th>Total Graymails</th>
+                                                <th>Clean</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_incoming_ip_hostname_detail %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'dns_verfied'|default:'No' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'last_sender_group_name'|default:'--' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'total_recipients'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'blocked_reputation'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'blocked_invalid_recipient'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'detected_amp'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'blocked_dmarc'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'marketing_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'social_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'bulk_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'total_graymail_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_ip_hostname_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Incoming Mail: Domains-->
+                {% if result.param.report_type == "Incoming Mail: Domains" or result.param.report_type == "All" %}
+                <div class="panel-group" id="incoming_domain_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Incoming Mail: Domains" %}
+                                <h4 class="wf-h4-style">Incoming Mail: Domains</h4>
+
+                                </div>
+                                <div id="incoming_domain_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="incoming_domain_detail" href="#incoming_domain_detail-table">Incoming Mail: Domains</a>
+                                </h4>
+
+                                </div>
+                                <div id="incoming_domain_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+                                {% if not result.data.mail_incoming_domain_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Sender Domain</th>
+                                                <th>Connections Rejected</th>
+                                                <th>Connections Accepted</th>
+                                                <th>Total Attempted</th>
+                                                <th>Stopped by Recipient Throttling</th>
+                                                <th>Stopped by Reputation Filtering</th>
+                                                <th>Stopped as Invalid Recipients</th>
+                                                <th>Spam Detected</th>
+                                                <th>Virus Detected</th>
+                                                <th>Detected by Advanced Malware Protection</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>Stopped by DMARC</th>
+                                                <th>Total Threat</th>
+                                                <th>Marketing</th>
+                                                <th>Social</th>
+                                                <th>Bulk</th>
+                                                <th>Total Graymails</th>
+                                                <th>Clean</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_incoming_domain_detail %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_rejected_connections'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_accepted_connections'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_throttled_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'blocked_reputation'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'blocked_invalid_recipient'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'detected_amp'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'blocked_dmarc'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'marketing_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'social_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'bulk_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_graymail_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_domain_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Incoming Mail: Network Owners-->
+                {% if result.param.report_type == "Incoming Mail: Network Owners" or result.param.report_type == "All" %}
+                <div class="panel-group" id="incoming_network_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Incoming Mail: Network Owners" %}
+                                <h4 class="wf-h4-style">Incoming Mail: Network Owners</h4>
+
+                                </div>
+                                <div id="incoming_network_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="incoming_network_detail" href="#incoming_network_detail-table">Incoming Mail: Network Owners</a>
+                                </h4>
+
+                                </div>
+                                <div id="incoming_network_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+                                {% if not result.data.mail_incoming_network_detail %}
+                                     <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Network Owner</th>
+                                                <th>Connections Rejected</th>
+                                                <th>Connections Accepted</th>
+                                                <th>Total Attempted</th>
+                                                <th>Stopped by Recipient Throttling</th>
+                                                <th>Stopped by reputation filtering</th>
+                                                <th>Stopped as Invalid Recipients</th>
+                                                <th>Spam detected</th>
+                                                <th>Virus detected</th>
+                                                <th>Detected by Advanced Malware Protection</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>Stopped by DMARC</th>
+                                                <th>Total Threat</th>
+                                                <th>Marketing</th>
+                                                <th>Social</th>
+                                                <th>Bulk</th>
+                                                <th>Total Graymails</th>
+                                                <th>Clean</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_incoming_network_detail %}
+                                                <tr>
+                                                    <td>
+                                                        {{curr_key}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_rejected_connections'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_accepted_connections'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_recipients'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'blocked_reputation'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_throttled_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'blocked_invalid_recipient'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'detected_amp'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'blocked_dmarc'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'marketing_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'social_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'bulk_mail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_graymail_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_incoming_network_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--DLP Outgoing Policy-->
+                {% if result.param.report_type == "DLP Outgoing Policy" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_dlp_outgoing_policy_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "DLP Outgoing Policy" %}
+                                <h4 class="wf-h4-style">DLP Outgoing Policy</h4>
+
+                                </div>
+                                <div id="mail_dlp_outgoing_policy_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_dlp_outgoing_policy_detail" href="#mail_dlp_outgoing_policy_detail-table">DLP Outgoing Policy</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_dlp_outgoing_policy_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_dlp_outgoing_policy_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Domain</th>
+                                                <th>dlp_action_dropped</th>
+                                                <th>dlp_incidents_high</th>
+                                                <th>dlp_incidents_critical</th>
+                                                <th>dlp_action_encrypted</th>
+                                                <th>total_dlp_incidents</th>
+                                                <th>dlp_action_delivered</th>
+                                                <th>dlp_incidents_medium</th>
+                                                <th>dlp_incidents_low</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_dlp_outgoing_policy_detail %}
+                                                <tr>
+                                                    <td>
+                                                        {{curr_key}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_action_dropped'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_incidents_high'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_incidents_critical'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_action_encrypted'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'total_dlp_incidents'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_action_delivered'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_incidents_medium'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_dlp_outgoing_policy_detail|by_key:curr_key|by_key:'dlp_incidents_low'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Outgoing Destinations-->
+                {% if result.param.report_type == "Outgoing Destinations" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_destination_domain_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Outgoing Destinations" %}
+                                <h4 class="wf-h4-style">Outgoing Destinations</h4>
+
+                                </div>
+                                <div id="mail_destination_domain_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="mail_destination_domain_detail" href="#mail_destination_domain_detail-table">Outgoing Destinations</a>
+                            </h4>
+
+                                </div>
+                                <div id="mail_destination_domain_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+                                {% if not result.data.mail_destination_domain_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Domain</th>
+                                                <th>Delivered</th>
+                                                <th>Virus Detected</th>
+                                                <th>Total Threat</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>conn_tls_total</th>
+                                                <th>conn_tls_opt_fail</th>
+                                                <th>hard_bounces</th>
+                                                <th>total_recipients_processed</th>
+                                                <th>conn_plain</th>
+                                                <th>conn_tls_success</th>
+                                                <th>Total Attempted</th>
+                                                <th>conn_tls_fail</th>
+                                                <th>Spam Detected</th>
+                                                <th>conn_last_tls_status</th>
+                                                <th>Clean</th>
+                                                <th>encrypted_tls</th>
+                                                <th>conn_tls_opt_success</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_destination_domain_detail %}
+                                                <tr>
+                                                    <td>
+                                                        {{curr_key}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'delivered'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'detected_virus'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_tls_total'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_tls_opt_fail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'hard_bounces'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'total_recipients_processed'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_plain'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_tls_success'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'total_recipients'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_tls_fail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'detected_spam'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_last_tls_status'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'encrypted_tls'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_destination_domain_detail|by_key:curr_key|by_key:'conn_tls_opt_success'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Outgoing Senders: IP Addresses-->
+                {% if result.param.report_type == "Outgoing Senders: IP Addresses" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_sender_ip_hostname_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Outgoing Senders: IP Addresses" %}
+                                <h4 class="wf-h4-style">Outgoing Senders: IP Addresses</h4>
+
+                                </div>
+                                <div id="mail_sender_ip_hostname_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_sender_ip_hostname_detail" href="#mail_sender_ip_hostname_detail-table">Outgoing Senders: IP Addresses</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_sender_ip_hostname_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_sender_ip_hostname_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>IP Address</th>
+                                                <th>Virus Detected</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>total_dlp_incidents</th>
+                                                <th>Clean</th>
+                                                <th>total_recipients_processed</th>
+                                                <th>Spam Detected</th>
+                                                <th>Total Threat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_sender_ip_hostname_detail %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'detected_virus'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'total_dlp_incidents'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'total_recipients_processed'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_ip_hostname_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0' }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Outgoing Senders: Domains-->
+                {% if result.param.report_type == "Outgoing Senders: Domains" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_sender_domain_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Outgoing Senders: Domains" %}
+                                <h4 class="wf-h4-style">Outgoing Senders: Domains</h4>
+
+                                </div>
+                                <div id="mail_sender_domain_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_sender_domain_detail" href="#mail_sender_domain_detail-table">Outgoing Senders: Domains</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_sender_domain_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_sender_domain_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Domain</th>
+                                                <th>Virus Detected</th>
+                                                <th>Stopped by Content Filter</th>
+                                                <th>total_dlp_incidents</th>
+                                                <th>Clean</th>
+                                                <th>total_recipients_processed</th>
+                                                <th>Spam Detected</th>
+                                                <th>Total Threat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_sender_domain_detail %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'detected_virus'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'threat_content_filter'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'total_dlp_incidents'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'total_clean_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'total_recipients_processed'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'detected_spam'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_sender_domain_detail|by_key:curr_key|by_key:'total_threat_recipients'|default:'0' }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Outgoing Content Filters-->
+                {% if result.param.report_type == "Outgoing Content Filters" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_content_filter_outgoing">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Outgoing Content Filters" %}
+                                <h4 class="wf-h4-style">Outgoing Content Filters</h4>
+
+                                </div>
+                                <div id="mail_content_filter_outgoing_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_content_filter_outgoing" href="#mail_content_filter_outgoing-table">Outgoing Content Filters</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_content_filter_outgoing-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_content_filter_outgoing %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>recipients_matched</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_content_filter_outgoing %}
+                                                <tr>
+                                                    <td>
+                                                        {{ result.data.mail_content_filter_outgoing|by_key:curr_key|by_key:'recipients_matched'|default:'0' }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Virus Types-->
+                {% if result.param.report_type == "Virus Types" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_virus_type_detail">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Virus Types" %}
+                                <h4 class="wf-h4-style">Virus Types</h4>
+
+                                </div>
+                                <div id="mail_virus_type_detail_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_virus_type_detail" href="#mail_virus_type_detail-table">Virus Types</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_virus_type_detail-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_virus_type_detail %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Total Attempted</th>
+                                                <th>incoming_total_recipients</th>
+                                                <th>outgoing_total_recipients</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_virus_type_detail %}
+                                                <tr>
+                                                    <td>
+                                                        {{ result.data.mail_virus_type_detail|by_key:curr_key|by_key:'total_recipients'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_virus_type_detail|by_key:curr_key|by_key:'incoming_total_recipients'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_virus_type_detail|by_key:curr_key|by_key:'outgoing_total_recipients'|default:'0' }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!--Inbound SMTP Authentication-->
+                {% if result.param.report_type == "Inbound SMTP Authentication" or result.param.report_type == "All" %}
+                <div class="panel-group" id="mail_authentication_incoming_domain">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <!--If single report is queried-->
+                            {% if result.param.report_type == "Inbound SMTP Authentication" %}
+                                <h4 class="wf-h4-style">Inbound SMTP Authentication</h4>
+
+                                </div>
+                                <div id="mail_authentication_incoming_domain_single-table" class="panel-collapse collapse in">
+                            {% else %}
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="mail_authentication_incoming_domain" href="#mail_authentication_incoming_domain-table">Inbound SMTP Authentication</a>
+                                </h4>
+
+                                </div>
+                                <div id="mail_authentication_incoming_domain-table" class="panel-collapse collapse">
+                            {% endif %}
+
+                                {% if not result.data.mail_authentication_incoming_domain %}
+                                    <h5 class="wf-h5-style">No data was found in the given duration</h5>
+                                {% else %}
+                                    <table class="wf-table-horizontal datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Domain</th>
+                                                <th>Total</th>
+                                                <th>Without Authentication Attempt</th>
+                                                <th>Authenticated With a Client Certificate</th>
+                                                <th>Failed to Authenticate With a Client Certificate</th>
+                                                <th>Authenticated With SMTP AUTH Command</th>
+                                                <th>Failed to Authenticate With SMTP AUTH Command</th>
+                                                <th>Disallowed to Authenticate With SMTP AUTH Command</th>
+                                                <th>Authenticated With a fall-back from a Client Certificate to a SMTP AUTH Command</th>
+                                                <th>Failed to Authenticate With a fall-back from a Client Certificate to a SMTP AUTH Command</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curr_key in result.data.mail_authentication_incoming_domain %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{curr_key}}' }], 0, {{ container.id }}, null, false);">
+                                                            {{curr_key}}
+                                                            &nbsp;
+                                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'total'|default:'0' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'noauth'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'cert_success'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'cert_fail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'auth_success'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'auth_fail'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'auth_disallow'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'cert_fallback_success'|default:'0'}}
+                                                    </td>
+                                                    <td>
+                                                        {{ result.data.mail_authentication_incoming_domain|by_key:curr_key|by_key:'cert_fallback_fail'|default:'0'}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+</div>
+
+<script>
+    $.extend(true, $.fn.dataTable.defaults, {
+        "searching": false,
+        "bLengthChange": false,
+        "language": {
+            "paginate": {
+                "previous": "<i class='fa fa-angle-left fa-lg'></i>",
+                "next": "<i class='fa fa-angle-right fa-lg'></i>"
+            }
+        },
+        "dom": '<"top">rt<"bottom"p><"clear">',
+        drawCallback: function(settings) {
+            var pagination = $(this).closest('.dataTables_wrapper').find('.dataTables_paginate');
+            pagination.toggle(this.api().page.info().pages > 1);
+        }
+    });
+    $.fn.DataTable.ext.pager.numbers_length = 5;
+    $('.datatable').DataTable();
+</script>
+
+{% endblock %}
