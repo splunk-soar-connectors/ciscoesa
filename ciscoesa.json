@@ -54,87 +54,50 @@
     {
       "action": "get report", 
       "description": "Retrieve statistical reports from ESA",
-      "verbose": "This action is used to query \"Query-based Reports\" which counts various events in your appliance against a user-specified entity such as IP address, domain name, etc. for a specified duration.<br>Following is the mapping of report title and its corresponding entity that can be provided to filter reports:<table><tbody><tr class='plain'><th>Report Title</th><th>Entity Value</th></tr><tr><td>Internal Users</td><td>Email ID of the internal user (e.g. user@example.com)</td></tr><tr><td>Incoming Mail: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Incoming Mail: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Incoming Mail: Network Owners</td><td>Name of the network owner (e.g. Xyz Corporation)</td></tr><tr><td>Outgoing Senders: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Senders: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Outgoing Destinations</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Content Filters</td><td>Name of the outgoing Content Filter</td></tr><tr><td>Virus Types</td><td>Name of virus</td></tr><tr><td>Inbound SMTP Authentication</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>DLP (Data Loss Prevention) Outgoing Policy</td><td>Name of the DLP policy</td></tr></tbody></table><br>The action supports limiting the number of items returned using the <b>limit</b> parameter. If <b>limit</b> parameter is 0, than action will fetch no data for selected report(s). If limit is not specified, the action will fetch by default 10 items for all specified reports. For a particular report, if limit specified is greater then the available data, the action will fetch all data for that report.",
+      "verbose": "This action is used to query \"Query-based Reports\" which counts various events in your appliance against a user-specified entity such as IP address, domain name, etc. for a specified duration.<br>If <b>start_time</b> and <b>end_time</b> are not given, then report will be queried for last 250 days.<br>If either <b>start_time</b> or <b>end_time</b> is provided, then report wll be queried for a period of 250 days relative to the given parameter.<br>Following is the mapping of report title and its corresponding entity that can be provided to filter reports:<table><tbody><tr class='plain'><th>Report Title</th><th>Entity Value</th></tr><tr><td>Internal Users</td><td>Email ID of the internal user (e.g. user@example.com)</td></tr><tr><td>Incoming Mail: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Incoming Mail: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Incoming Mail: Network Owners</td><td>Name of the network owner (e.g. Xyz Corporation)</td></tr><tr><td>Outgoing Senders: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Senders: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Outgoing Destinations</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Content Filters</td><td>Name of the outgoing Content Filter</td></tr><tr><td>Virus Types</td><td>Name of virus</td></tr><tr><td>Inbound SMTP Authentication</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>DLP (Data Loss Prevention) Outgoing Policy</td><td>Name of the DLP policy</td></tr></tbody></table><br>The action supports limiting the number of items returned using the <b>limit</b> parameter. If <b>limit</b> parameter is 0, then action will fetch no data for selected report(s). If limit is not specified, the action will fetch by default 10 items for all specified reports. For a particular report, if limit specified is greater than the available data, the action will fetch all data for that report.",
       "type": "investigate",
       "identifier": "get_report", 
       "read_only": true, 
       "parameters": {
         "report_type": {
+          "required": true,
           "description": "Report type",
           "data_type": "string",
           "order": 0,
-          "value_list": ["All", "Internal Users", "Incoming Mail: Domains", "Incoming Mail: IP Addresses", "Incoming Mail: Network Owners", "Outgoing Senders: Domains", "Outgoing Senders: IP Addresses", "Outgoing Destinations", "Outgoing Content Filters", "Virus Types", "Inbound SMTP Authentication", "DLP Outgoing Policy"],
+          "value_list": ["Internal Users", "Incoming Mail: Domains", "Incoming Mail: IP Addresses", "Incoming Mail: Network Owners", "Outgoing Senders: Domains", "Outgoing Senders: IP Addresses", "Outgoing Destinations", "Outgoing Content Filters", "Virus Types", "Inbound SMTP Authentication", "DLP Outgoing Policy"],
           "primary": true,
           "contains": [
             "ciscoesa report type"
           ]
         },
         "start_time": {
-          "required": true,
           "description": "Start time (YYYY-MM-DDTHH:00)",
           "data_type": "string",
           "order": 1
         },
         "end_time": {
-          "required": true,
           "description": "End time (YYYY-MM-DDTHH:00)",
           "data_type": "string",
           "order": 2
         },
-        "domain": {
-          "description": "Domain",
+        "search_value": {
+          "description": "Entity value to filter the results",
           "data_type": "string",
           "contains": [
-            "domain"
+            "ip", "domain", "email"
           ],
           "order": 3
-        },
-        "ip": {
-          "description": "IP",
-          "data_type": "string",
-          "contains": [
-            "ip"
-          ],
-          "order": 4
-        },
-        "content_filter": {
-          "description": "Outgoing content filter",
-          "data_type": "string",
-          "order": 5
-        },
-        "dlp_policy_name": {
-          "description": "DLP policy name",
-          "data_type": "string",
-          "order": 6
-        },
-        "network_owner_name": {
-          "description": "Network owner name",
-          "data_type": "string",
-          "order": 7
-        },
-        "email": {
-          "description": "Email address",
-          "data_type": "string",
-          "contains": [
-            "email"
-          ],
-          "order": 8
-        },
-        "virus_name": {
-          "description": "Virus name",
-          "data_type": "string",
-          "order": 9
         },
         "limit": {
           "default": 10,
           "description": "Maximum number of items to retrieve",
           "data_type": "numeric",
-          "order": 10
+          "order": 4
         },
         "starts_with": {
           "description": "Retrieve items starting with specified entity value",
           "data_type": "boolean",
-          "order": 11
+          "order": 5
         }
       },
       "render": {
@@ -1523,41 +1486,11 @@
           "data_type": "string"
         },
         {
-          "data_path": "action_result.parameter.domain",
+          "data_path": "action_result.parameter.search_value",
           "data_type": "string",
           "contains": [
-            "domain"
+            "ip", "domain", "email"
           ]
-        },
-        {
-          "data_path": "action_result.parameter.ip",
-          "data_type": "string",
-          "contains": [
-            "ip"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.content_filter",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.dlp_policy_name",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.network_owner_name",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.email",
-          "data_type": "string",
-          "contains": [
-            "email"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.virus_name",
-          "data_type": "string"
         },
         {
           "data_path": "action_result.parameter.limit",
@@ -1566,10 +1499,6 @@
         {
           "data_path": "action_result.parameter.starts_with",
           "data_type": "boolean"
-        },
-        {
-          "data_path": "action_result.summary.reports_queried",
-          "data_type": "numeric"
         },
         {
           "data_path": "summary.total_objects", 
