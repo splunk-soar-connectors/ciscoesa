@@ -7,8 +7,8 @@
   "license": "Copyright (c) Phantom Cyber Corporation 2017", 
   "main_module": "ciscoesa_connector.pyc", 
   "type": "firewall",
-    "app_version": "1.0.3",
-    "utctime_updated": "2017-05-10T18:42:52.000000Z",
+  "app_version": "1.0.3",
+  "utctime_updated": "",
   "product_vendor": "Cisco",
   "product_name": "Cisco ESA",
   "product_version_regex": ".*", 
@@ -70,22 +70,22 @@
             "ciscoesa report type"
           ]
         },
-        "start_time": {
-          "description": "Start time (YYYY-MM-DDTHH:00)",
-          "data_type": "string",
-          "order": 1
-        },
-        "end_time": {
-          "description": "End time (YYYY-MM-DDTHH:00)",
-          "data_type": "string",
-          "order": 2
-        },
         "search_value": {
           "description": "Entity value to filter the results",
           "data_type": "string",
           "contains": [
             "ip", "domain", "email"
           ],
+          "order": 1
+        },
+        "start_time": {
+          "description": "Start time (YYYY-MM-DDTHH:00)",
+          "data_type": "string",
+          "order": 2
+        },
+        "end_time": {
+          "description": "End time (YYYY-MM-DDTHH:00)",
+          "data_type": "string",
           "order": 3
         },
         "limit": {
