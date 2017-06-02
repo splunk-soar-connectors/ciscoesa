@@ -1,13 +1,13 @@
 {
   "appid": "7bf76da9-f31c-448b-906b-7c6de9d3cc70", 
   "name": "Cisco ESA", 
-  "description": "This app supports investigative action on Cisco ESA (Email Security Appliance) device.",
+  "description": "This app supports investigative action on Cisco Email Security Appliance (ESA) device.",
   "publisher": "Phantom",
   "package_name": "phantom_ciscoesa", 
   "license": "Copyright (c) Phantom Cyber Corporation 2017", 
   "main_module": "ciscoesa_connector.pyc", 
-  "type": "firewall",
-  "app_version": "1.0.2",
+  "type": "investigative",
+  "app_version": "1.0.3",
   "utctime_updated": "", 
   "product_vendor": "Cisco",
   "product_name": "Cisco ESA",
@@ -17,7 +17,7 @@
   "configuration": {
     "url": {
       "required": true,
-      "description": "URL (e.g. http(s)://10.10.10.10:6080)",
+      "description": "URL (e.g. https://10.10.10.10:6443)",
       "data_type": "string",
       "order": 0
     },
@@ -54,20 +54,20 @@
     {
       "action": "get report", 
       "description": "Retrieve statistical reports from ESA",
-      "verbose": "This action is used to query \"Query-based Reports\" which counts various events in your appliance against a user-specified entity such as IP address, domain name, etc. for a specified duration.<br>If <b>start_time</b> and <b>end_time</b> are not given, then report will be queried for last 250 days.<br>If either <b>start_time</b> or <b>end_time</b> is provided, then report wll be queried for a period of 250 days relative to the given parameter.<br>Following is the mapping of report title and its corresponding entity that can be provided to filter reports:<table><tbody><tr class='plain'><th>Report Title</th><th>Entity Value</th></tr><tr><td>Internal Users</td><td>Email ID of the internal user (e.g. user@example.com)</td></tr><tr><td>Incoming Mail: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Incoming Mail: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Incoming Mail: Network Owners</td><td>Name of the network owner (e.g. Xyz Corporation)</td></tr><tr><td>Outgoing Senders: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Senders: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Outgoing Destinations</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Content Filters</td><td>Name of the outgoing Content Filter</td></tr><tr><td>Virus Types</td><td>Name of virus</td></tr><tr><td>Inbound SMTP Authentication</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>DLP (Data Loss Prevention) Outgoing Policy</td><td>Name of the DLP policy</td></tr></tbody></table><br>The action supports limiting the number of items returned using the <b>limit</b> parameter. If <b>limit</b> parameter is 0, then action will fetch no data for selected report(s). If limit is not specified, the action will fetch by default 10 items for all specified reports. For a particular report, if limit specified is greater than the available data, the action will fetch all data for that report.",
+      "verbose": "This action is used to query \"Query-based Reports\" which counts various events in your appliance against a user-specified entity such as IP address, domain name, etc. for a specified duration.<br>If <b>start_time</b> and <b>end_time</b> are not given, then report will be queried for the last 250 days.<br>If either <b>start_time</b> or <b>end_time</b> is provided, then report wll be queried for a period of 250 days relative to the given parameter.<br>Following is the mapping of report title and its corresponding entity that can be provided to filter reports:<table><tbody><tr class='plain'><th>Report Title</th><th>Entity Value</th></tr><tr><td>Internal Users</td><td>Email ID of the internal user (e.g. user@example.com)</td></tr><tr><td>Incoming Mail: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Incoming Mail: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Incoming Mail: Network Owners</td><td>Name of the network owner (e.g. Xyz Corporation)</td></tr><tr><td>Outgoing Senders: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Senders: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Outgoing Destinations</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Content Filters</td><td>Name of the outgoing Content Filter</td></tr><tr><td>Virus Types</td><td>Name of virus</td></tr><tr><td>Inbound SMTP Authentication</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Data Loss Prevention (DLP) Outgoing Policy</td><td>Name of the DLP policy</td></tr></tbody></table><br>The action supports limiting the number of items returned using the <b>limit</b> parameter. If <b>limit</b> parameter is 0, then action will fetch no data for selected report(s). If limit is not specified, the action will fetch by default 10 items for all specified reports. For a particular report, if limit specified is greater than the available data, the action will fetch all data for that report.",
       "type": "investigate",
       "identifier": "get_report", 
       "read_only": true, 
       "parameters": {
-        "report_type": {
+        "report_title": {
           "required": true,
-          "description": "Report type",
+          "description": "Report Title",
           "data_type": "string",
           "order": 0,
           "value_list": ["Internal Users", "Incoming Mail: Domains", "Incoming Mail: IP Addresses", "Incoming Mail: Network Owners", "Outgoing Senders: Domains", "Outgoing Senders: IP Addresses", "Outgoing Destinations", "Outgoing Content Filters", "Virus Types", "Inbound SMTP Authentication", "DLP Outgoing Policy"],
           "primary": true,
           "contains": [
-            "ciscoesa report type"
+            "ciscoesa report title"
           ]
         },
         "search_value": {
@@ -1471,10 +1471,10 @@
           "data_type": "string"
         },
         {
-          "data_path": "action_result.parameter.report_type",
+          "data_path": "action_result.parameter.report_title",
           "data_type": "string",
           "contains": [
-            "ciscoesa report type"
+            "ciscoesa report title"
           ]
         },
         {
