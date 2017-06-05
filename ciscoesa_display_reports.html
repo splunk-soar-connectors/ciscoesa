@@ -102,11 +102,11 @@ of Phantom Cyber Corporation.
         {% else %}
             <div class="metadata_div">
                 <!--Internal Users-->
-                {% if result.param.report_type == "Internal Users" %}
+                {% if result.param.report_title == "Internal Users" %}
                     <div class="table-header">Internal Users</div>
                     <div id="mail_users_detail_single-table">
                         {% if not result.data.mail_users_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -192,11 +192,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Incoming Mail: IP Addresses-->
-                {% elif result.param.report_type == "Incoming Mail: IP Addresses" %}
+                {% elif result.param.report_title == "Incoming Mail: IP Addresses" %}
                     <div class="table-header">Incoming Mail: IP Addresses</div>
                     <div id="incoming_ip_hostname_details_single-table">
                         {% if not result.data.mail_incoming_ip_hostname_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -286,11 +286,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Incoming Mail: Domains-->
-                {% elif result.param.report_type == "Incoming Mail: Domains" %}
+                {% elif result.param.report_title == "Incoming Mail: Domains" %}
                     <div class="table-header">Incoming Mail: Domains</div>
                     <div id="incoming_domain_detail_single-table">
                         {% if not result.data.mail_incoming_domain_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -384,11 +384,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Incoming Mail: Network Owners-->
-                {% elif result.param.report_type == "Incoming Mail: Network Owners" %}
+                {% elif result.param.report_title == "Incoming Mail: Network Owners" %}
                     <div class="table-header">Incoming Mail: Network Owners</div>
                     <div id="incoming_network_detail_single-table">
                         {% if not result.data.mail_incoming_network_detail %}
-                             <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                             <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -478,11 +478,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--DLP Outgoing Policy-->
-                {% elif result.param.report_type == "DLP Outgoing Policy" %}
+                {% elif result.param.report_title == "DLP Outgoing Policy" %}
                     <div class="table-header">DLP Outgoing Policy</div>
                     <div id="mail_dlp_outgoing_policy_detail_single-table">
                         {% if not result.data.mail_dlp_outgoing_policy_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -536,11 +536,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Outgoing Destinations-->
-                {% elif result.param.report_type == "Outgoing Destinations" %}
+                {% elif result.param.report_title == "Outgoing Destinations" %}
                     <div class="table-header">Outgoing Destinations</div>
                     <div id="mail_destination_domain_detail_single-table">
                         {% if not result.data.mail_destination_domain_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -630,11 +630,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Outgoing Senders: IP Addresses-->
-                {% elif result.param.report_type == "Outgoing Senders: IP Addresses" %}
+                {% elif result.param.report_title == "Outgoing Senders: IP Addresses" %}
                     <div class="table-header">Outgoing Senders: IP Addresses</div>
                     <div id="mail_sender_ip_hostname_detail_single-table">
                         {% if not result.data.mail_sender_ip_hostname_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -688,11 +688,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Outgoing Senders: Domains-->
-                {% elif result.param.report_type == "Outgoing Senders: Domains" %}
+                {% elif result.param.report_title == "Outgoing Senders: Domains" %}
                     <div class="table-header">Outgoing Senders: Domains</div>
                     <div id="mail_sender_domain_detail_single-table">
                         {% if not result.data.mail_sender_domain_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -746,11 +746,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Outgoing Content Filters-->
-                {% elif result.param.report_type == "Outgoing Content Filters" %}
+                {% elif result.param.report_title == "Outgoing Content Filters" %}
                     <div class="table-header">Outgoing Content Filters</div>
                     <div id="mail_content_filter_outgoing_single-table">
                         {% if not result.data.mail_content_filter_outgoing %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -772,11 +772,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Virus Types-->
-                {% elif result.param.report_type == "Virus Types" %}
+                {% elif result.param.report_title == "Virus Types" %}
                     <div class="table-header">Virus Types</div>
                     <div id="mail_virus_type_detail_single-table">
                         {% if not result.data.mail_virus_type_detail %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>
@@ -806,11 +806,11 @@ of Phantom Cyber Corporation.
                     </div>
 
                 <!--Inbound SMTP Authentication-->
-                {% elif result.param.report_type == "Inbound SMTP Authentication" %}
+                {% elif result.param.report_title == "Inbound SMTP Authentication" %}
                     <div class="table-header">Inbound SMTP Authentication</div>
                     <div id="mail_authentication_incoming_domain_single-table">
                         {% if not result.data.mail_authentication_incoming_domain %}
-                            <h4 class="wf-h4-style">No data was found in the given duration</h4>
+                            <h4 class="wf-h4-style">No data was found</h4>
                         {% else %}
                             <table class="wf-table-horizontal datatable">
                                 <thead>

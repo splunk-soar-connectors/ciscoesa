@@ -31,6 +31,7 @@ import ciscoesa_consts as consts
 ERROR_RESPONSE_DICT = {
     consts.CISCOESA_REST_RESP_BAD_REQUEST: consts.CISCOESA_REST_RESP_BAD_REQUEST_MSG,
     consts.CISCOESA_REST_RESP_UNAUTHORIZED: consts.CISCOESA_REST_RESP_UNAUTHORIZED_MSG,
+    consts.CISCOESA_REST_RESP_FORBIDDEN: consts.CISCOESA_REST_RESP_FORBIDDEN_MSG,
     consts.CISCOESA_REST_RESP_NOT_FOUND: consts.CISCOESA_REST_RESP_NOT_FOUND_MSG,
     consts.CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR: consts.CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR_MSG,
     consts.CISCOESA_REST_RESP_NOT_ACCEPTABLE: consts.CISCOESA_REST_RESP_NOT_ACCEPTABLE_MSG,
@@ -189,7 +190,7 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, parsed_date_time
 
-    def _make_rest_call(self, endpoint, action_result, params=None, method="get"):
+    def _make_rest_call(self, endpoint, action_result, params=None, method="get", timeout=None):
         """ Function that makes the REST call to the device. It is a generic function that can be called from various
         action handlers.
 
@@ -197,6 +198,7 @@ class CiscoesaConnector(BaseConnector):
         :param action_result: object of ActionResult class
         :param params: request parameters if method is get
         :param method: get/post/put/delete ( Default method will be "get" )
+        :param timeout: request timeout in seconds
         :return: status success/failure(along with appropriate message), response obtained by making an API call
         """
 
@@ -224,8 +226,8 @@ class CiscoesaConnector(BaseConnector):
         }
 
         try:
-            response = request_func("{base_url}{endpoint}".format(base_url=self._url, endpoint=endpoint), params=params,
-                                    headers=headers, verify=self._verify_server_cert)
+            response = request_func("{base_url}{endpoint}".format(base_url=self._url, endpoint=endpoint),
+                                    params=params, headers=headers, timeout=timeout, verify=self._verify_server_cert)
         except Exception as e:
             self.debug_print(consts.CISCOESA_ERR_SERVER_CONNECTION, e)
             # set the action_result status to error, the handler function will most probably return as is
@@ -295,7 +297,7 @@ class CiscoesaConnector(BaseConnector):
         api_params = dict()
 
         # Getting mandatory parameters
-        report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TYPE]
+        report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
 
         # Getting optional parameters
         start_time = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
@@ -336,8 +338,7 @@ class CiscoesaConnector(BaseConnector):
                 start_time = (
                     datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT) -
                     datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)).strftime(
-                        consts.CISCOESA_INPUT_TIME_FORMAT
-                )
+                        consts.CISCOESA_INPUT_TIME_FORMAT)
             except:
                 self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
@@ -455,7 +456,7 @@ class CiscoesaConnector(BaseConnector):
         self.save_progress("Configured URL: {url}".format(url=self._url))
 
         ret_value, response = self._make_rest_call(endpoint=consts.CISCOESA_TEST_CONNECTIVITY_ENDPOINT,
-                                                   action_result=action_result)
+                                                   action_result=action_result, timeout=30)
 
         if phantom.is_fail(ret_value):
             self.save_progress(action_result.get_message())
