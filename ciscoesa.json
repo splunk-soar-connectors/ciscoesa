@@ -1,7 +1,7 @@
 {
   "appid": "7bf76da9-f31c-448b-906b-7c6de9d3cc70", 
   "name": "Cisco ESA", 
-  "description": "This app supports investigative action on Cisco Email Security Appliance (ESA) device.",
+  "description": "This app supports <i>investigation</i> on the Cisco Email Security Appliance (ESA) device.",
   "publisher": "Phantom",
   "package_name": "phantom_ciscoesa", 
   "license": "Copyright (c) Phantom Cyber Corporation 2017", 
@@ -12,7 +12,7 @@
   "product_vendor": "Cisco",
   "product_name": "Cisco ESA",
   "product_version_regex": ".*", 
-  "min_phantom_version": "2.1.452",
+  "min_phantom_version": "2.1.467",
   "logo": "cisco.png",
   "configuration": {
     "url": {
