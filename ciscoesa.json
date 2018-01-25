@@ -4,7 +4,7 @@
     "description": "This app supports <b>investigation</b> on the Cisco Email Security Appliance (ESA) device.",
     "publisher": "Phantom",
     "package_name": "phantom_ciscoesa",
-    "license": "Copyright (c) Phantom Cyber Corporation 2017",
+    "license": "Copyright (c) Phantom Cyber Corporation, 2017-2018",
     "main_module": "ciscoesa_connector.pyc",
     "type": "investigative",
     "app_version": "1.0.10",
