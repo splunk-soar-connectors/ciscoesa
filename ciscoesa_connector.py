@@ -1,16 +1,8 @@
-# --
-# File: ciscoesa/ciscoesa_connector.py
+# File: ciscoesa_connector.py
+# Copyright (c) 2017-2019 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2017
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber Corporation.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 
 # Standard library imports
 import json
@@ -285,6 +277,38 @@ class CiscoesaConnector(BaseConnector):
                                         status=response.status_code,
                                         detail=message), response_data
 
+    def _decode_url(self, param):
+        """ Process URL and return it stripped
+        of the 'secure-web.cisco.com' portion and unquoted
+
+        :param param: dictionary of input parameters
+        :return: status success/failure
+        """
+
+        import urllib
+        import re
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        encoded_url = param['encoded_url']
+
+        sw_match = re.match('^(https*://)*secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
+
+        # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
+        if sw_match:
+            message = 'Parsed from secure-web.cisco.com URL and decoded.'
+            if sw_match.group('quoted'):
+                decode_me = sw_match.group('quoted')
+            else:
+                decode_me = encoded_url.split('/')[-1]
+        else:
+            message = 'Decoded entire URL.'
+            decode_me = encoded_url
+
+        action_result.add_data({'decoded_url': urllib.unquote(decode_me)})
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
     def _get_report(self, param):
         """ Function to retrieve statistical report from the Email Security appliance.
 
@@ -477,7 +501,8 @@ class CiscoesaConnector(BaseConnector):
         # Dictionary mapping each action with its corresponding actions
         action_mapping = {
             "test_asset_connectivity": self._test_asset_connectivity,
-            "get_report": self._get_report
+            "get_report": self._get_report,
+            "decode_url": self._decode_url
         }
 
         action = self.get_action_identifier()
