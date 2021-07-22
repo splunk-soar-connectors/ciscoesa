@@ -1,8 +1,8 @@
 {
     "appid": "7bf76da9-f31c-448b-906b-7c6de9d3cc70",
     "name": "Cisco ESA",
-    "description": "This app supports <b>investigation</b> on the Cisco Email Security Appliance (ESA) device",
-    "publisher": "Phantom",
+    "description": "This app supports investigation on the Cisco Email Security Appliance (ESA) device",
+    "publisher": "Splunk",
     "package_name": "phantom_ciscoesa",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
