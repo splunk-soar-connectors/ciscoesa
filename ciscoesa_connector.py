@@ -124,13 +124,13 @@ class CiscoesaConnector(BaseConnector):
         """
 
         # Parsing values of report data by assigning report_key value to "recipient" key and its count to "count" key
-        for report_key, report_value in list(report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].items()):
+        for report_key, report_value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].items():
             # List that will contain parsed values of report data that will be assigned to corresponding keys of report
             parsed_result = []
             # If report value is there, then value will be parsed
             if report_value:
                 try:
-                    for recipient, count in list(report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items()):
+                    for recipient, count in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items():
                         parsed_result.append({
                             consts.CISCOESA_GET_REPORT_PARAM_RECIPIENT: recipient,
                             consts.CISCOESA_GET_REPORT_PARAM_COUNT: count
@@ -213,10 +213,7 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_EXCEPTION_OCCURRED, e), response_data
 
         auth_string = "{username}:{password}".format(username=self._username, password=self._password)
-        # credentials = base64.b64encode(s.encode('ascii'))
-        # credentials = credentials.decode('ascii')
 
-        # credentials = base64.b64encode("{username}:{password}".format(username=self._username, password=self._password))
         credentials = base64.b64encode(auth_string.encode('utf-8')).decode()
 
         headers = {
@@ -451,8 +448,8 @@ class CiscoesaConnector(BaseConnector):
         # formatted in generic format
         if search_value and report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA, {}):
             parsed_dict = dict()
-            for matching_key in list(report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].keys()):
-                for key, value in list(report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items()):
+            for matching_key in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].keys():
+                for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items():
                     if key not in parsed_dict:
                         parsed_dict[key] = dict()
                     parsed_dict[key][matching_key] = value
@@ -532,16 +529,18 @@ class CiscoesaConnector(BaseConnector):
 if __name__ == "__main__":
 
     import sys
+    import pudb
 
+    pudb.set_trace()
     if len(sys.argv) < 2:
         print("No test json specified as input")
         exit(0)
     with open(sys.argv[1]) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
-        print((json.dumps(in_json, indent=4)))
+        print(json.dumps(in_json, indent=4))
         connector = CiscoesaConnector()
         connector.print_progress_message = True
         return_value = connector._handle_action(json.dumps(in_json), None)
-        print((json.dumps(json.loads(return_value), indent=4)))
+        print(json.dumps(json.loads(return_value), indent=4))
     exit(0)

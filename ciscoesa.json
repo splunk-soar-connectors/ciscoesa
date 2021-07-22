@@ -16,7 +16,7 @@
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_version": [
-        "TODO"
+        "Cisco C000V, Email Security Virtual Appliance Version: 9.8.0-112"
     ],
     "python_version": "3",
     "configuration": {
