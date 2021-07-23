@@ -313,6 +313,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _get_report(self, param):
+        
         """ Function to retrieve statistical report from the Email Security appliance.
 
         :param param: dictionary of input parameters
@@ -332,6 +333,8 @@ class CiscoesaConnector(BaseConnector):
         search_value = param.get(consts.CISCOESA_GET_REPORT_JSON_SEARCH_VALUE)
         limit = int(param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT))
         starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)
+
+        self.debug_print("****************************1")
 
         # If both start_time and end_time is not given, then by default, API will query report for last 250 days
         if not start_time and not end_time:
@@ -362,9 +365,14 @@ class CiscoesaConnector(BaseConnector):
         elif not start_time:
             try:
                 # start_time will be calculated equivalent to given end_time
+                # temp_time1 = datetime.datetime.strptime("2021-07-22T06:00", "%Y-%m-%dT%H:00")
+                # temp_time2 = datetime.timedelta(days=249)
                 temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
-                temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
-                start_time = ( temp_time1 - temp_time2 )
+                temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
+                start_time = ( temp_time1 - temp_time2 ).strftime("%Y-%m-%dT%H:00")
+                # self.debug_print("5555")
+                # self.debug_print(start_time)
+                
             except:
                 self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
