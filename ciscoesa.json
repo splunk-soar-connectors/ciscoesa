@@ -179,11 +179,6 @@
                 "search_value": {
                     "description": "Entity value to filter the results",
                     "data_type": "string",
-                    "contains": [
-                        "ip",
-                        "domain",
-                        "email"
-                    ],
                     "order": 1,
                     "primary": true
                 },
@@ -242,12 +237,7 @@
                 },
                 {
                     "data_path": "action_result.parameter.search_value",
-                    "data_type": "string",
-                    "contains": [
-                        "ip",
-                        "domain",
-                        "email"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.parameter.start_time",
