@@ -196,7 +196,7 @@ class CiscoesaConnector(BaseConnector):
         """
 
         response_data = None
-
+        
         try:
             request_func = getattr(requests, method)
 
@@ -263,7 +263,7 @@ class CiscoesaConnector(BaseConnector):
                 self.debug_print(consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data))
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_UNEXPECTED_RESPONSE.format(
                     report_name=response_data
-                ))
+                )), response_data
 
             return phantom.APP_SUCCESS, response_data
 
@@ -299,13 +299,13 @@ class CiscoesaConnector(BaseConnector):
 
         # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
         if sw_match:
-            message = 'Parsed from secure-web.cisco.com URL and decoded.'
+            message = 'Parsed from secure-web.cisco.com URL and decoded' 
             if sw_match.group('quoted'):
                 decode_me = sw_match.group('quoted')
             else:
                 decode_me = encoded_url.split('/')[-1]
         else:
-            message = 'Decoded entire URL.'
+            message = 'Decoded entire URL'
             decode_me = encoded_url
 
         action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
