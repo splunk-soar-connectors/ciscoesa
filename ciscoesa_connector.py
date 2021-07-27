@@ -196,7 +196,7 @@ class CiscoesaConnector(BaseConnector):
         """
 
         response_data = None
-        
+
         try:
             request_func = getattr(requests, method)
 
