@@ -196,7 +196,7 @@ class CiscoesaConnector(BaseConnector):
         """
 
         response_data = None
-        
+
         try:
             request_func = getattr(requests, method)
 
@@ -299,7 +299,7 @@ class CiscoesaConnector(BaseConnector):
 
         # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
         if sw_match:
-            message = 'Parsed from secure-web.cisco.com URL and decoded' 
+            message = 'Parsed from secure-web.cisco.com URL and decoded'
             if sw_match.group('quoted'):
                 decode_me = sw_match.group('quoted')
             else:
