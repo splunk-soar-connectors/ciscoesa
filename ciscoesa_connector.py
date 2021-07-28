@@ -295,7 +295,7 @@ class CiscoesaConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         encoded_url = param['encoded_url']
-        sw_match = re.match(r'^(https*://)*secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
+        sw_match = re.match(r'^(https?://)?secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
 
         # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
         if sw_match:
@@ -364,7 +364,7 @@ class CiscoesaConnector(BaseConnector):
                 # start_time will be calculated equivalent to given end_time
                 temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
                 temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
-                start_time = ( temp_time1 - temp_time2 ).strftime("%Y-%m-%dT%H:00")
+                start_time = ( temp_time1 - temp_time2 ).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
             except:
                 self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
