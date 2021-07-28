@@ -1,5 +1,5 @@
 # File: ciscoesa_connector.py
-# Copyright (c) 2017-2019 Splunk Inc.
+# Copyright (c) 2017-2021 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
@@ -18,6 +18,7 @@ from phantom.action_result import ActionResult
 
 # Local imports
 import ciscoesa_consts as consts
+
 
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
@@ -123,13 +124,13 @@ class CiscoesaConnector(BaseConnector):
         """
 
         # Parsing values of report data by assigning report_key value to "recipient" key and its count to "count" key
-        for report_key, report_value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].iteritems():
+        for report_key, report_value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].items():
             # List that will contain parsed values of report data that will be assigned to corresponding keys of report
             parsed_result = []
             # If report value is there, then value will be parsed
             if report_value:
                 try:
-                    for recipient, count in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].iteritems():
+                    for recipient, count in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items():
                         parsed_result.append({
                             consts.CISCOESA_GET_REPORT_PARAM_RECIPIENT: recipient,
                             consts.CISCOESA_GET_REPORT_PARAM_COUNT: count
@@ -211,7 +212,10 @@ class CiscoesaConnector(BaseConnector):
             # set the action_result status to error, the handler function will most probably return as is
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_EXCEPTION_OCCURRED, e), response_data
 
-        credentials = base64.b64encode("{username}:{password}".format(username=self._username, password=self._password))
+        auth_string = "{username}:{password}".format(username=self._username, password=self._password)
+
+        credentials = base64.b64encode(auth_string.encode('utf-8')).decode()
+
         headers = {
             "Accept": "application/json",
             "Authorization": "Basic {credentials}".format(credentials=credentials)
@@ -259,7 +263,7 @@ class CiscoesaConnector(BaseConnector):
                 self.debug_print(consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data))
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_UNEXPECTED_RESPONSE.format(
                     report_name=response_data
-                ))
+                )), response_data
 
             return phantom.APP_SUCCESS, response_data
 
@@ -291,21 +295,20 @@ class CiscoesaConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         encoded_url = param['encoded_url']
-
-        sw_match = re.match('^(https*://)*secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
+        sw_match = re.match(r'^(https?://)?secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
 
         # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
         if sw_match:
-            message = 'Parsed from secure-web.cisco.com URL and decoded.'
+            message = 'Parsed from secure-web.cisco.com URL and decoded'
             if sw_match.group('quoted'):
                 decode_me = sw_match.group('quoted')
             else:
                 decode_me = encoded_url.split('/')[-1]
         else:
-            message = 'Decoded entire URL.'
+            message = 'Decoded entire URL'
             decode_me = encoded_url
 
-        action_result.add_data({'decoded_url': urllib.unquote(decode_me)})
+        action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -359,10 +362,9 @@ class CiscoesaConnector(BaseConnector):
         elif not start_time:
             try:
                 # start_time will be calculated equivalent to given end_time
-                start_time = (
-                    datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT) -
-                    datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)).strftime(
-                        consts.CISCOESA_INPUT_TIME_FORMAT)
+                temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
+                temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
+                start_time = ( temp_time1 - temp_time2 ).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
             except:
                 self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
@@ -447,7 +449,7 @@ class CiscoesaConnector(BaseConnector):
         if search_value and report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA, {}):
             parsed_dict = dict()
             for matching_key in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].keys():
-                for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].iteritems():
+                for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items():
                     if key not in parsed_dict:
                         parsed_dict[key] = dict()
                     parsed_dict[key][matching_key] = value
@@ -531,14 +533,14 @@ if __name__ == "__main__":
 
     pudb.set_trace()
     if len(sys.argv) < 2:
-        print "No test json specified as input"
+        print("No test json specified as input")
         exit(0)
     with open(sys.argv[1]) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
-        print json.dumps(in_json, indent=4)
+        print(json.dumps(in_json, indent=4))
         connector = CiscoesaConnector()
         connector.print_progress_message = True
         return_value = connector._handle_action(json.dumps(in_json), None)
-        print json.dumps(json.loads(return_value), indent=4)
+        print(json.dumps(json.loads(return_value), indent=4))
     exit(0)

@@ -1,5 +1,5 @@
 # File: ciscoesa_consts.py
-# Copyright (c) 2017-2019 Splunk Inc.
+# Copyright (c) 2017-2021 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
@@ -36,8 +36,8 @@ CISCOESA_ERR_JSON_PARSE = "Unable to parse the response into a dictionary.\nResp
 CISCOESA_ERR_FROM_SERVER = "API failed\nStatus code: {status}\nDetail: {detail}"
 CISCOESA_REST_RESP_OTHER_ERROR_MSG = "Error returned"
 CISCOESA_CONNECTION_TEST_MSG = "Querying endpoint to verify the credentials provided"
-CISCOESA_TEST_CONNECTIVITY_FAIL = "Connectivity test failed"
-CISCOESA_TEST_CONNECTIVITY_PASS = "Connectivity test succeeded"
+CISCOESA_TEST_CONNECTIVITY_FAIL = "Test Connectivity Failed"
+CISCOESA_TEST_CONNECTIVITY_PASS = "Test Connectivity Passed"
 CISCOESA_TEST_CONNECTIVITY_ENDPOINT = "/api/v1.0/health"
 CISCOESA_GET_REPORT_ENDPOINT = "/api/v1.0/stats/{report_name}"
 CISCOESA_GET_REPORT_JSON_REPORT_TITLE = "report_title"
@@ -56,9 +56,9 @@ CISCOESA_CONTAINS_EMAIL = "email"
 CISCOESA_CONTAINS_IP = "ip"
 CISCOESA_DEFAULT_LIMIT = 10
 CISCOESA_DEFAULT_SPAN_DAYS = 249
-CISCOESA_DATE_TIME_VALIDATION_ERROR = "Entered date and time is in incorrect format."
+CISCOESA_DATE_TIME_VALIDATION_ERROR = "Entered date and time is in the incorrect format"
 CISCOESA_DATE_TIME_FORMAT_ERROR = "Date and time must be in YYYY-MM-DDTHH:00 format"
-CISCOESA_START_TIME_GREATER_THEN_END_TIME = "Start time must be less than end time"
+CISCOESA_START_TIME_GREATER_THEN_END_TIME = "The start time must be less than the end time"
 CISCOESA_INPUT_TIME_FORMAT = "%Y-%m-%dT%H:00"
 CISCOESA_API_TIME_FORMAT = "%Y-%m-%dT%H:00+00:00"
 CISCOESA_DURATION_FORMAT = "{start_time}/{end_time}"
