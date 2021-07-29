@@ -10,6 +10,8 @@ import base64
 import datetime
 import socket
 import requests
+import urllib
+import re
 
 # Phantom imports
 import phantom.app as phantom
@@ -288,9 +290,6 @@ class CiscoesaConnector(BaseConnector):
         :param param: dictionary of input parameters
         :return: status success/failure
         """
-
-        import urllib
-        import re
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
