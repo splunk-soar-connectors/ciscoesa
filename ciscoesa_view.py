@@ -1,16 +1,8 @@
-# --
-# File: ciscoesa/ciscoesa_view.py
+# File: ciscoesa_view.py
+# Copyright (c) 2017-2021 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2017-2018
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber Corporation.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 
 
 def _get_key_data(report_data):
@@ -22,10 +14,10 @@ def _get_key_data(report_data):
 
     report = dict()
     # Iterating over data for each report
-    for key, data in report_data.iteritems():
+    for key, data in report_data.items():
         report[key] = dict()
         # Iterating over keys in report data, to get only non-empty values
-        for report_key, value in data.get("data", {}).iteritems():
+        for report_key, value in data.get("data", {}).items():
             if not value:
                 continue
             elif isinstance(value, list):
