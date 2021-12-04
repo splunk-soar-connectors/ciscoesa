@@ -19,6 +19,7 @@
         "Cisco C000V, Email Security Virtual Appliance Version: 9.8.0-112"
     ],
     "python_version": "3",
+    "fips_compliant": true,
     "configuration": {
         "url": {
             "required": true,
