@@ -15,22 +15,21 @@
 #
 #
 # Standard library imports
-import json
 import base64
 import datetime
-import socket
-import requests
-import urllib
+import json
 import re
+import socket
+import urllib
 
 # Phantom imports
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
+import requests
 from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 # Local imports
 import ciscoesa_consts as consts
-
 
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
@@ -538,12 +537,13 @@ class CiscoesaConnector(BaseConnector):
 if __name__ == "__main__":
 
     import sys
+
     import pudb
 
     pudb.set_trace()
     if len(sys.argv) < 2:
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
     with open(sys.argv[1]) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
@@ -552,4 +552,4 @@ if __name__ == "__main__":
         connector.print_progress_message = True
         return_value = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(return_value), indent=4))
-    exit(0)
+    sys.exit(0)
