@@ -300,6 +300,7 @@ class CiscoesaConnector(BaseConnector):
         :return: status success/failure
         """
 
+        self.save_progress("Decoding URL")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         encoded_url = param['encoded_url']
@@ -318,6 +319,7 @@ class CiscoesaConnector(BaseConnector):
 
         action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
 
+        self.save_progress("Decoding URL succeeded")
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _get_report(self, param):
