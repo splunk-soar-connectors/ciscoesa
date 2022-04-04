@@ -2,11 +2,11 @@
 # Cisco ESA
 
 Publisher: Splunk  
-Connector Version: 2\.0\.3  
+Connector Version: 2\.0\.5  
 Product Vendor: Cisco  
 Product Name: Cisco ESA  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 4\.9\.39220  
+Minimum Product Version: 5\.1\.0  
 
 This app supports investigation on the Cisco Email Security Appliance \(ESA\) device
 
