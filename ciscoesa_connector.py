@@ -300,6 +300,8 @@ class CiscoesaConnector(BaseConnector):
         :return: status success/failure
         """
 
+        self.save_progress("Decoding URL")
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         encoded_url = param['encoded_url']
@@ -317,6 +319,8 @@ class CiscoesaConnector(BaseConnector):
             decode_me = encoded_url
 
         action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
+
+        self.save_progress("Decoding URL succeeded")
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -544,6 +548,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("No test json specified as input")
         sys.exit(0)
+
     with open(sys.argv[1]) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
