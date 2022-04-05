@@ -31,6 +31,7 @@ from phantom.base_connector import BaseConnector
 # Local imports
 import ciscoesa_consts as consts
 
+
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
     consts.CISCOESA_REST_RESP_BAD_REQUEST: consts.CISCOESA_REST_RESP_BAD_REQUEST_MSG,
@@ -301,6 +302,7 @@ class CiscoesaConnector(BaseConnector):
         """
 
         self.save_progress("Decoding URL")
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         encoded_url = param['encoded_url']
@@ -320,6 +322,7 @@ class CiscoesaConnector(BaseConnector):
         action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
 
         self.save_progress("Decoding URL succeeded")
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _get_report(self, param):
@@ -546,6 +549,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("No test json specified as input")
         sys.exit(0)
+
     with open(sys.argv[1]) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
