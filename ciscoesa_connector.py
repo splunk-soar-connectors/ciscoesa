@@ -31,7 +31,6 @@ from phantom.base_connector import BaseConnector
 # Local imports
 import ciscoesa_consts as consts
 
-
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
     consts.CISCOESA_REST_RESP_BAD_REQUEST: consts.CISCOESA_REST_RESP_BAD_REQUEST_MSG,
