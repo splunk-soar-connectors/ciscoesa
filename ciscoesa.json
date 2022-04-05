@@ -4,21 +4,22 @@
     "description": "This app supports investigation on the Cisco Email Security Appliance (ESA) device",
     "publisher": "Splunk",
     "package_name": "phantom_ciscoesa",
-    "license": "Copyright (c) 2017-2021 Splunk Inc.",
+    "license": "Copyright (c) 2017-2022 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "2.0.3",
-    "utctime_updated": "2021-07-30T09:30:21.000000Z",
+    "app_version": "2.0.5",
+    "utctime_updated": "2022-01-28T19:25:20.000000Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.9.39220",
+    "min_phantom_version": "5.1.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_version": [
         "Cisco C000V, Email Security Virtual Appliance Version: 9.8.0-112"
     ],
     "python_version": "3",
+    "fips_compliant": true,
     "configuration": {
         "url": {
             "required": true,
@@ -1647,5 +1648,29 @@
             ],
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "certifi",
+                "input_file": "wheels/certifi-2021.10.8-py2.py3-none-any.whl"
+            },
+            {
+                "module": "chardet",
+                "input_file": "wheels/chardet-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "idna",
+                "input_file": "wheels/idna-2.10-py2.py3-none-any.whl"
+            },
+            {
+                "module": "requests",
+                "input_file": "wheels/requests-2.25.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "urllib3",
+                "input_file": "wheels/urllib3-1.26.7-py2.py3-none-any.whl"
+            }
+        ]
+    }
 }
