@@ -192,8 +192,7 @@
                 "search_value": {
                     "description": "Entity value to filter the results",
                     "data_type": "string",
-                    "order": 1,
-                    "primary": true
+                    "order": 1
                 },
                 "start_time": {
                     "description": "Start time (YYYY-MM-DDTHH:00)",
@@ -1671,7 +1670,6 @@
                     "description": "Name of dictionary to list",
                     "data_type": "string",
                     "required": true,
-                    "primary": true,
                     "order": 0
                 },
                 "cluster_mode": {
@@ -1685,7 +1683,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -1798,7 +1797,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -1811,20 +1811,26 @@
                 },
                 {
                     "data_path": "action_result.parameter.commit_message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "This is a test message"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.name",
                     "data_type": "string",
                     "example_values": [
-                        "Mail_To"
+                        "test_dict"
                     ],
                     "column_name": "Dictionary Name",
                     "column_order": 0
                 },
                 {
                     "data_path": "action_result.parameter.value",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "test_value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -1910,7 +1916,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -1923,20 +1930,26 @@
                 },
                 {
                     "data_path": "action_result.parameter.commit_message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "This is a test message"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.name",
                     "data_type": "string",
                     "example_values": [
-                        "Mail_To"
+                        "test_dict"
                     ],
                     "column_name": "Dictionary Name",
                     "column_order": 0
                 },
                 {
                     "data_path": "action_result.parameter.value",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "test_value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
