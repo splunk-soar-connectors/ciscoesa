@@ -1,10 +1,12 @@
 import os
-os.sys.path.insert(0, "{}/paramikossh".format(os.path.dirname(os.path.abspath(__file__))))  # noqa
-import paramiko
 import socket
 import time
-import re
+
+import paramiko
 from bs4 import UnicodeDammit
+
+os.sys.path.insert(0, "{}/paramikossh".format(os.path.dirname(os.path.abspath(__file__))))  # noqa
+
 try:
     from urlparse import urlparse
 except Exception:
@@ -20,6 +22,7 @@ ESA_SPECIAL_CHARACTERS = [ '.', '[', ']', '^', '?', '$', '*', '+', '(', ')', '|'
 
 ESA_ESCAPED_FORMAT_STR = "^{escaped}$"
 
+
 class CiscoEsaHelper():
     OS_LINUX = 0
     OS_MAC = 1
@@ -29,12 +32,11 @@ class CiscoEsaHelper():
         self._username = username
         self._password = password
         self._endpoint = urlparse(endpoint).hostname
-        
+
     def _start_connection(self, server):
 
         user = self._username
         password = self._password
-        
 
         self._ssh_client = paramiko.SSHClient()
         self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -45,18 +47,6 @@ class CiscoEsaHelper():
                     timeout=30)
         except Exception as e:
             return (False, "SSH connection attempt failed", e)
-
-        # Get Linux Distribution
-        #cmd = "uname -a"
-        #status_code, stdout, exit_status = self._send_command(cmd)
-
-        # Couldn't send command
-        #if exit_status != 0:
-        #    return False, "Unable to send command", stdout
-
-        # Some version of mac
-        #if (exit_status == 0 and stdout.split()[0] == "Darwin"):
-        #    self.OS_TYPE = self.OS_MAC
 
         return True, "SSH connection successfull", None
 
@@ -70,7 +60,7 @@ class CiscoEsaHelper():
         self._shell_channel.set_combine_stderr(True)
         output = ""
         stime = int(time.time())
-        
+
         try:
             while True:
                 ctime = int(time.time())
@@ -103,9 +93,9 @@ class CiscoEsaHelper():
         except Exception as e:
             self._connector.save_progress('Error attempting to retrieve command output: {}'.format(e))
             return (False, "Error", str(e))
-        
+
         return (True, output, self._shell_channel.recv_exit_status())
-    
+
     def _send_command(self, command, timeout=0):
         """
            Args:
@@ -163,7 +153,7 @@ class CiscoEsaHelper():
         escaped_str = entry_value
         if '\\' in escaped_str:
             escaped_str = escaped_str.replace('\\', r'\\')
-        
+
         for character in ESA_SPECIAL_CHARACTERS:
             escaped_str = escaped_str.replace( character, '\\\\' + character )
 
@@ -192,7 +182,7 @@ class CiscoEsaHelper():
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
 
         return self._send_command(cmd)
-    
+
     def remove_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
         cmd = ""
 

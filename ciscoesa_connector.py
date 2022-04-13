@@ -27,10 +27,10 @@ import phantom.app as phantom
 import requests
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
-import ciscoesa_helper
 
 # Local imports
 import ciscoesa_consts as consts
+import ciscoesa_helper
 
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
@@ -121,8 +121,8 @@ class CiscoesaConnector(BaseConnector):
         self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
             self,
-            config[consts.CISCOESA_CONFIG_SSH_USERNAME], 
-            config[consts.CISCOESA_CONFIG_SSH_PASSWORD], 
+            config[consts.CISCOESA_CONFIG_SSH_USERNAME],
+            config[consts.CISCOESA_CONFIG_SSH_PASSWORD],
             self._url
         )
 
@@ -520,14 +520,14 @@ class CiscoesaConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         dictionary_name = param[consts.CISCOESA_JSON_NAME]
         cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
-        
+
         self.save_progress("Using ESA Helper to list dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
         success, output, exit_status = self._esa_helper.list_dictionary_items(dictionary_name, cluster_mode)
         if not success:
             return action_result.set_status(phantom.APP_ERROR,
-                consts.CISCOESA_LIST_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
-            )
+                consts.CISCOESA_LIST_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output))
+        self.save_progress("Fetched dictionary entries for: {}".format(dictionary_name))
         dictionary_items = output.splitlines()
         item_count = 0
         for item in dictionary_items:
@@ -539,7 +539,7 @@ class CiscoesaConnector(BaseConnector):
                 details_dict = {'value': details[0].strip()}
                 if len(details) > 1:
                     details_dict['weight'] = details[1].strip()
-                
+
                 action_result.add_data(details_dict)
                 item_count = item_count + 1
         summary = {'total_items': item_count}
@@ -556,25 +556,27 @@ class CiscoesaConnector(BaseConnector):
         entry_value = param[consts.CISCOESA_JSON_VALUE]
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
         cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
-        
+
+        self.save_progress("Using ESA Helper to add dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
         success, output, exit_status = self._esa_helper.add_dictionary_item(
-            dictionary_name, 
-            entry_value, 
-            commit_message, 
+            dictionary_name,
+            entry_value,
+            commit_message,
             cluster_mode
         )
         if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
             return action_result.set_status(
-                phantom.APP_ERROR, 
+                phantom.APP_ERROR,
                 consts.CISCOESA_ADD_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
-            )    
+            )
+        self.save_progress("Added entry to dictionary: {}".format(dictionary_name))
         if output and len(output):
             action_result.add_data({
                 'message': output
             })
         action_result.set_summary({'status': consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MSG})
-        
+
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MSG)
 
     def _handle_remove_dictionary_item(self, param):
@@ -587,25 +589,27 @@ class CiscoesaConnector(BaseConnector):
         entry_value = param[consts.CISCOESA_JSON_VALUE]
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
         cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
-        
+
+        self.save_progress("Using ESA Helper to remove dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
         success, output, exit_status = self._esa_helper.remove_dictionary_item(
-            dictionary_name, 
-            entry_value, 
-            commit_message, 
+            dictionary_name,
+            entry_value,
+            commit_message,
             cluster_mode
         )
         if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
             return action_result.set_status(
-                phantom.APP_ERROR, 
+                phantom.APP_ERROR,
                 consts.CISCOESA_REMOVE_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
-            )    
+            )
+        self.save_progress("Removed entry from dictionary: {}".format(dictionary_name))
         if output and len(output):
             action_result.add_data({
                 'message': output
             })
         action_result.set_summary({'status': consts.CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG})
-        
+
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG)
 
     def handle_action(self, param):
