@@ -27,6 +27,7 @@ import phantom.app as phantom
 import requests
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
+import ciscoesa_helper
 
 # Local imports
 import ciscoesa_consts as consts
@@ -118,6 +119,12 @@ class CiscoesaConnector(BaseConnector):
         self._username = config[consts.CISCOESA_CONFIG_USERNAME]
         self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
         self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
+        self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
+            self,
+            config[consts.CISCOESA_CONFIG_SSH_USERNAME], 
+            config[consts.CISCOESA_CONFIG_SSH_PASSWORD], 
+            self._url
+        )
 
         # In "get report" action, if "starts_with" parameter is set, validate IP and email
         self.set_validator(consts.CISCOESA_CONTAINS_IP, None)
@@ -505,6 +512,102 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.get_status()
 
+    def _handle_list_dictionary_items(self, param):
+        """ Function to list all entries of an ESA dictionary.
+        :param param: dictionary of input parameters
+        :return: status success/failure
+        """
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        dictionary_name = param[consts.CISCOESA_JSON_NAME]
+        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        
+        self.save_progress("Using ESA Helper to list dictionary entries for: {}".format(dictionary_name))
+        # use helper to execute commands on ESA
+        success, output, exit_status = self._esa_helper.list_dictionary_items(dictionary_name, cluster_mode)
+        if not success:
+            return action_result.set_status(phantom.APP_ERROR,
+                consts.CISCOESA_LIST_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
+            )
+        dictionary_items = output.splitlines()
+        item_count = 0
+        for item in dictionary_items:
+            if len(item.strip()):
+                details = item.split(',')
+                # expecting at least two values in each item
+                if len(details) < 2:
+                    continue
+                details_dict = {'value': details[0].strip()}
+                if len(details) > 1:
+                    details_dict['weight'] = details[1].strip()
+                
+                action_result.add_data(details_dict)
+                item_count = item_count + 1
+        summary = {'total_items': item_count}
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_LIST_DICTIONARY_SUCCESS_MSG)
+
+    def _handle_add_dictionary_item(self, param):
+        """ Function to add an entry to an ESA dictionary.
+        :param param: dictionary of input parameters
+        :return: status success/failure
+        """
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        dictionary_name = param[consts.CISCOESA_JSON_NAME]
+        entry_value = param[consts.CISCOESA_JSON_VALUE]
+        commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
+        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        
+        # use helper to execute commands on ESA
+        success, output, exit_status = self._esa_helper.add_dictionary_item(
+            dictionary_name, 
+            entry_value, 
+            commit_message, 
+            cluster_mode
+        )
+        if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
+            return action_result.set_status(
+                phantom.APP_ERROR, 
+                consts.CISCOESA_ADD_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
+            )    
+        if output and len(output):
+            action_result.add_data({
+                'message': output
+            })
+        action_result.set_summary({'status': consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MSG})
+        
+        return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MSG)
+
+    def _handle_remove_dictionary_item(self, param):
+        """ Function to remove an entry from an ESA dictionary.
+        :param param: dictionary of input parameters
+        :return: status success/failure
+        """
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        dictionary_name = param[consts.CISCOESA_JSON_NAME]
+        entry_value = param[consts.CISCOESA_JSON_VALUE]
+        commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
+        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        
+        # use helper to execute commands on ESA
+        success, output, exit_status = self._esa_helper.remove_dictionary_item(
+            dictionary_name, 
+            entry_value, 
+            commit_message, 
+            cluster_mode
+        )
+        if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
+            return action_result.set_status(
+                phantom.APP_ERROR, 
+                consts.CISCOESA_REMOVE_DICTIONARY_ERROR_MSG.format(dictionary_name=dictionary_name, error=output)
+            )    
+        if output and len(output):
+            action_result.add_data({
+                'message': output
+            })
+        action_result.set_summary({'status': consts.CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG})
+        
+        return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG)
+
     def handle_action(self, param):
         """ This function gets current action identifier and calls member function of its own to handle the action.
 
@@ -516,7 +619,10 @@ class CiscoesaConnector(BaseConnector):
         action_mapping = {
             "test_asset_connectivity": self._test_asset_connectivity,
             "get_report": self._get_report,
-            "decode_url": self._decode_url
+            "decode_url": self._decode_url,
+            "list_dictionary_items": self._handle_list_dictionary_items,
+            'add_dictionary_item': self._handle_add_dictionary_item,
+            'remove_dictionary_item': self._handle_remove_dictionary_item
         }
 
         action = self.get_action_identifier()

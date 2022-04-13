@@ -7,16 +7,16 @@
     "license": "Copyright (c) 2017-2022 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "2.0.5",
+    "app_version": "2.1.0",
     "utctime_updated": "2022-01-28T19:25:20.000000Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.1.0",
+    "min_phantom_version": "5.2.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_version": [
-        "Cisco C000V, Email Security Virtual Appliance Version: 9.8.0-112"
+        "Cisco Secure Email Gateway Virtual C100V Version: 14.0.0-698"
     ],
     "python_version": "3",
     "fips_compliant": true,
@@ -44,6 +44,18 @@
             "description": "Password",
             "data_type": "password",
             "order": 3
+        },
+        "ssh_username": {
+            "required": true,
+            "description": "SSH Username",
+            "data_type": "string",
+            "order": 4
+        },
+        "ssh_password": {
+            "required": true,
+            "description": "SSH Password",
+            "data_type": "password",
+            "order": 5
         }
     },
     "actions": [
@@ -1647,6 +1659,330 @@
                 }
             ],
             "versions": "EQ(*)"
+        },
+        {
+            "action": "list dictionary items",
+            "description": "List all entries of an ESA dictionary",
+            "type": "generic",
+            "identifier": "list_dictionary_items",
+            "read_only": true,
+            "parameters": {
+                "name": {
+                    "description": "Name of dictionary to list",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "order": 0
+                },
+                "cluster_mode": {
+                    "description": "Enable clustermode cluster on ESA",
+                    "data_type": "boolean",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.cluster_mode",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Mail_To"
+                    ],
+                    "column_name": "Dictionary Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "^BLevents@blackline\\.com$"
+                    ],
+                    "column_name": "Item Value",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.weight",
+                    "data_type": "string",
+                    "example_values": [
+                        " 1"
+                    ],
+                    "column_name": "Item Weight",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.summary.total_items",
+                    "data_type": "numeric",
+                    "example_values": [
+                        36
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully listed all entries of dictionary"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Dictionary Items",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "add dictionary item",
+            "description": "Add an entry to an ESA dictionary",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.",
+            "type": "generic",
+            "identifier": "add_dictionary_item",
+            "undo": "remove dictionary item",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Name of dictionary to modify",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                },
+                "value": {
+                    "description": "Value of entry to add to dictionary",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1
+                },
+                "commit_message": {
+                    "description": "Message to include with the new entry",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2
+                },
+                "cluster_mode": {
+                    "description": "Enable clustermode cluster on ESA",
+                    "data_type": "boolean",
+                    "order": 3
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.cluster_mode",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.commit_message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Mail_To"
+                    ],
+                    "column_name": "Dictionary Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added entry to dictionary"
+                    ],
+                    "column_name": "Message",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.summary.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added entry to dictionary"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added entry to dictionary"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Add Dictionary Item",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "remove dictionary item",
+            "description": "Remove an entry from an ESA dictionary",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.",
+            "type": "generic",
+            "identifier": "remove_dictionary_item",
+            "undo": "add dictionary item",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Name of dictionary to modify",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                },
+                "value": {
+                    "description": "Value of entry to remove from dictionary",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1
+                },
+                "commit_message": {
+                    "description": "Message to include with the modification",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2
+                },
+                "cluster_mode": {
+                    "description": "Enable clustermode cluster on ESA",
+                    "data_type": "boolean",
+                    "order": 3
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.cluster_mode",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.commit_message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Mail_To"
+                    ],
+                    "column_name": "Dictionary Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully removed entry from dictionary"
+                    ],
+                    "column_name": "Message",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.summary.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully removed entry from dictionary"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully removed entry from dictionary"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Remove Dictionary Item",
+                "type": "table",
+                "height": 5
+            }
         }
     ],
     "pip_dependencies": {
