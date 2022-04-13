@@ -73,47 +73,32 @@ class CiscoEsaHelper():
         
         try:
             while True:
-                self._connector.save_progress('111')
                 ctime = int(time.time())
                 # data is ready to be received on the channel
                 if (self._shell_channel.recv_ready()):
-                    self._connector.save_progress('222')
                     recv_output = UnicodeDammit(self._shell_channel.recv(8192)).unicode_markup
                     if recv_output:
-                        self._connector.save_progress('666: {}'.format(recv_output))
                         output += recv_output
-                        self._connector.save_progress('hello: {}'.format(output))
                         # need to send an enter command to get more of the list
                         if '-Press Any Key For More-' in recv_output:
-                            self._connector.save_progress('888')
                             try:
-                                self._connector.save_progress('999')
                                 self._shell_channel.send("\n")
                             except socket.error:
-                                self._connector.save_progress('101010')
                                 pass
                     else:
-                        self._connector.save_progress('777')
                         break
-                    self._connector.save_progress('4444')
 
                     # This is pretty messy but it's just the way it is I guess
                     if (sendpw and self._password):
-                        self._connector.save_progress('1111')
                         try:
-                            self._connector.save_progress('2222')
                             self._shell_channel.send("{}\n".format(self._password))
                         except socket.error:
-                            self._connector.save_progress('3333')
                             pass
                         sendpw = False
                 elif (timeout and ctime - stime >= timeout):
-                    self._connector.save_progress('333')
                     return (False, "Error: Timeout", None)
                 elif (self._shell_channel.exit_status_ready() and not self._shell_channel.recv_ready()):
-                    self._connector.save_progress('444')
                     break
-                self._connector.save_progress('555')
                 time.sleep(1)
         except Exception as e:
             self._connector.save_progress('Error attempting to retrieve command output: {}'.format(e))
