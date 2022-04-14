@@ -20,8 +20,6 @@ MODIFY_DICTIONARY_COMMIT_COMMAND_STR = "commit \"{commit_message}\";"
 
 ESA_SPECIAL_CHARACTERS = [ '.', '[', ']', '^', '?', '$', '*', '+', '(', ')', '|', '-' ]
 
-ESA_ESCAPED_FORMAT_STR = "^{escaped}$"
-
 
 class CiscoEsaHelper():
     OS_LINUX = 0
@@ -157,7 +155,7 @@ class CiscoEsaHelper():
         for character in ESA_SPECIAL_CHARACTERS:
             escaped_str = escaped_str.replace( character, '\\\\' + character )
 
-        return ESA_ESCAPED_FORMAT_STR.format(escaped=escaped_str)
+        return escaped_str
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
         cmd = ""
