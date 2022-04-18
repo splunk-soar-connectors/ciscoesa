@@ -18,9 +18,7 @@ ADD_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} new 
 REMOVE_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} delete \"{entry_value}\";"
 MODIFY_DICTIONARY_COMMIT_COMMAND_STR = "commit \"{commit_message}\";"
 
-ESA_SPECIAL_CHARACTERS = [ '.', '[', ']', '^', '?', '$', '*', '+', '(', ')', '|', '-' ]
-
-ESA_ESCAPED_FORMAT_STR = "^{escaped}$"
+ESA_SPECIAL_CHARACTERS = [ '(', ')' ]
 
 
 class CiscoEsaHelper():
@@ -151,13 +149,11 @@ class CiscoEsaHelper():
 
     def _escape_entry(self, entry_value):
         escaped_str = entry_value
-        if '\\' in escaped_str:
-            escaped_str = escaped_str.replace('\\', r'\\')
 
         for character in ESA_SPECIAL_CHARACTERS:
             escaped_str = escaped_str.replace( character, '\\\\' + character )
 
-        return ESA_ESCAPED_FORMAT_STR.format(escaped=escaped_str)
+        return escaped_str
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
         cmd = ""
