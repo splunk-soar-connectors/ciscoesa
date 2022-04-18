@@ -153,7 +153,7 @@ class CiscoEsaHelper():
         for character in ESA_SPECIAL_CHARACTERS:
             escaped_str = escaped_str.replace( character, '\\\\' + character )
 
-        return escaped_str
+        return escaped_str.replace('\"', '\\\"').replace('\\', '\\\\')
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
         cmd = ""

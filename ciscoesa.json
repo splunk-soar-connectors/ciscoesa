@@ -1762,7 +1762,7 @@
         {
             "action": "add dictionary item",
             "description": "Add an entry to an ESA dictionary",
-            "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary. For 'value' parameter, users can provide double quote(\"), backslash(\\) as escape sequences.",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.",
             "type": "generic",
             "identifier": "add_dictionary_item",
             "undo": "remove dictionary item",
@@ -1881,7 +1881,7 @@
         {
             "action": "remove dictionary item",
             "description": "Remove an entry from an ESA dictionary",
-            "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary. For 'value' parameter, users can provide double quote(\"), backslash(\\) as escape sequences.",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.",
             "type": "generic",
             "identifier": "remove_dictionary_item",
             "undo": "add dictionary item",
