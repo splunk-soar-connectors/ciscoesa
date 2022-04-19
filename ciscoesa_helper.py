@@ -18,8 +18,6 @@ ADD_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} new 
 REMOVE_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} delete \"{entry_value}\";"
 MODIFY_DICTIONARY_COMMIT_COMMAND_STR = "commit \"{commit_message}\";"
 
-ESA_SPECIAL_CHARACTERS = [ '(', ')' ]
-
 
 class CiscoEsaHelper():
     OS_LINUX = 0
@@ -147,14 +145,6 @@ class CiscoEsaHelper():
 
         return ('\n'.join(lines))
 
-    def _escape_entry(self, entry_value):
-        escaped_str = entry_value
-
-        for character in ESA_SPECIAL_CHARACTERS:
-            escaped_str = escaped_str.replace( character, '\\\\' + character )
-
-        return escaped_str.replace('\"', '\\\"').replace('\\', '\\\\')
-
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
         cmd = ""
 
@@ -172,7 +162,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = self._escape_entry(entry_value)
+        escaped_entry = entry_value.replace('\"', '\\\"').replace('\\', '\\\\')
 
         cmd += ADD_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
@@ -186,7 +176,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = self._escape_entry(entry_value)
+        escaped_entry = entry_value.replace('\"', '\\\"').replace('\\', '\\\\')
 
         cmd += REMOVE_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
