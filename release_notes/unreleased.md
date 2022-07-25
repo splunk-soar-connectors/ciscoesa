@@ -1,1 +1,8 @@
 **Unreleased**
+* Updated the API for the following actions
++ test connectivity
++ get report
+* Added support for the following actions [PAPP-25002, PAPP-25003, PAPP-25004]
++ add dictionary item
++ remove dictionary item
++ list dictionary items
