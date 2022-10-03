@@ -140,28 +140,32 @@ class CiscoesaConnector(BaseConnector):
         :param action_result: Object of ActionResult class
         :return: status success/failure and (parsed report data or None)
         """
-
+        self.debug_print("DATAAAA:{}".format(report_data))
         # Parsing values of report data by assigning report_key value to "recipient" key and its count to "count" key
         for report_key, report_value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].items():
-            # List that will contain parsed values of report data that will be assigned to corresponding keys of report
-            parsed_result = []
             # If report value is there, then value will be parsed
-            if report_value:
+            if report_key == "resultSet":
+                self.debug_print("REPORT VALUE:{}".format(report_value)) # REPORT VALUE:mail_dlp_outgoing_policy_detail
                 try:
-                    for recipient, count in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items():
-                        parsed_result.append({
-                            consts.CISCOESA_GET_REPORT_PARAM_RECIPIENT: recipient,
-                            consts.CISCOESA_GET_REPORT_PARAM_COUNT: count
-                        })
+                    for key, values in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items():
+                        # List that will contain parsed values of report data that will be assigned to corresponding keys of report
+                        parsed_result = []
+                        for value in values:
+                            for recipient, count in value.items():
+                                parsed_result.append({
+                                    consts.CISCOESA_GET_REPORT_PARAM_RECIPIENT: recipient,
+                                    consts.CISCOESA_GET_REPORT_PARAM_COUNT: count
+                                })
+                        report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key][key] = parsed_result
+
                 except Exception as error:
-                    self.debug_print(consts.CISCOESA_GET_REPORT_PARSE_ERROR.format(error))
+                    self.debug_print(consts.CISCOESA_GET_REPORT_PARSE_ERROR.format(error=error))
                     # set the action_result status to error, the handler function will most probably return as is
                     return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_GET_REPORT_PARSE_ERROR.format(
-                        error
+                        error=error
                     )), None
-
-                report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key] = parsed_result
-
+        
+        self.debug_print("REPORT DATA: {}".format(report_data))
         return phantom.APP_SUCCESS, report_data
 
     def _validate_date_time(self, date_time_value, action_result):
@@ -340,7 +344,9 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         result_data = dict()
-        api_params = dict()
+        api_params = {
+            'device_type': 'esa'
+        }
 
         # Getting mandatory parameters
         report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
@@ -348,9 +354,13 @@ class CiscoesaConnector(BaseConnector):
         # Getting optional parameters
         start_time = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
         end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
-        search_value = param.get(consts.CISCOESA_GET_REPORT_JSON_SEARCH_VALUE)
+        filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
+        filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
         limit = int(param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT))
+        offset = int(param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET))
         starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)
+        order_by = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_BY)
+        order_dir = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR)
 
         # If both start_time and end_time is not given, then by default, API will query report for last 250 days
         if not start_time and not end_time:
@@ -408,13 +418,13 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
 
         # if starts_with parameter is not set, then IP and email must be validated
-        if not starts_with and search_value and report_title in \
+        if not starts_with and (filter_by and filter_value) and report_title in \
                 [consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
                  consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE,
                  consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE]:
             # Search value should be validated to be either an IP address or an email, if report title is
             # "Incoming Mail: IP Addresses", "Outgoing Senders: IP Addresses" or "Internal Users"
-            if not _is_ip(search_value) and not phantom.is_email(search_value):
+            if not _is_ip(filter_value) and not phantom.is_email(filter_value):
                 self.debug_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
 
@@ -428,29 +438,32 @@ class CiscoesaConnector(BaseConnector):
             self.debug_print(error)
             return action_result.set_status(phantom.APP_ERROR, error)
 
-        api_params[consts.CISCOESA_GET_REPORT_PARAM_DURATION] = consts.CISCOESA_DURATION_FORMAT.format(
-            start_time=start_time, end_time=end_time
-        )
+        api_params[consts.CISCOESA_GET_REPORT_PARAM_START_DATE] = start_time
+        api_params[consts.CISCOESA_GET_REPORT_PARAM_END_DATE] = end_time
 
         # Obtain report name
         report_name = REPORT_TITLE_TO_NAME_AND_FILTER_MAPPING[report_title]
 
-        # You cannot use the entity and max=n attributes in the same request.
-        # If entity is given to filter a report, then limit will not be provided while making REST call
-        if search_value:
-            api_params[consts.CISCOESA_GET_REPORT_PARAM_ENTITY] = search_value
-            api_params.pop(consts.CISCOESA_GET_REPORT_PARAM_MAX, None)
-            # If entity is given to filter the result and "starts_with" is set, then only "starts_with" parameter will
-            # be set in api_params
-            if starts_with:
-                api_params[consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH] = starts_with
+        if filter_by:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_BY_KEY] = filter_by
+        if filter_value:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE_KEY] = filter_value
 
-        # If limit is given and entity is not provided to filter the report data, then "entity" and "starts_with"
-        # keys will be removed from api_params object
-        elif limit or limit == 0:
-            api_params[consts.CISCOESA_GET_REPORT_PARAM_MAX] = int(limit)
-            api_params.pop(consts.CISCOESA_GET_REPORT_PARAM_ENTITY, None)
-            api_params.pop(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH, None)
+        if filter_by and filter_value:
+            if starts_with:
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'begins_with'
+            else:
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'is'
+
+        if limit:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_LIMIT] = limit
+        if offset or offset == 0:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_OFFSET] = offset
+
+        if order_by:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by
+        if order_dir:
+            api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR_KEY] = order_dir
 
         report_endpoint = consts.CISCOESA_GET_REPORT_ENDPOINT.format(report_name=report_name)
         self.send_progress(consts.CISCOESA_GET_REPORT_INTERMEDIATE_MSG.format(report_title=report_title))
@@ -465,18 +478,21 @@ class CiscoesaConnector(BaseConnector):
 
         # If report is queried by providing an entity to filter results, then its response data needs to be
         # formatted in generic format
-        if search_value and report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA, {}):
+        self.debug_print("FILTER VALUE: {}. FILTER BY: {}".format(filter_value, filter_by))
+        if (filter_value and filter_by) and report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA, {}):
             parsed_dict = dict()
             for matching_key in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].keys():
-                for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items():
-                    if key not in parsed_dict:
-                        parsed_dict[key] = dict()
-                    parsed_dict[key][matching_key] = value
+                if matching_key == "resultSet":
+                    for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items():
+                        if key not in parsed_dict:
+                            parsed_dict[key] = dict()
+                        parsed_dict[key][matching_key] = value
 
             report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA] = parsed_dict
 
         # Parsing report data
         if report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA):
+            self.debug_print("INSIDE IF")
             parse_data_status, report_data = self._parse_report_data(report_data, action_result)
 
             if phantom.is_fail(parse_data_status):
@@ -484,7 +500,7 @@ class CiscoesaConnector(BaseConnector):
 
         result_data[report_name] = report_data
 
-        action_result.add_data(result_data)
+        action_result.add_data(report_data)
 
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REPORTS_QUERIED_SUCCESS_MSG)
 

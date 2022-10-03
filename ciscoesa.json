@@ -7,7 +7,7 @@
     "license": "Copyright (c) 2017-2022 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "2.1.0",
+    "app_version": "2.0.6",
     "utctime_updated": "2022-01-28T19:25:20.000000Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
@@ -189,31 +189,56 @@
                         "ciscoesa report title"
                     ]
                 },
-                "search_value": {
-                    "description": "Entity value to filter the results",
+                "filter_by": {
+                    "description": "Entity to filter the results",
                     "data_type": "string",
                     "order": 1
+                },
+                "filter_value": {
+                    "description": "Entity value to filter the results",
+                    "data_type": "string",
+                    "order": 2
+                },
+                "starts_with": {
+                    "description": "Retrieve items starting with specified filter value",
+                    "data_type": "boolean",
+                    "order": 3
                 },
                 "start_time": {
                     "description": "Start time (YYYY-MM-DDTHH:00)",
                     "data_type": "string",
-                    "order": 2
+                    "order": 4
                 },
                 "end_time": {
                     "description": "End time (YYYY-MM-DDTHH:00)",
                     "data_type": "string",
-                    "order": 3
+                    "order": 5
                 },
                 "limit": {
                     "default": 10,
                     "description": "Maximum number of items to retrieve",
                     "data_type": "numeric",
-                    "order": 4
+                    "order": 6
                 },
-                "starts_with": {
-                    "description": "Retrieve items starting with specified entity value",
-                    "data_type": "boolean",
-                    "order": 5
+                "offset": {
+                    "default": 0,
+                    "description": "Maximum number of items to retrieve",
+                    "data_type": "numeric",
+                    "order": 7
+                },
+                "order_by": {
+                    "description": "The attribute by which to order the data in the response",
+                    "data_type": "string",
+                    "order": 8
+                },
+                "order_dir": {
+                    "description": "Sort direction of results",
+                    "data_type": "string",
+                    "order": 9,
+                    "value_list": [
+                        "asc",
+                        "desc"
+                    ]
                 }
             },
             "render": {
