@@ -14,7 +14,6 @@
 # and limitations under the License.
 #
 #
-# Standard library imports
 import base64
 import datetime
 import json
@@ -22,13 +21,11 @@ import re
 import socket
 import urllib
 
-# Phantom imports
 import phantom.app as phantom
 import requests
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
-# Local imports
 import ciscoesa_consts as consts
 import ciscoesa_helper
 
