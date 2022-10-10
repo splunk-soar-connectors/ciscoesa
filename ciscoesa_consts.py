@@ -15,9 +15,9 @@
 
 CISCOESA_CONFIG_URL = "url"
 CISCOESA_CONFIG_USERNAME = "username"
-CISCOESA_CONFIG_PASSWORD = "password"
+CISCOESA_CONFIG_PASSWORD = "password"  # pragma: allowlist secret
 CISCOESA_CONFIG_SSH_USERNAME = "ssh_username"
-CISCOESA_CONFIG_SSH_PASSWORD = "ssh_password"
+CISCOESA_CONFIG_SSH_PASSWORD = "ssh_password"  # pragma: allowlist secret
 CISCOESA_CONFIG_VERIFY_SSL = "verify_server_cert"
 CISCOESA_JSON_NAME = "name"
 CISCOESA_JSON_CLUSTER_MODE = "cluster_mode"
@@ -121,3 +121,22 @@ CISCOESA_ADD_DICTIONARY_ERROR_MSG = "Error occurred while attempting to add dict
 CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG = "Successfully removed entry from dictionary"
 CISCOESA_REMOVE_DICTIONARY_ERROR_MSG = "Error occurred while attempting to remove dictionary entry from \"{dictionary_name}\": {error}"
 CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR = "Command contained invalid escape character:"
+CISCOESA_REPORT_TITLE = [
+    "Internal Users",
+    "Incoming Mail: Domains",
+    "Incoming Mail: IP Addresses",
+    "Incoming Mail: Network Owners",
+    "Outgoing Senders: Domains",
+    "Outgoing Senders: IP Addresses",
+    "Outgoing Destinations",
+    "Outgoing Content Filters",
+    "Virus Types",
+    "Inbound SMTP Authentication",
+    "DLP Outgoing Policy"
+]
+CISCOESA_REPORT_TITLE_ERROR = "Please provide valid value for 'report title' parameter"
+CISCOESA_ORDER_DIR = [
+    "asc",
+    "desc"
+]
+CISCOESA_ORDER_DIR_ERROR = "Please provide valid value for 'order dir' parameter"

@@ -162,7 +162,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = entry_value.replace('\"', '\\\"').replace('\\', '\\\\')
+        escaped_entry = entry_value.replace('\\', '\\\\').replace('\"', '\\\"')
 
         cmd += ADD_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
@@ -176,7 +176,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = entry_value.replace('\"', '\\\"').replace('\\', '\\\\')
+        escaped_entry = entry_value.replace('\\', '\\\\').replace('\"', '\\\"')
 
         cmd += REMOVE_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)

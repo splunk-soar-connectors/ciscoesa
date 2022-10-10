@@ -132,42 +132,6 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
-    def _parse_report_data(self, report_data, action_result):
-        """ Function to parse report data by converting its value from object to list format to make output of all
-        reports consistent.
-
-        :param report_data: report data
-        :param action_result: Object of ActionResult class
-        :return: status success/failure and (parsed report data or None)
-        """
-        self.debug_print("DATAAAA:{}".format(report_data))
-        # Parsing values of report data by assigning report_key value to "recipient" key and its count to "count" key
-        for report_key, report_value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].items():
-            # If report value is there, then value will be parsed
-            if report_key == "resultSet":
-                self.debug_print("REPORT VALUE:{}".format(report_value)) # REPORT VALUE:mail_dlp_outgoing_policy_detail
-                try:
-                    for key, values in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key].items():
-                        # List that will contain parsed values of report data that will be assigned to corresponding keys of report
-                        parsed_result = []
-                        for value in values:
-                            for recipient, count in value.items():
-                                parsed_result.append({
-                                    consts.CISCOESA_GET_REPORT_PARAM_RECIPIENT: recipient,
-                                    consts.CISCOESA_GET_REPORT_PARAM_COUNT: count
-                                })
-                        report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][report_key][key] = parsed_result
-
-                except Exception as error:
-                    self.debug_print(consts.CISCOESA_GET_REPORT_PARSE_ERROR.format(error=error))
-                    # set the action_result status to error, the handler function will most probably return as is
-                    return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_GET_REPORT_PARSE_ERROR.format(
-                        error=error
-                    )), None
-        
-        self.debug_print("REPORT DATA: {}".format(report_data))
-        return phantom.APP_SUCCESS, report_data
-
     def _validate_date_time(self, date_time_value, action_result):
         """ Function used to validate date and time format. As per the app configuration, date and time must be provided
         in YYYY-MM-DDTHH:00 format.
@@ -343,13 +307,14 @@ class CiscoesaConnector(BaseConnector):
         """
 
         action_result = self.add_action_result(ActionResult(dict(param)))
-        result_data = dict()
         api_params = {
             'device_type': 'esa'
         }
 
         # Getting mandatory parameters
         report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
+        if report_title not in consts.CISCOESA_REPORT_TITLE:
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_REPORT_TITLE_ERROR)
 
         # Getting optional parameters
         start_time = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
@@ -463,6 +428,8 @@ class CiscoesaConnector(BaseConnector):
         if order_by:
             api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by
         if order_dir:
+            if order_dir not in consts.CISCOESA_ORDER_DIR:
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ORDER_DIR_ERROR)
             api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR_KEY] = order_dir
 
         report_endpoint = consts.CISCOESA_GET_REPORT_ENDPOINT.format(report_name=report_name)
@@ -475,31 +442,6 @@ class CiscoesaConnector(BaseConnector):
         if phantom.is_fail(response_status):
             self.debug_print(consts.CISCOESA_GET_REPORT_ERROR.format(report_title=report_title))
             return action_result.get_status()
-
-        # If report is queried by providing an entity to filter results, then its response data needs to be
-        # formatted in generic format
-        self.debug_print("FILTER VALUE: {}. FILTER BY: {}".format(filter_value, filter_by))
-        if (filter_value and filter_by) and report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA, {}):
-            parsed_dict = dict()
-            for matching_key in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA].keys():
-                if matching_key == "resultSet":
-                    for key, value in report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA][matching_key].items():
-                        if key not in parsed_dict:
-                            parsed_dict[key] = dict()
-                        parsed_dict[key][matching_key] = value
-
-            report_data[consts.CISCOESA_GET_REPORT_PARAM_DATA] = parsed_dict
-
-        # Parsing report data
-        if report_data.get(consts.CISCOESA_GET_REPORT_PARAM_DATA):
-            self.debug_print("INSIDE IF")
-            parse_data_status, report_data = self._parse_report_data(report_data, action_result)
-
-            if phantom.is_fail(parse_data_status):
-                return action_result.get_status()
-
-        result_data[report_name] = report_data
-
         action_result.add_data(report_data)
 
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REPORTS_QUERIED_SUCCESS_MSG)

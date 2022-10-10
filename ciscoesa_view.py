@@ -12,32 +12,6 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
-
-def _get_key_data(report_data):
-    """ Function to get key data to fetch data from report data
-
-    :param report_data: Object containing report data
-    :return parsed report
-    """
-
-    report = dict()
-    # Iterating over data for each report
-    for key, data in report_data.items():
-        report[key] = dict()
-        # Iterating over keys in report data, to get only non-empty values
-        for report_key, value in data.get("data", {}).items():
-            if not value:
-                continue
-            elif isinstance(value, list):
-                for recipient_data in data["data"][report_key]:
-                    if recipient_data["recipient"] not in report[key]:
-                        report[key][recipient_data["recipient"]] = dict()
-
-                    report[key][recipient_data["recipient"]][report_key] = recipient_data["count"]
-
-    return report
-
-
 def get_ctx_result(result):
     """ Function to collect information to be rendered for "get report" action
 
@@ -50,7 +24,6 @@ def get_ctx_result(result):
     param = result.get_param()
     summary = result.get_summary()
     data = result.get_data()
-
     ctx_result["param"] = param
 
     if summary:
@@ -60,7 +33,7 @@ def get_ctx_result(result):
         ctx_result["data"] = dict()
         return ctx_result
 
-    ctx_result["data"] = _get_key_data(data[0])
+    ctx_result['data'] = data
 
     return ctx_result
 
@@ -84,4 +57,11 @@ def display_reports(provides, all_app_runs, context):
 
             results.append(ctx_result)
 
-    return "ciscoesa_display_reports.html"
+    if provides == 'list dictionary items':
+        return "ciscoesa_list_dictionary_items.html"
+
+    if provides == 'add dictionary item':
+        return "ciscoesa_add_dictionary_item.html"
+
+    if provides == 'remove dictionary item':
+        return "ciscoesa_remove_dictionary_item.html"
