@@ -129,6 +129,34 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
+    def _validate_integers(self, action_result, parameter, key, allow_zero=False):
+        """ This method is to check if the provided input parameter value
+        is a non-zero positive integer and returns the integer value of the parameter itself.
+        :param action_result: Action result or BaseConnector object
+        :param parameter: input parameter
+        :return: integer value of the parameter or None in case of failure
+        """
+
+        if parameter is not None:
+            try:
+                if not float(parameter).is_integer():
+                    action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
+                    return None
+                parameter = int(parameter)
+
+            except Exception:
+                action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
+                return None
+
+            if parameter < 0:
+                action_result.set_status(phantom.APP_ERROR, "Please provide a valid non-negative integer value in the {} parameter".format(key))
+                return None
+            if not allow_zero and parameter == 0:
+                action_result.set_status(phantom.APP_ERROR, "Please provide non-zero positive integer in {}".format(key))
+                return None
+
+        return parameter
+
     def _validate_date_time(self, date_time_value, action_result):
         """ Function used to validate date and time format. As per the app configuration, date and time must be provided
         in YYYY-MM-DDTHH:00 format.
@@ -318,11 +346,18 @@ class CiscoesaConnector(BaseConnector):
         end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
         filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
         filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
-        limit = int(param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT))
-        offset = int(param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET))
+        limit = self._validate_integers(action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT)
+        if limit is None:
+            return action_result.get_status()
+        offset = self._validate_integers(action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET), consts.CISCOESA_GET_REPORT_JSON_OFFSET, allow_zero=True)
+        if offset is None:
+            return action_result.get_status()
         starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)
         order_by = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_BY)
         order_dir = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR)
+
+        api_params[consts.CISCOESA_GET_REPORT_JSON_LIMIT] = limit
+        api_params[consts.CISCOESA_GET_REPORT_JSON_OFFSET] = offset
 
         # If both start_time and end_time is not given, then by default, API will query report for last 250 days
         if not start_time and not end_time:
@@ -362,15 +397,11 @@ class CiscoesaConnector(BaseConnector):
 
         # Validating start_time
         validate_status, parsed_start_time = self._validate_date_time(start_time, action_result)
-
-        # Something went wrong while validating start_time
         if phantom.is_fail(validate_status):
             return action_result.get_status()
 
         # Validating end_time
         validate_status, parsed_end_time = self._validate_date_time(end_time, action_result)
-
-        # Something went wrong while validating end_time
         if phantom.is_fail(validate_status):
             return action_result.get_status()
 
@@ -416,11 +447,6 @@ class CiscoesaConnector(BaseConnector):
                 api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'begins_with'
             else:
                 api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'is'
-
-        if limit:
-            api_params[consts.CISCOESA_GET_REPORT_JSON_LIMIT] = limit
-        if offset or offset == 0:
-            api_params[consts.CISCOESA_GET_REPORT_JSON_OFFSET] = offset
 
         if order_by:
             api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by

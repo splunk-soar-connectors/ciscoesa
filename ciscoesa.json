@@ -12,7 +12,7 @@
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.3.4",
+    "min_phantom_version": "5.2.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_version": [
@@ -293,7 +293,7 @@
                 },
                 {
                     "data_path": "action_result.parameter.offset",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         0
                     ]
@@ -327,1362 +327,49 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_disallow.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_disallow.*.recipient",
+                    "data_path": "action_result.data.*.mail_incoming_domain_detail.uri",
                     "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.auth_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fallback_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fallback_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fallback_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_fallback_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.cert_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.noauth.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.noauth.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.total.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.data.total.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_authentication_incoming_domain.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_content_filter_outgoing.data.recipients_matched.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_content_filter_outgoing.data.recipients_matched.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_content_filter_outgoing.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_last_tls_status.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_last_tls_status.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_plain.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_plain.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_opt_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_opt_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_opt_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_opt_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_total.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.conn_tls_total.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.delivered.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.delivered.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.encrypted_tls.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.encrypted_tls.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.hard_bounces.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.hard_bounces.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_recipients_processed.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_recipients_processed.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.data.total_threat_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_destination_domain_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_delivered.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_delivered.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_dropped.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_dropped.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_encrypted.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_action_encrypted.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_critical.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_critical.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_high.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_high.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_low.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_low.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_medium.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.dlp_incidents_medium.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.total_dlp_incidents.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.data.total_dlp_incidents.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_dlp_outgoing_policy_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_dmarc.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_dmarc.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_invalid_recipient.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_invalid_recipient.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_reputation.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_reputation.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.bulk_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.bulk_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_plain.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_plain.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_opt_fail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_opt_fail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_opt_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_opt_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_success.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_success.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_total.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.conn_tls_total.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_amp.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_amp.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.encrypted_tls.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.encrypted_tls.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.marketing_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.marketing_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.social_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.social_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_accepted_connections.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_accepted_connections.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_graymail_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_graymail_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
+                    "example_value": "/api/v1.0/stats/mail_incoming_domain_detail?duration=2021-07-30T12%3A00%2B00%3A00%2F2022-04-05T12%3A00%2B00%3A00&max=10"
                 },
                 {
                     "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_recipients.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_value": 6702
                 },
                 {
                     "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_recipients.*.recipient",
                     "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
+                    "example_value": "unknown domain"
                 },
                 {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_rejected_connections.*.count",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_reputation.*.count",
+                    "data_type": "numeric",
+                    "example_value": 6702
                 },
                 {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_rejected_connections.*.recipient",
+                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.blocked_reputation.*.recipient",
                     "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
+                    "example_value": "unknown domain"
                 },
                 {
                     "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_value": 6702
                 },
                 {
                     "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_threat_recipients.*.recipient",
                     "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
+                    "example_value": "unknown domain"
                 },
                 {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_throttled_recipients.*.count",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_rejected_connections.*.count",
+                    "data_type": "numeric",
+                    "example_value": 2234
                 },
                 {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_throttled_recipients.*.recipient",
+                    "data_path": "action_result.data.*.mail_incoming_domain_detail.data.total_rejected_connections.*.recipient",
                     "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_domain_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_dmarc.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_dmarc.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_invalid_recipient.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_invalid_recipient.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_reputation.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.blocked_reputation.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.bulk_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.bulk_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_amp.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_amp.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.dns_verified.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.dns_verified.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.last_sender_group_name.*.count",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.last_sender_group_name.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.marketing_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.marketing_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.sbrs_score.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.sbrs_score.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.social_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.social_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_graymail_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_graymail_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.data.total_threat_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_ip_hostname_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_dmarc.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_dmarc.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_invalid_recipient.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_invalid_recipient.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_reputation.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.blocked_reputation.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.bulk_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.bulk_mail.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_amp.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_amp.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_spam.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.detected_virus.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.marketing_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.marketing_mail.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.social_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.social_mail.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_accepted_connections.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_accepted_connections.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_graymail_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_graymail_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_rejected_connections.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_rejected_connections.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_threat_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_throttled_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.data.total_throttled_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_incoming_network_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_dlp_incidents.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_dlp_incidents.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_recipients_processed.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_recipients_processed.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.data.total_threat_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "domain"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_domain_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_dlp_incidents.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_dlp_incidents.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_recipients_processed.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_recipients_processed.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_threat_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.data.total_threat_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_sender_ip_hostname_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_bulk_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_bulk_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_amp.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_amp.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_ims_spam_increment_over_case.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_ims_spam_increment_over_case.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_graymail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_graymail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_marketing_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_marketing_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_social_mail.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_social_mail.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.incoming_total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_ims_spam_increment_over_case.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_ims_spam_increment_over_case.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_spam.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_spam.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_virus.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_detected_virus.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_threat_content_filter.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_threat_content_filter.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_total_clean_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.data.outgoing_total_clean_recipients.*.recipient",
-                    "data_type": "string",
-                    "contains": [
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.mail_users_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.incoming_total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.incoming_total_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.outgoing_total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.outgoing_total_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.total_recipients.*.count",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.data.total_recipients.*.recipient",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.mail_virus_type_detail.uri",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "example_value": "unknown domain"
                 },
                 {
                     "data_path": "action_result.message",
@@ -1690,6 +377,2520 @@
                     "example_values": [
                         "Report queried successfully"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.mail_users_detail.uri",
+                    "data_type": "string",
+                    "example_value": "/api/v1.0/stats/mail_users_detail?duration=2021-07-31T10%3A00%2B00%3A00%2F2022-04-06T10%3A00%2B00%3A00&max=10"
+                },
+                {
+                    "data_path": "action_result.data.*.data.type",
+                    "data_type": "string",
+                    "example_value": "mail_sender_domain_detail"
+                },
+                {
+                    "data_path": "action_result.data.*.meta.totalCount",
+                    "data_type": "numeric",
+                    "example_value": -1
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.count",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.count",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.recipient",
+                    "data_type": "string",
+                    "example_value": "admin@e2016.local"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.count.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.count.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.count.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.recipient",
+                    "data_type": "string",
+                    "example_value": "10.1.16.99"
+                },
+                {
+                    "data_path": "action_result.data.*.data.bulk_mail.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.bulk_mail.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.sbrs_score.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.sbrs_score.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_sdr.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_sdr.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.social_mail.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.social_mail.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_amp.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_amp.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.dns_verified.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.dns_verified.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_dmarc.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_dmarc.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_spam.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_spam.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_virus.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.detected_virus.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.marketing_mail.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.marketing_mail.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_recipients.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_recipients.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.last_sender_group.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.last_sender_group.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_reputation.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_reputation.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.threat_content_filter.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.threat_content_filter.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.last_sender_group_name.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.last_sender_group_name.resultSet.*.10.1.16.99.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_clean_recipients.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_clean_recipients.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_threat_recipients.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_threat_recipients.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_invalid_recipient.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.blocked_invalid_recipient.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_graymail_recipients.resultSet.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.total_graymail_recipients.resultSet.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_graymail.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_bulk_mail.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_social_mail.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_amp.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_amp.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_spam.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_spam.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_virus.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_marketing_mail.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_virus.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 13
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_recipients.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 58
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_recipients.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_threat_content_filter.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_threat_content_filter.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 13
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_total_clean_recipients.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 58
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_total_clean_recipients.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_content_filter.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_content_filter.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.incoming_detected_ims_spam_increment_over_case.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.admin@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.administrator@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.john@example.com",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.outgoing_detected_ims_spam_increment_over_case.*.user2@e2016.local",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.sbrs_score.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.dns_verified.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 8
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 134
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 24
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 24
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.1.16.99.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.80.50.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.128.184.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.133.30.value",
+                    "data_type": "string",
+                    "example_value": "ALLOWED_LIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.56.252.185.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.10.160.151.224.value",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 8
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 134
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 42
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 24
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.1.16.99.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.1.16.99.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.80.50.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.80.50.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.128.184.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.128.184.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.133.30.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.133.30.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.252.185.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.56.252.185.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.160.151.224.key",
+                    "data_type": "string",
+                    "example_value": "unknown domain"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.10.160.151.224.value",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_plain.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 156
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_tls_fail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.encrypted_tls.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_tls_total.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_tls_success.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 211
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_tls_opt_fail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 66
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.conn_tls_opt_success.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.unknown domain",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 145
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 66
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_accepted_connections.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 190
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_rejected_connections.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 22
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_throttled_recipients.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.bulk_mail.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_sdr.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.social_mail.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_amp.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_dmarc.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_spam.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.detected_virus.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.marketing_mail.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_recipients.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 211
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_reputation.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 66
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.threat_content_filter.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.last_sender_group_name.*.unknown owner",
+                    "data_type": "string",
+                    "example_value": "UNKNOWNLIST"
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_clean_recipients.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 145
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_threat_recipients.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 66
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.blocked_invalid_recipient.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_graymail_recipients.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_accepted_connections.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 190
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_rejected_connections.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 22
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total_throttled_recipients.*.unknown owner",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.total.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 156
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.noauth.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 156
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.auth_fail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.cert_fail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.auth_success.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.cert_success.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.auth_disallow.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.cert_fallback_fail.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.resultSet.cert_fallback_success.*.unknown domain",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",

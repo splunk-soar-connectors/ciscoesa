@@ -47,8 +47,8 @@ CISCOESA_REST_RESP_BAD_GATEWAY_MSG = "Bad gateway"
 CISCOESA_ERR_API_UNSUPPORTED_METHOD = "Unsupported method {method}"
 CISCOESA_EXCEPTION_OCCURRED = "Exception occurred"
 CISCOESA_ERR_SERVER_CONNECTION = "Connection failed"
-CISCOESA_ERR_JSON_PARSE = "Unable to parse the response into a dictionary.\nResponse text - {raw_text}"
-CISCOESA_ERR_FROM_SERVER = "API failed\nStatus code: {status}\nDetail: {detail}"
+CISCOESA_ERR_JSON_PARSE = "Unable to parse the response into a dictionary. Response text - {raw_text}"
+CISCOESA_ERR_FROM_SERVER = "API failed. Status code: {status}. Detail: {detail}"
 CISCOESA_REST_RESP_OTHER_ERROR_MSG = "Error returned"
 CISCOESA_CONNECTION_TEST_MSG = "Querying endpoint to verify the credentials provided"
 CISCOESA_TEST_CONNECTIVITY_FAIL = "Test Connectivity Failed"
@@ -121,6 +121,7 @@ CISCOESA_ADD_DICTIONARY_ERROR_MSG = "Error occurred while attempting to add dict
 CISCOESA_REMOVE_DICTIONARY_SUCCESS_MSG = "Successfully removed entry from dictionary"
 CISCOESA_REMOVE_DICTIONARY_ERROR_MSG = "Error occurred while attempting to remove dictionary entry from \"{dictionary_name}\": {error}"
 CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR = "Command contained invalid escape character:"
+CISCOESA_VALIDATE_INTEGER_MESSAGE = "Please provide a valid integer value in the {key} parameter"
 CISCOESA_REPORT_TITLE = [
     "Internal Users",
     "Incoming Mail: Domains",
