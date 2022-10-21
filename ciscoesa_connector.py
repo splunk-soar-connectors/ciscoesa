@@ -346,10 +346,12 @@ class CiscoesaConnector(BaseConnector):
         end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
         filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
         filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
-        limit = self._validate_integers(action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT)
+        limit = self._validate_integers(action_result, param.get(
+            consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT)
         if limit is None:
             return action_result.get_status()
-        offset = self._validate_integers(action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET), consts.CISCOESA_GET_REPORT_JSON_OFFSET, allow_zero=True)
+        offset = self._validate_integers(action_result, param.get(
+            consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET), consts.CISCOESA_GET_REPORT_JSON_OFFSET, allow_zero=True)
         if offset is None:
             return action_result.get_status()
         starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)

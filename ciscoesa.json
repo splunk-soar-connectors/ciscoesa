@@ -12,7 +12,7 @@
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.2.0",
+    "min_phantom_version": "5.3.4",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_version": [
