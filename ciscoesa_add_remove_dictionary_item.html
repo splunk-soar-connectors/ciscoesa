@@ -92,54 +92,38 @@ and limitations under the License.
 </style>
 
 <div class="ciscoesa-report" style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
-
     {% for result in results %}  <!--loop for each result -->
     <br>
-        <!------------------- For each Result ---------------------->
-        {% if not result.data %}
-            <h3 class="wf-h4-style">Dictionary Item Info</h3>
-            <table class="wf-table-horizontal" width="100%">
-                <thead>
-                    <tr>
-                        <th>Dictionary Name</th>
-                        <th>Dictionary Item</th>
-                    </tr>
-                </thead>
-                <tbody style="vertical-align: top">
-                    <td>
-                        <a href="javascript:;" onclick="context_menu(this, [{'contains': [ 'ciscoesa dictionary name' ], 'value': '{{ result.param.name }}' }], 0, {{ container.id }}, null, false);">
-                            {{ result.param.name }}
-                            &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a>
-                      </td>
-                    <td>
-                        <a href="javascript:;" onclick="context_menu(this, [{'contains': [ 'ciscoesa item value' ], 'value': '{{ result.param.value }}' }], 0, {{ container.id }}, null, false);">
-                            {{ result.param.value }}
-                            &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a>
-                    </td>
-                </tbody>
-            </table>
-        {% else %}
-            <h3 class="wf-h4-style">Dictionary Item Info</h3>
-            <table class="wf-table-horizontal" width="100%">
-                <thead>
-                    <tr>
-                        <th>Dictionary name</th>
-                        <th>Message</th>
-                    </tr>
-                </thead>
-                <tbody style="vertical-align: top">
-                    <td>
-                        <a href="javascript:;" onclick="context_menu(this, [{'contains': [ 'ciscoesa dictionary name' ], 'value': '{{ result.param.name }}' }], 0, {{ container.id }}, null, false);">
-                            {{ result.param.name }}
-                            &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a>
-                      </td>
+        <h3 class="wf-h4-style">Dictionary Item Info</h3>
+        <table class="wf-table-horizontal" width="100%">
+            <thead>
+                <tr>
+                    <th>Dictionary Name</th>
+                    <th>Dictionary Item</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align: top">
+                <td>
+                    <a href="javascript:;" onclick="context_menu(this, [{'contains': [ 'ciscoesa dictionary name' ], 'value': '{{ result.param.name }}' }], 0, {{ container.id }}, null, false);">
+                        {{ result.param.name }}
+                        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        </a>
+                </td>
+                <td>
+                    <a href="javascript:;" onclick="context_menu(this, [{'contains': [ 'ciscoesa item value' ], 'value': '{{ result.param.value }}' }], 0, {{ container.id }}, null, false);">
+                        {{ result.param.value }}
+                        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        </a>
+                </td>
+                <!-- <td>{{ result.data.0.message }}</td> -->
+                {% if result.data.0.message %}
                     <td>{{ result.data.0.message }}</td>
-                </tbody>
-            </table>
-    {% endif %}
+                {% else %}
+                    <td>{{ result.message }}</td>
+                {% endif %}
+            </tbody>
+        </table>
   {% endfor %}  <!--loop for each result end -->
 
 </div> <!-- Main Div -->

@@ -24,7 +24,11 @@ def get_ctx_result(result):
     param = result.get_param()
     summary = result.get_summary()
     data = result.get_data()
+    message = result.get_message()
     ctx_result["param"] = param
+
+    if message:
+        ctx_result["message"] = message
 
     if summary:
         ctx_result["summary"] = summary

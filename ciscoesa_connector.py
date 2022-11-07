@@ -577,9 +577,9 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data({
                 'message': output
             })
-        action_result.set_summary({'status': consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE})
-
-        return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE)
+            return action_result.set_status(phantom.APP_ERROR, output)
+        else:
+            return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE)
 
     def _handle_remove_dictionary_item(self, param):
         """ Function to remove an entry from an ESA dictionary.
