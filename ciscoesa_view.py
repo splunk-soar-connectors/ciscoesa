@@ -60,8 +60,5 @@ def display_reports(provides, all_app_runs, context):
     if provides == 'list dictionary items':
         return "ciscoesa_list_dictionary_items.html"
 
-    if provides == 'add dictionary item':
-        return "ciscoesa_add_dictionary_item.html"
-
-    if provides == 'remove dictionary item':
-        return "ciscoesa_remove_dictionary_item.html"
+    if provides in ['add dictionary item', 'remove dictionary item']:
+        return "ciscoesa_add_remove_dictionary_item.html"

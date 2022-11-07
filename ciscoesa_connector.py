@@ -198,18 +198,18 @@ class CiscoesaConnector(BaseConnector):
 
         # If given datetime not in expected format
         if len(date_time) <= 1:
-            self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         if len(date_time[1].split(":")) != 2:
-            self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         date = date_time[0].split("-")
         hour = date_time[1].split(":")[0]
 
         if len(date) != 3:
-            self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         try:
@@ -217,7 +217,7 @@ class CiscoesaConnector(BaseConnector):
                 year=int(date[0]), month=int(date[1]), day=int(date[2]), hour=int(hour)
             )
         except Exception:
-            self.debug_print(consts.CISCOESA_DATE_TIME_VALIDATION_ERROR)
+            self.error_print(consts.CISCOESA_DATE_TIME_VALIDATION_ERROR)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_VALIDATION_ERROR), None
 
         return phantom.APP_SUCCESS, parsed_date_time
@@ -240,7 +240,7 @@ class CiscoesaConnector(BaseConnector):
             request_func = getattr(requests, method)
 
         except AttributeError:
-            self.debug_print(consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD.format(method=method))
+            self.error_print(consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD.format(method=method))
             return action_result.set_status(
                 phantom.APP_ERROR, consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD
             ), response_data
@@ -261,7 +261,7 @@ class CiscoesaConnector(BaseConnector):
             response = request_func("{base_url}{endpoint}".format(base_url=self._url, endpoint=endpoint),
                                     params=params, headers=headers, timeout=timeout, verify=self._verify_server_cert)
         except Exception as e:
-            self.debug_print(consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e)
+            self.error_print(consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e), response_data
 
         # Try parsing the json
@@ -275,7 +275,7 @@ class CiscoesaConnector(BaseConnector):
         except Exception as e:
             # r.text is guaranteed to be NON None, it will be empty, but not None
             msg_string = consts.CISCOESA_ERROR_JSON_PARSE.format(raw_text=response.text)
-            self.debug_print(msg_string, e)
+            self.error_print(msg_string, e)
             return action_result.set_status(phantom.APP_ERROR, msg_string, e), response_data
 
         if response.status_code in ERROR_RESPONSE_DICT:
@@ -285,7 +285,7 @@ class CiscoesaConnector(BaseConnector):
             if isinstance(response_data, dict):
                 message = response_data.get("error", {}).get("message", message)
 
-            self.debug_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
+            self.error_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER,
                                             status=response.status_code, detail=message), response_data
 
@@ -293,7 +293,7 @@ class CiscoesaConnector(BaseConnector):
         if response.status_code == consts.CISCOESA_REST_RESP_SUCCESS:
             # If response obtained is not in object format
             if not isinstance(response_data, dict):
-                self.debug_print(consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data))
+                self.error_print(consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data))
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_UNEXPECTED_RESPONSE.format(
                     report_name=response_data
                 )), response_data
@@ -306,7 +306,7 @@ class CiscoesaConnector(BaseConnector):
         if isinstance(response_data, dict):
             message = response_data.get("error", {}).get("message", message)
 
-        self.debug_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
+        self.error_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
 
         return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER,
                                         status=response.status_code,
@@ -400,7 +400,7 @@ class CiscoesaConnector(BaseConnector):
                         days=consts.CISCOESA_DEFAULT_SPAN_DAYS) >= datetime.datetime.now():
                     end_time = datetime.datetime.now()
             except Exception:
-                self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+                self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
             # Converting date in string format
@@ -414,7 +414,7 @@ class CiscoesaConnector(BaseConnector):
                 temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
                 start_time = ( temp_time1 - temp_time2 ).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
             except Exception:
-                self.debug_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+                self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
         # Validating start_time
@@ -429,7 +429,7 @@ class CiscoesaConnector(BaseConnector):
 
         # Comparing start time and end time
         if parsed_start_time >= parsed_end_time:
-            self.debug_print(consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
+            self.error_print(consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
 
         # if starts_with parameter is not set, then IP and email must be validated
@@ -440,7 +440,7 @@ class CiscoesaConnector(BaseConnector):
             # Search value should be validated to be either an IP address or an email, if report title is
             # "Incoming Mail: IP Addresses", "Outgoing Senders: IP Addresses" or "Internal Users"
             if not _is_ip(filter_value) and not phantom.is_email(filter_value):
-                self.debug_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
+                self.error_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
 
         # Report will be queried for last given duration period
@@ -484,7 +484,7 @@ class CiscoesaConnector(BaseConnector):
 
         # Something went wrong while querying a report
         if phantom.is_fail(response_status):
-            self.debug_print(consts.CISCOESA_GET_REPORT_ERROR.format(report_title=report_title))
+            self.error_print(consts.CISCOESA_GET_REPORT_ERROR.format(report_title=report_title))
             return action_result.get_status()
         action_result.add_data(report_data)
 

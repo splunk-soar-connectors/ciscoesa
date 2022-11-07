@@ -108,8 +108,7 @@
                     "data_path": "action_result.parameter.encoded_url",
                     "data_type": "string",
                     "example_values": [
-                        "https%3A%2F%2Fmy.phantom.us%2F4.1%2Fdocs%2Fapp_reference%2Fphantom_ciscoesa",
-                        "http://secure-web.cisco.com/1UZ67bmkDTQehZuxmcruFKgV4i6suF6A08JEYN5zvusnfcNr1hK3lhd54OZo6kWa4HS0t7Em6eGf1PbkOurkEJytcSOwTSStApZ6ABSgh2tPgPeY505OywZd6kweadYU9ZEPtnG8B99b6BXciZMX7qNQrf4O52sheioWbTnfi-UTQLeC4DeP2RU1NKw-HSLSWQgz2gJ3UYcJ5GdlqLwkULCMKENO19aqGHrfuqyjUiWfa7IwskEaVJ_b5kFdFqBRj-6b-xC2MemNXPEuVysNW_Q/https%3A%2F%2Fmy.phantom.us%2F4.1%2Fdocs%2Fapp_reference%2Fphantom_ciscoesa"
+                        "https://www.w3schools.com/tags/ref_urlencode.ASP#:~:text=URL%20Encoding%20(Percent%20Encoding)&text=URLs%20can%20only%20be%20sent,followed%20by%20two%20hexadecimal%20digits."
                     ],
                     "contains": [
                         "url",
@@ -120,8 +119,7 @@
                     "data_path": "action_result.data.*.decoded_url",
                     "data_type": "string",
                     "example_values": [
-                        "https://my.phantom.us",
-                        "https://my.phantom.us/4.1/docs/app_reference/phantom_ciscoesa"
+                        "https://www.w3schools.com/tags/ref_urlencode.ASP#:~:text=URL Encoding (Percent Encoding)&text=URLs can only be sent,followed by two hexadecimal digits."
                     ],
                     "contains": [
                         "url"
@@ -2963,7 +2961,7 @@
                     "data_path": "action_result.data.*.value",
                     "data_type": "string",
                     "example_values": [
-                        "^BLevents@blackline\\.com$"
+                        "test@user.com"
                     ],
                     "contains": [
                         "ciscoesa item value"
@@ -3018,7 +3016,7 @@
             "action": "add dictionary item",
             "description": "Add an entry to an ESA dictionary",
             "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.",
-            "type": "generic",
+            "type": "contain",
             "identifier": "add_dictionary_item",
             "undo": "remove dictionary item",
             "read_only": false,
@@ -3148,7 +3146,7 @@
             "action": "remove dictionary item",
             "description": "Remove an entry from an ESA dictionary",
             "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.",
-            "type": "generic",
+            "type": "correct",
             "identifier": "remove_dictionary_item",
             "undo": "add dictionary item",
             "read_only": false,
