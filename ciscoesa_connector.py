@@ -521,7 +521,7 @@ class CiscoesaConnector(BaseConnector):
         """
         action_result = self.add_action_result(ActionResult(dict(param)))
         dictionary_name = param[consts.CISCOESA_JSON_NAME]
-        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
         self.save_progress("Using ESA Helper to list dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
@@ -557,7 +557,7 @@ class CiscoesaConnector(BaseConnector):
         dictionary_name = param[consts.CISCOESA_JSON_NAME]
         entry_value = param[consts.CISCOESA_JSON_VALUE]
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
-        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
         self.save_progress("Using ESA Helper to add dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
@@ -590,7 +590,7 @@ class CiscoesaConnector(BaseConnector):
         dictionary_name = param[consts.CISCOESA_JSON_NAME]
         entry_value = param[consts.CISCOESA_JSON_VALUE]
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
-        cluster_mode = param[consts.CISCOESA_JSON_CLUSTER_MODE]
+        cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
         self.save_progress("Using ESA Helper to remove dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
