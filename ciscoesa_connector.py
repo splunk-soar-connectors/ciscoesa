@@ -433,13 +433,13 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
 
         # if starts_with parameter is not set, then IP and email must be validated
-        if not starts_with and (filter_by and filter_value) and report_title in \
-                [consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
-                 consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE,
-                 consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE]:
-            # Search value should be validated to be either an IP address or an email, if report title is
-            # "Incoming Mail: IP Addresses", "Outgoing Senders: IP Addresses" or "Internal Users"
-            if not _is_ip(filter_value) and not phantom.is_email(filter_value):
+        # Search value should be validated to be either an IP address or an email, if report title is
+        # "Incoming Mail: IP Addresses", "Outgoing Senders: IP Addresses" or "Internal Users"
+        if not starts_with and (filter_by and filter_value):
+            if ((report_title in \
+                    [consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
+                    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE] and not _is_ip(filter_value)) or \
+                            (report_title == consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE and not phantom.is_email(filter_value))):
                 self.error_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
 

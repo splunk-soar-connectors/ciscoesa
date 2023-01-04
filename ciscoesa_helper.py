@@ -60,7 +60,7 @@ class CiscoEsaHelper():
         except Exception as e:
             return (False, "SSH connection attempt failed. Could you please check 'ssh_username' and 'ssh_password' asset parameters", e)
 
-        return True, "SSH connection successfull", None
+        return True, "SSH connection successful", None
 
     def _get_output(self, timeout):
         """
@@ -127,6 +127,7 @@ class CiscoEsaHelper():
             self._shell_channel.set_combine_stderr(True)
             self._shell_channel.exec_command(command)
             success, data, exit_status = self._get_output(timeout)
+            self._connector.save_progress('LISTTTTT {}-{}-{}'.format(success, exit_status, data))
             if not success:
                 return (success, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(command, data, exit_status), exit_status)
             output += data
