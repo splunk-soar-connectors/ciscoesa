@@ -1,6 +1,6 @@
 # File: ciscoesa_helper.py
 #
-# Copyright (c) 2017-2022 Splunk Inc.
+# Copyright (c) 2017-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -127,7 +127,6 @@ class CiscoEsaHelper():
             self._shell_channel.set_combine_stderr(True)
             self._shell_channel.exec_command(command)
             success, data, exit_status = self._get_output(timeout)
-            self._connector.save_progress('LISTTTTT {}-{}-{}'.format(success, exit_status, data))
             if not success:
                 return (success, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(command, data, exit_status), exit_status)
             output += data

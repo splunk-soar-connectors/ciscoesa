@@ -4,7 +4,7 @@
     "description": "This app supports investigation on the Cisco Email Security Appliance (ESA) device",
     "publisher": "Splunk",
     "package_name": "phantom_ciscoesa",
-    "license": "Copyright (c) 2017-2022 Splunk Inc.",
+    "license": "Copyright (c) 2017-2023 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
     "app_version": "3.0.0",
@@ -220,7 +220,7 @@
                 },
                 "offset": {
                     "default": 0,
-                    "description": "Maximum number of items to retrieve",
+                    "description": "Starting index of overall result set",
                     "data_type": "numeric",
                     "order": 7
                 },
