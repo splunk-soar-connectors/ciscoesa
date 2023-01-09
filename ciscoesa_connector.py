@@ -525,7 +525,7 @@ class CiscoesaConnector(BaseConnector):
         self.save_progress("Using ESA Helper to list dictionary entries for: {}".format(dictionary_name))
         # use helper to execute commands on ESA
         success, output, exit_status = self._esa_helper.list_dictionary_items(dictionary_name, cluster_mode)
-        if not success:
+        if (not success) or ("does not exist" in output):
             return action_result.set_status(phantom.APP_ERROR,
                 consts.CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output))
         self.save_progress("Fetched dictionary entries for: {}".format(dictionary_name))
