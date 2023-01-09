@@ -131,6 +131,8 @@ class CiscoEsaHelper():
                 return (success, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(command, data, exit_status), exit_status)
             output += data
             output = self._clean_stdout(output)
+            if exit_status:
+                return (False, "Error sending command:{}\r\nDetails:{}".format(command, data.replace(self._password, "")), exit_status)
         except Exception as e:
             return (False, "Error sending command:{}\r\nDetails:{}".format(command, e), exit_status)
 
