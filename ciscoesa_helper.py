@@ -128,7 +128,8 @@ class CiscoEsaHelper():
             self._shell_channel.exec_command(command)
             success, data, exit_status = self._get_output(timeout)
             if (not success) or ("does not exist" in data):
-                return (success, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(command, data.replace(self._password, ""), exit_status), exit_status)
+                return (success, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(
+                    command, data.replace(self._password, ""), exit_status), exit_status)
             output += data
             output = self._clean_stdout(output)
             if exit_status:
