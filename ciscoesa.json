@@ -46,14 +46,12 @@
             "order": 3
         },
         "ssh_username": {
-            "required": true,
-            "description": "SSH Username",
+            "description": "SSH Username (Used for dictionary related actions)",
             "data_type": "string",
             "order": 4
         },
         "ssh_password": {
-            "required": true,
-            "description": "SSH Password",
+            "description": "SSH Password (Used for dictionary related actions)",
             "data_type": "password",
             "order": 5
         }

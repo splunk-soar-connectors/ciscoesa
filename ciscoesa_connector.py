@@ -146,8 +146,8 @@ class CiscoesaConnector(BaseConnector):
         self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
             self,
-            config[consts.CISCOESA_CONFIG_SSH_USERNAME],
-            config[consts.CISCOESA_CONFIG_SSH_PASSWORD],
+            config.get(consts.CISCOESA_CONFIG_SSH_USERNAME),
+            config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD),
             self._url
         )
 

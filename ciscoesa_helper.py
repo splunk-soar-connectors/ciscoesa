@@ -58,7 +58,7 @@ class CiscoEsaHelper():
                     password=password, allow_agent=False, look_for_keys=True,
                     timeout=30)
         except Exception as e:
-            return (False, "SSH connection attempt failed. Could you please check 'ssh_username' and 'ssh_password' asset parameters", e)
+            return (False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e)
 
         return True, "SSH connection successful", None
 
