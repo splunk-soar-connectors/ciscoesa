@@ -12,11 +12,11 @@
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.3.5",
+    "min_phantom_version": "5.4.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
-    "latest_tested_version": [
-        "Cisco Secure Email Gateway Virtual C100V Version: 14.0.0-698"
+    "latest_tested_versions": [
+        "Cisco Secure Email Gateway Virtual C100V Version: 14.2.0-620"
     ],
     "python_version": "3",
     "fips_compliant": true,
@@ -2908,7 +2908,7 @@
         {
             "action": "list dictionary items",
             "description": "List all entries of an ESA dictionary",
-            "type": "generic",
+            "type": "investigate",
             "identifier": "list_dictionary_items",
             "read_only": true,
             "parameters": {
