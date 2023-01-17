@@ -127,7 +127,7 @@ class CiscoEsaHelper():
             self._shell_channel.set_combine_stderr(True)
             self._shell_channel.exec_command(command)
             success, data, exit_status = self._get_output(timeout)
-            
+
             output += data
             output = self._clean_stdout(output)
             if (not success) or ("does not exist" in output) or ("Invalid arguments" in output) or exit_status:
@@ -145,10 +145,11 @@ class CiscoEsaHelper():
         try:
             lines = []
             for index, line in enumerate(stdout.splitlines()):
-                if (self._password and self._password in line) or ("[sudo] password for" in line) or (line == "-Press Any Key For More-") or (line == ""):
+                if (self._password and self._password in line) or ("[sudo] password for" in line) or \
+                        (line == "-Press Any Key For More-") or (line == ""):
                     continue
                 lines.append(line)
-        except Exception as e:
+        except Exception:
             return None
 
         return '\n'.join(lines)
