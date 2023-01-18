@@ -127,10 +127,10 @@ class CiscoEsaHelper():
             self._shell_channel.set_combine_stderr(True)
             self._shell_channel.exec_command(command)
             success, data, exit_status = self._get_output(timeout)
-
             output += data
             output = self._clean_stdout(output)
-            if (not success) or ("does not exist" in output) or ("Invalid arguments" in output) or exit_status:
+            if (not success) or ("does not exist" in output) or ("Invalid arguments" in output) or \
+                    ("missing feature key: clustermode" in output) or exit_status:
                 return (False, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(
                     command, output, exit_status), exit_status)
         except Exception as e:
