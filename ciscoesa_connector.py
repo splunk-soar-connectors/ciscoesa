@@ -111,7 +111,7 @@ class CiscoesaConnector(BaseConnector):
         """
         error_message = consts.CISCOESA_ERROR_MESSAGE
         error_code = consts.CISCOESA_ERROR_CODE_MESSAGE
-        self.error_print("Traceback: {}".format(traceback.format_stack()))
+        self.error_print("Traceback: ", e)
 
         try:
             if hasattr(e, "args"):
