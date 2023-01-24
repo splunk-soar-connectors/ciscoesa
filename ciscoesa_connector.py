@@ -19,7 +19,6 @@ import datetime
 import json
 import re
 import socket
-import traceback
 import urllib
 
 import phantom.app as phantom
@@ -259,7 +258,7 @@ class CiscoesaConnector(BaseConnector):
 
         try:
             response = request_func("{base_url}{endpoint}".format(base_url=self._url, endpoint=endpoint),
-                                    params=params, headers=headers, timeout=timeout, verify=self._verify_server_cert)
+                                    params=params, headers=headers, timeout=consts.CISCOESA_REQUEST_TIMEOUT, verify=self._verify_server_cert)
         except Exception as e:
             self.error_print(consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e), response_data
@@ -502,7 +501,7 @@ class CiscoesaConnector(BaseConnector):
         self.save_progress("Configured URL: {url}".format(url=self._url))
 
         ret_value, response = self._make_rest_call(endpoint=consts.CISCOESA_TEST_CONNECTIVITY_ENDPOINT,
-                                                   action_result=action_result, timeout=30)
+                                                   action_result=action_result, timeout=consts.CISCOESA_REQUEST_TIMEOUT)
 
         if phantom.is_fail(ret_value):
             self.save_progress(action_result.get_message())
