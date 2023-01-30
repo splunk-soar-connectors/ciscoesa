@@ -110,7 +110,7 @@ class CiscoesaConnector(BaseConnector):
         """
         error_message = consts.CISCOESA_ERROR_MESSAGE
         error_code = consts.CISCOESA_ERROR_CODE_MESSAGE
-        self.error_print("Traceback: ", e)
+        self.error_print("Exception occurred: ", e)
 
         try:
             if hasattr(e, "args"):
@@ -571,7 +571,7 @@ class CiscoesaConnector(BaseConnector):
                 consts.CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
             )
         self.save_progress("Added entry to dictionary: {}".format(dictionary_name))
-        if output and len(output):
+        if output:
             action_result.add_data({
                 'message': output
             })
@@ -604,7 +604,7 @@ class CiscoesaConnector(BaseConnector):
                 consts.CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
             )
         self.save_progress("Removed entry from dictionary: {}".format(dictionary_name))
-        if output and len(output):
+        if output:
             action_result.add_data({
                 'message': output
             })

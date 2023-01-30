@@ -12,7 +12,7 @@
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.4.0",
+    "min_phantom_version": "5.2.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_versions": [
@@ -1834,7 +1834,7 @@
                     ]
                 },
                 "cluster_mode": {
-                    "description": "Enable clustermode cluster on ESA",
+                    "description": "Enable machine mode as cluster on ESA",
                     "data_type": "boolean",
                     "order": 1
                 }
@@ -1951,13 +1951,13 @@
                     ]
                 },
                 "commit_message": {
-                    "description": "Message to include with the new entry",
+                    "description": "Commit message to add the item to the dictionary on the server at the end of this action",
                     "data_type": "string",
                     "required": true,
                     "order": 2
                 },
                 "cluster_mode": {
-                    "description": "Enable clustermode cluster on ESA",
+                    "description": "Enable machine mode as cluster on ESA",
                     "data_type": "boolean",
                     "order": 3
                 }
@@ -2081,13 +2081,13 @@
                     ]
                 },
                 "commit_message": {
-                    "description": "Message to include with the modification",
+                    "description": "Commit message to remove the item from the dictionary on the server at the end of this action",
                     "data_type": "string",
                     "required": true,
                     "order": 2
                 },
                 "cluster_mode": {
-                    "description": "Enable clustermode cluster on ESA",
+                    "description": "Enable machine mode as cluster on ESA",
                     "data_type": "boolean",
                     "order": 3
                 }
