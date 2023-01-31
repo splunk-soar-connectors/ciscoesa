@@ -1931,7 +1931,7 @@
             "read_only": false,
             "parameters": {
                 "name": {
-                    "description": "Name of dictionary to modify",
+                    "description": "Name of dictionary to add an item to",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -2061,7 +2061,7 @@
             "read_only": false,
             "parameters": {
                 "name": {
-                    "description": "Name of dictionary to modify",
+                    "description": "Name of dictionary to remove an item from",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
