@@ -1,2 +1,2 @@
-paramiko==2.7.2
+paramiko==2.9.3
 requests==2.25.0
