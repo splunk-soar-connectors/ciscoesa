@@ -21,6 +21,8 @@ import time
 import paramiko
 from bs4 import UnicodeDammit
 
+import ciscoesa_consts as consts
+
 os.sys.path.insert(0, "{}/paramikossh".format(os.path.dirname(os.path.abspath(__file__))))  # noqa
 
 try:
@@ -58,7 +60,7 @@ class CiscoEsaHelper():
                     password=password, allow_agent=False, look_for_keys=True,
                     timeout=30)
         except Exception as e:
-            return (False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e)
+            return False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e
 
         return True, "SSH connection successful", None
 
@@ -77,12 +79,12 @@ class CiscoEsaHelper():
             while True:
                 ctime = int(time.time())
                 # data is ready to be received on the channel
-                if (self._shell_channel.recv_ready()):
-                    recv_output = UnicodeDammit(self._shell_channel.recv(8192)).unicode_markup
+                if self._shell_channel.recv_ready():
+                    recv_output = UnicodeDammit(self._shell_channel.recv(consts.CISCOESA_OUTPUT_SIZE)).unicode_markup
                     if recv_output:
                         output += recv_output
                         # need to send an enter command to get more of the list
-                        if '-Press Any Key For More-' in recv_output:
+                        if consts.CISCOESA_PRESS_KEY_MESSAGE in recv_output:
                             try:
                                 self._shell_channel.send("\n")
                             except socket.error:
@@ -93,20 +95,20 @@ class CiscoEsaHelper():
                     # This is pretty messy but it's just the way it is I guess
                     if (sendpw and self._password):
                         try:
-                            self._shell_channel.send("{}\n".format(self._password))
+                            self._shell_channel.send(f"{self._password}\n")
                         except socket.error:
                             pass
                         sendpw = False
                 elif (timeout and ctime - stime >= timeout):
-                    return (False, "Error: Timeout", None)
+                    return False, "Error: Timeout", None
                 elif (self._shell_channel.exit_status_ready() and not self._shell_channel.recv_ready()):
                     break
                 time.sleep(1)
         except Exception as e:
-            self._connector.save_progress('Error attempting to retrieve command output: {}'.format(e))
-            return (False, "Error", str(e))
+            self._connector.save_progress(f'Error attempting to retrieve command output: {e}')
+            return False, "Error", str(e)
 
-        return (True, output, self._shell_channel.recv_exit_status())
+        return True, output, self._shell_channel.recv_exit_status()
 
     def _send_command(self, command, timeout=0):
         """
@@ -116,8 +118,8 @@ class CiscoEsaHelper():
         """
         # attempt to establish connection first
         status_code, msg, uname_str = self._start_connection(self._endpoint)
-        if (not status_code):
-            return (False, msg, uname_str)
+        if not status_code:
+            return False, msg, uname_str
 
         try:
             output = ""
@@ -129,24 +131,22 @@ class CiscoEsaHelper():
             success, data, exit_status = self._get_output(timeout)
             output += data
             output = self._clean_stdout(output)
-            if (not success) or ("does not exist" in output) or ("Invalid arguments" in output) or \
-                    ("missing feature key: clustermode" in output) or exit_status:
-                return (False, "Could not send command: {}\r\nOutput: {}\r\nExit Status: {}".format(
-                    command, output, exit_status), exit_status)
+            if (not success) or (any(message in output for message in consts.CISCOESA_INVALID_DICTIONARY_MESSAGE)) or exit_status:
+                return False, f"Could not send command: {command}\r\nOutput: {output}\r\nExit Status: {exit_status}", exit_status
         except Exception as e:
-            return (False, "Error sending command:{}\r\nDetails:{}".format(command, e), exit_status)
+            return False, f"Error sending command:{command}\r\nDetails:{e}", exit_status
 
-        return (success, output, exit_status)
+        return success, output, exit_status
 
     def _clean_stdout(self, stdout):
-        if (stdout is None):
+        if stdout is None:
             return None
 
         try:
             lines = []
             for index, line in enumerate(stdout.splitlines()):
                 if (self._password and self._password in line) or ("[sudo] password for" in line) or \
-                        (line == "-Press Any Key For More-") or (line == ""):
+                        (line == consts.CISCOESA_PRESS_KEY_MESSAGE) or (line == ""):
                     continue
                 lines.append(line)
         except Exception:

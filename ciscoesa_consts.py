@@ -145,3 +145,6 @@ CISCOESA_ORDER_DIR = [
     "desc"
 ]
 CISCOESA_ORDER_DIR_ERROR = "Please provide valid value for 'order dir' parameter"
+CISCOESA_PRESS_KEY_MESSAGE = "-Press Any Key For More-"
+CISCOESA_OUTPUT_SIZE = 8192
+CISCOESA_INVALID_DICTIONARY_MESSAGE = ["does not exist", "Invalid arguments", "missing feature key: clustermode"]
