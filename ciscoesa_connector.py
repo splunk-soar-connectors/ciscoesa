@@ -536,9 +536,9 @@ class CiscoesaConnector(BaseConnector):
                 # expecting at least two values in each item
                 if len(details) < 2:
                     continue
-                details_dict = {'value': details[0].strip()}
+                details_dict = {'value': ",".join(str(val) for val in details[:-1])}
                 if len(details) > 1:
-                    details_dict['weight'] = details[1].strip()
+                    details_dict['weight'] = details[-1].strip()
 
                 action_result.add_data(details_dict)
                 item_count = item_count + 1
