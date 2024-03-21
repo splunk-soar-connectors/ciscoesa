@@ -7,7 +7,7 @@
     "license": "Copyright (c) 2017-2023 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "3.0.0",
+    "app_version": "3.0.1",
     "utctime_updated": "2022-01-28T19:25:20.000000Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
