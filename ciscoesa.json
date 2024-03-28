@@ -4,10 +4,10 @@
     "description": "This app supports investigation on the Cisco Email Security Appliance (ESA) device",
     "publisher": "Splunk",
     "package_name": "phantom_ciscoesa",
-    "license": "Copyright (c) 2017-2023 Splunk Inc.",
+    "license": "Copyright (c) 2017-2024 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "3.0.0",
+    "app_version": "3.0.1",
     "utctime_updated": "2022-01-28T19:25:20.000000Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
@@ -2183,27 +2183,6 @@
         }
     ],
     "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.14-py2.py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     }
 }
