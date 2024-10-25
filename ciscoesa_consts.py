@@ -14,15 +14,14 @@
 # and limitations under the License.
 
 CISCOESA_CONFIG_URL = "url"
+CISCOESA_CONFIG_SMA_URL = "sma_url"
 CISCOESA_CONFIG_USERNAME = "username"
 CISCOESA_CONFIG_PASSWORD = "password"  # pragma: allowlist secret
 CISCOESA_CONFIG_SSH_USERNAME = "ssh_username"
 CISCOESA_CONFIG_SSH_PASSWORD = "ssh_password"  # pragma: allowlist secret
 CISCOESA_CONFIG_VERIFY_SSL = "verify_server_cert"
-CISCOESA_JSON_NAME = "name"
-CISCOESA_JSON_CLUSTER_MODE = "cluster_mode"
-CISCOESA_JSON_COMMIT_MESSAGE = "commit_message"
-CISCOESA_JSON_VALUE = "value"
+CISCOESA_CONFIG_CLUSTER = "cluster_mode" # added for dictionary related actions
+CISCOESA_CONFIG_TIMEOUT = "timeout" 
 CISCOESA_REQUEST_TIMEOUT = 60
 CISCOESA_REST_RESP_SUCCESS = 200
 CISCOESA_REST_RESP_BAD_REQUEST = 400
@@ -56,6 +55,48 @@ CISCOESA_TEST_CONNECTIVITY_FAIL = "Test Connectivity Failed"
 CISCOESA_TEST_CONNECTIVITY_SUCCESS = "Test Connectivity Passed"
 CISCOESA_TEST_CONNECTIVITY_ENDPOINT = "/esa/api/v2.0/health"
 CISCOESA_GET_REPORT_ENDPOINT = "/esa/api/v2.0/reporting/{report_name}"
+CISCOESA_DICTIONARY_ENDPOINT = "/esa/api/v2.0/config/dictionaries"
+CISCOESA_POLICY_ENDPOINT = "/esa/api/v2.0/config/incoming_mail_policies/{policy}/senders_and_recipients"
+CISCOESA_QUARANTINE_ENDPOINT = "/{esa_sma}/api/v2.0/quarantine/messages"
+CISCOESA_JSON_CLUSTER_MODE = "cluster_mode"
+CISCOESA_DICTIONARY_JSON_NAME = "dictionary_name"
+CISCOESA_DICTIONARY_JSON_COMMIT_MESSAGE = "commit_message"
+CISCOESA_DICTIONARY_JSON_WORDS = "words"
+CISCOESA_POLICY_JSON_POLICY_NAME = "policy"
+CISCOESA_POLICY_JSON_SENDER_CONFIG = "sender_config"
+CISCOESA_POLICY_JSON_OPERATION = "operation"
+CISCOESA_POLICY_JSON_SENDER = "sender"
+CISCOESA_POLICY_JSON_SENDER_NOT = "sender_not"
+CISCOESA_POLICY_JSON_RECEIVER_NOT = "receiver_not"
+CISCOESA_POLICY_JSON_RECEIVER = "receiver"
+CISCOESA_POLICY_JSON_RAW_JSON = "raw_json"
+
+CISCOESA_QUARANTINE_JSON_START_DATE = "start_date"
+CISCOESA_QUARANTINE_JSON_END_DATE = "end_date"
+CISCOESA_QUARANTINE_JSON_OFFSET = "offset"
+CISCOESA_QUARANTINE_JSON_LIMIT = "limit"
+CISCOESA_QUARANTINE_JSON_ORDER_BY = "order_by"
+CISCOESA_QUARANTINE_JSON_ORDER_DIR = "order_dir"
+CISCOESA_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_VALUE = "envelope_recipient_filter_value"
+
+CISCOESA_POV_QUARANTINE_JSON_QUARANTINES = "quarantines"
+CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_BY = "subject_filter_by"
+CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_VALUE = "subject_filter_value"
+CISCOESA_POV_QUARANTINE_JSON_ORIGINATING_ESA_IP = "originating_esa_ip"
+CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_NAME = "attachment_name"
+CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FILTER_BY = "attachment_size_filter_by"
+CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FROM_VALUE = "attachment_size_from_value"
+CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_TO_VALUE = "attachment_size_to_value"
+CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_BY = "envelope_recipient_filter_by"
+CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_BY = "envelope_sender_filter_by"
+CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_VALUE = "envelope_sender_filter_value"
+CISCOESA_POV_QUARANTINE_JSON_MIDS = "mids"
+CISCOESA_POV_QUARANTINE_JSON_QUARANTINE_NAME = "quarantine_name"
+
+CISCOESA_SPAM_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_OPERATOR = "envelope_recipient_filter_operator"
+CISCOESA_SPAM_QUARANTINE_JSON_FILTER_OPERATOR = "filter_operator"
+CISCOESA_SPAM_QUARANTINE_JSON_FILTER_VALUE = "filter_value"
+
 CISCOESA_GET_REPORT_JSON_REPORT_TITLE = "report_title"
 CISCOESA_GET_REPORT_JSON_START_TIME = "start_time"
 CISCOESA_GET_REPORT_JSON_END_TIME = "end_time"
@@ -126,6 +167,8 @@ CISCOESA_VALIDATE_INTEGER_MESSAGE = "Please provide a valid integer value in the
 CISCOESA_ERROR_MESSAGE = "Unknown error occurred. Please check the asset configuration and|or action parameters"
 CISCOESA_ERROR_CODE_MESSAGE = "Error code unavailable"
 CISCOESA_ERROR_MESSAGE_FORMAT = "Error code: {}. Error message: {}"
+CISCOESA_ERROR_ENTRY_NOTFOUND = "Entry not found in the Inbound e-mail policy for policy {}"
+CISCOESA_ERROR_NODATA_POLICY = "No data section has been detected while fetching available policy items."
 CISCOESA_REPORT_TITLE = [
     "Internal Users",
     "Incoming Mail: Domains",
@@ -148,3 +191,16 @@ CISCOESA_ORDER_DIR_ERROR = "Please provide valid value for 'order dir' parameter
 CISCOESA_PRESS_KEY_MESSAGE = "-Press Any Key For More-"
 CISCOESA_OUTPUT_SIZE = 8192
 CISCOESA_INVALID_DICTIONARY_MESSAGE = ["does not exist", "Invalid arguments", "missing feature key: clustermode"]
+CISCOESA_INVALID_WORDS_MESSAGE = "Invalid format for words provided to the dictionary. Details {}"
+CISCOESA_INVALID_WORDS_WEIGHT_MESSAGE = "Invalid words weight provided to the dictionary. Details {}"
+CISCOESA_INVALID_PREFIX_MESSAGE = "Prefix allowed only for words starting with '*': {}"
+CISCOESA_INVALID_DOMAIN_ENTRIES = "The following invalid domain entries have been detected. Parameter: {}, entries: {}"
+
+CISCOESA_INVALID_POLICY_JSON_RAW = "json_raw cannot be passed alogside all other paraemters"
+CISCOESA_INVALID_POLICY_REQUIRES = "Sender_config '{0}' requires '{0}' parameter to be populated."
+CISCOESA_INVALID_POLICY_NOT_REQUIRES = "Sender_config '{0}' should not have '{1}' parameter populated."
+CISCOESA_INVALID_POLICY_UNKNOWN = "Unknown sender_config: {}"
+CISCOESA_INVALID_POLICY_RECEIVER_NOT = "'receiver_not' parameter should not be populated when operation is 'or'."
+CISCOESA_INVALID_DOMAIN_ENTRIES_PARAMS = "The following errors were detected during parameters validation: {}"
+CISCOESA_INVALID_DOMAIN_JSON_RAW = "json_raw cannot be deserialized as a dict. Details: {}"
+CISCOESA_IVALID_POLICY_FORMAT= "Incoming mail policy invalid. Policy: {}. Validation Errors: {}"
