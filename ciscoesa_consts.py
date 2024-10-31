@@ -20,8 +20,8 @@ CISCOESA_CONFIG_PASSWORD = "password"  # pragma: allowlist secret
 CISCOESA_CONFIG_SSH_USERNAME = "ssh_username"
 CISCOESA_CONFIG_SSH_PASSWORD = "ssh_password"  # pragma: allowlist secret
 CISCOESA_CONFIG_VERIFY_SSL = "verify_server_cert"
-CISCOESA_CONFIG_CLUSTER = "cluster_mode" # added for dictionary related actions
-CISCOESA_CONFIG_TIMEOUT = "timeout" 
+CISCOESA_CONFIG_CLUSTER = "cluster_mode"  # added for dictionary related actions
+CISCOESA_CONFIG_TIMEOUT = "timeout"
 CISCOESA_REQUEST_TIMEOUT = 60
 CISCOESA_REST_RESP_SUCCESS = 200
 CISCOESA_REST_RESP_BAD_REQUEST = 400
@@ -157,11 +157,11 @@ CISCOESA_GET_REPORT_ERROR = "Error occurred while getting data for report: {repo
 CISCOESA_GET_REPORT_INTERMEDIATE_MESSAGE = "Querying report '{report_title}'"
 CISCOESA_GET_REPORT_PARSE_ERROR = "Error occurred while parsing report data: {error}"
 CISCOESA_LIST_DICTIONARY_SUCCESS_MESSAGE = "Successfully listed all entries of dictionary"
-CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to list dictionary \"{dictionary_name}\": {error}"
+CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to list dictionary "{dictionary_name}": {error}'
 CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE = "Successfully added entry to dictionary"
-CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to add dictionary entry to \"{dictionary_name}\": {error}"
+CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to add dictionary entry to "{dictionary_name}": {error}'
 CISCOESA_REMOVE_DICTIONARY_SUCCESS_MESSAGE = "Successfully removed entry from dictionary"
-CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to remove dictionary entry from \"{dictionary_name}\": {error}"
+CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to remove dictionary entry from "{dictionary_name}": {error}'
 CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR = "Command contained invalid escape character:"
 CISCOESA_VALIDATE_INTEGER_MESSAGE = "Please provide a valid integer value in the {key} parameter"
 CISCOESA_ERROR_MESSAGE = "Unknown error occurred. Please check the asset configuration and|or action parameters"
@@ -180,13 +180,10 @@ CISCOESA_REPORT_TITLE = [
     "Outgoing Content Filters",
     "Virus Types",
     "Inbound SMTP Authentication",
-    "DLP Outgoing Policy"
+    "DLP Outgoing Policy",
 ]
 CISCOESA_REPORT_TITLE_ERROR = "Please provide valid value for 'report title' parameter"
-CISCOESA_ORDER_DIR = [
-    "asc",
-    "desc"
-]
+CISCOESA_ORDER_DIR = ["asc", "desc"]
 CISCOESA_ORDER_DIR_ERROR = "Please provide valid value for 'order dir' parameter"
 CISCOESA_PRESS_KEY_MESSAGE = "-Press Any Key For More-"
 CISCOESA_OUTPUT_SIZE = 8192
@@ -203,4 +200,4 @@ CISCOESA_INVALID_POLICY_UNKNOWN = "Unknown sender_config: {}"
 CISCOESA_INVALID_POLICY_RECEIVER_NOT = "'receiver_not' parameter should not be populated when operation is 'or'."
 CISCOESA_INVALID_DOMAIN_ENTRIES_PARAMS = "The following errors were detected during parameters validation: {}"
 CISCOESA_INVALID_DOMAIN_JSON_RAW = "json_raw cannot be deserialized as a dict. Details: {}"
-CISCOESA_IVALID_POLICY_FORMAT= "Incoming mail policy invalid. Policy: {}. Validation Errors: {}"
+CISCOESA_IVALID_POLICY_FORMAT = "Incoming mail policy invalid. Policy: {}. Validation Errors: {}"
