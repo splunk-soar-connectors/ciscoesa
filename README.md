@@ -2,16 +2,16 @@
 # Cisco ESA
 
 Publisher: Splunk  
-Connector Version: 4.0.0  
+Connector Version: 4.0.1  
 Product Vendor: Cisco  
 Product Name: Cisco ESA  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.2  
+Minimum Product Version: 6.3.0  
 
 This app supports investigation on the Cisco Email Security Appliance (ESA) device
 
 ### Configuration Variables
-The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a Cisco ESA asset in SOAR.
+This table lists the configuration variables required to operate Cisco ESA. These variables are specified when configuring a Cisco ESA asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
@@ -506,7 +506,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **sender_not** |  optional  | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver** |  optional  | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver_not** |  optional  | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
-**operation** |  optional  | Boolean logic between receiver  and receiver_not domain_entries. The values can be “and” or “or" . | string | 
+**operation** |  optional  | Boolean logic between receiver  and receiver_not domain_entries. The values can be "and" or "or" . | string | 
 **raw_json** |  optional  | Raw JSON payload for add policy items action. | string | 
 
 #### Action Output
@@ -570,7 +570,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **sender_not** |  optional  | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver** |  optional  | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver_not** |  optional  | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
-**operation** |  optional  | Boolean logic between receiver  and receiver_not domain_entries. The values can be “and” or “or" . raw_json: Raw JSON payload for add policy items action. | string | 
+**operation** |  optional  | Boolean logic between receiver  and receiver_not domain_entries. The values can be "and" or "or" . raw_json: Raw JSON payload for add policy items action. | string | 
 **raw_json** |  optional  | Raw JSON payload for add policy items action. | string | 
 
 #### Action Output
@@ -604,7 +604,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **sender_not** |  optional  | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver** |  optional  | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
 **receiver_not** |  optional  | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | 
-**operation** |  optional  | Boolean logic between receiver  domain_entries. The values can be “and” or “or" | string | 
+**operation** |  optional  | Boolean logic between receiver  domain_entries. The values can be "and" or "or" | string | 
 **raw_json** |  optional  | Raw JSON payload for update policy items action. | string | 
 
 #### Action Output
