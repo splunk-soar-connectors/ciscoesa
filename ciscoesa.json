@@ -7,12 +7,12 @@
     "license": "Copyright (c) 2017-2024 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "4.0.0",
+    "app_version": "4.0.1",
     "utctime_updated": "2024-10-15T12:40:27.594330Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "6.2.2",
+    "min_phantom_version": "6.3.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_versions": [
@@ -2446,7 +2446,7 @@
                     "param_name": "receiver_not"
                 },
                 "operation": {
-                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be “and” or “or\" .",
+                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be \"and\" or \"or\" .",
                     "data_type": "string",
                     "required": false,
                     "primary": true,
@@ -2740,7 +2740,7 @@
                     "param_name": "receiver_not"
                 },
                 "operation": {
-                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be “and” or “or\" . raw_json: Raw JSON payload for add policy items action.",
+                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be \"and\" or \"or\" . raw_json: Raw JSON payload for add policy items action.",
                     "data_type": "string",
                     "required": false,
                     "primary": true,
@@ -2940,7 +2940,7 @@
                     "param_name": "receiver_not"
                 },
                 "operation": {
-                    "description": "Boolean logic between receiver  domain_entries. The values can be “and” or “or\"",
+                    "description": "Boolean logic between receiver  domain_entries. The values can be \"and\" or \"or\"",
                     "data_type": "string",
                     "required": false,
                     "primary": true,
@@ -3517,7 +3517,7 @@
         {
             "action": "release pov quarantine",
             "identifier": "release_pov_quarantine",
-            "description": "Release a message that matches the mid attribute from a pov quarantine.",
+            "description": "Release a message that matches the mid attribute from a pov quarantine",
             "verbose": "",
             "type": "investigate",
             "read_only": false,
@@ -3666,7 +3666,7 @@
                     "param_name": "order_by"
                 },
                 "order_dir": {
-                    "description": "pecify order direction for retrieved messages.",
+                    "description": "Specify order direction for retrieved messages.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -3862,7 +3862,7 @@
         {
             "action": "release spam quarantine",
             "identifier": "release_spam_quarantine",
-            "description": "Release a message that matches the mid attribute from spam quarantine.",
+            "description": "Release a message that matches the mid attribute from spam quarantine",
             "verbose": "",
             "type": "generic",
             "read_only": false,
