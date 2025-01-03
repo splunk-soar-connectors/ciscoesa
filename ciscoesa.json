@@ -3517,7 +3517,7 @@
         {
             "action": "release pov quarantine",
             "identifier": "release_pov_quarantine",
-            "description": "Release a message that matches the mid attribute from a pov quarantine.",
+            "description": "Release a message that matches the mid attribute from a pov quarantine",
             "verbose": "",
             "type": "investigate",
             "read_only": false,
@@ -3666,7 +3666,7 @@
                     "param_name": "order_by"
                 },
                 "order_dir": {
-                    "description": "pecify order direction for retrieved messages.",
+                    "description": "Specify order direction for retrieved messages.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -3862,7 +3862,7 @@
         {
             "action": "release spam quarantine",
             "identifier": "release_spam_quarantine",
-            "description": "Release a message that matches the mid attribute from spam quarantine.",
+            "description": "Release a message that matches the mid attribute from spam quarantine",
             "verbose": "",
             "type": "generic",
             "read_only": false,
