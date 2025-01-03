@@ -10,7 +10,7 @@ Minimum Product Version: 6.3.0
 
 This app supports investigation on the Cisco Email Security Appliance (ESA) device
 
-### Configuration Variables
+### Configuration variables
 This table lists the configuration variables required to operate Cisco ESA. These variables are specified when configuring a Cisco ESA asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
@@ -38,9 +38,9 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [remove policy items](#action-remove-policy-items) - Remove users from an Incoming Mail Policy  
 [update policy items](#action-update-policy-items) - Update users in an Incoming Mail Policy  
 [search pov quarantine](#action-search-pov-quarantine) - Search messages in  the other quarantine that match multiple attributes  
-[release pov quarantine](#action-release-pov-quarantine) - Release a message that matches the mid attribute from a pov quarantine.  
+[release pov quarantine](#action-release-pov-quarantine) - Release a message that matches the mid attribute from a pov quarantine  
 [search spam quarantine](#action-search-spam-quarantine) - Search messages in  the spam quarantine that match multiple attributes  
-[release spam quarantine](#action-release-spam-quarantine) - Release a message that matches the mid attribute from spam quarantine.  
+[release spam quarantine](#action-release-spam-quarantine) - Release a message that matches the mid attribute from spam quarantine  
 
 ## action: 'test connectivity'
 Validate credentials provided for connectivity
@@ -694,7 +694,7 @@ summary.total_objects | numeric |  |
 summary.total_objects_successful | numeric |  |    
 
 ## action: 'release pov quarantine'
-Release a message that matches the mid attribute from a pov quarantine.
+Release a message that matches the mid attribute from a pov quarantine
 
 Type: **investigate**  
 Read only: **False**
@@ -729,7 +729,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **offset** |  optional  | Specify an offset value to retrieve a subset of records starting with the offset value. Offset works with limit, which determines how many records to retrieve starting from the offset. | string | 
 **limit** |  optional  | Specify the number of records to retrieve. | string | 
 **order_by** |  optional  | Specify how to order to retrieved messages. | string | 
-**order_dir** |  optional  | pecify order direction for retrieved messages. | string | 
+**order_dir** |  optional  | Specify order direction for retrieved messages. | string | 
 **envelope_recipient_filter_operator** |  optional  | Filter logic to filter the email Recipient. | string | 
 **envelope_recipient_filter_value** |  optional  | The value to search for. This is a user defined value. For example: envelopeRecipientFilterValue=user. | string | 
 **filter_operator** |  optional  | Filter logic to filter the email. | string | 
@@ -763,7 +763,7 @@ summary.total_objects | numeric |  |
 summary.total_objects_successful | numeric |  |    
 
 ## action: 'release spam quarantine'
-Release a message that matches the mid attribute from spam quarantine.
+Release a message that matches the mid attribute from spam quarantine
 
 Type: **generic**  
 Read only: **False**
