@@ -1382,6 +1382,499 @@ class CiscoesaConnector(BaseConnector):
             summary["message"] = f"No 'data' section detected in response. Details {response}."
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_list_hat_groups(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/listener/{listener_name}"
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+        if data:
+            sender_groups = data.get("sender_groups")
+            if sender_groups:
+                action_result.update_data(sender_groups)
+                summary["message"] = f"Succesfully retrieved {len(sender_groups)} hat sender groups"
+            else:
+                action_result.add_data(data)
+        else:
+            # Handle case when "data" is missing
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details: {response}"
+
+        # Return success, no need to set the message, only the status
+        # BaseConnector will create a textual message based off of the summary dictionary
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_list_hat_group(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+        sender_group = param[CISCOESA_HAT_JSON_SENDER_GROUP_NAME]
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/listener/{listener_name}/sender_group/{sender_group}"
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+        if data:
+            action_result.add_data(data)
+            summary["message"] = f"Succesfully retrieved configuration for hat sender group {sender_group}"
+        else:
+            # Handle case when "data" is missing
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details: {response}"
+
+        # Return success, no need to set the message, only the status
+        # BaseConnector will create a textual message based off of the summary dictionary
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _validate_hat_senders_group(self, action_result, senders_group):
+        try:
+            data = json.loads(senders_group)
+        except json.JSONDecodeError:
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_RAW_JSON), None
+
+        # Check if it's a dictionary
+        if not isinstance(data, dict):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_DICT), None
+
+        # Check if at least one of "ip_address_list" or "geo_list" is present
+        if not any(key in data for key in ["ip_address_list", "geo_list"]):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_KEYS), None
+
+        # Validate "ip_address_list" and "geo_list"
+        for key in ["ip_address_list", "geo_list"]:
+            if key in data:
+                items = data[key]
+                if not isinstance(items, list):
+                    return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_LIST_FORMAT.format(key=key)), None
+                for item in items:
+                    if not isinstance(item, dict):
+                        return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_KEY_DICT_FORMAT.format(key=key)), None
+                    if "sender_name" not in item:
+                        return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_NO_SENDER_NAME.format(key=key)), None
+
+        # If all checks pass, return True
+        return phantom.APP_SUCCESS, data
+
+    def _handle_add_hat_group(self, param):
+        # Implement the handler here
+        # use self.save_progress(...) to send progress messages back to the platform
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        # Add an action result object to self (BaseConnector) to represent the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Access action parameters passed in the 'param' dictionary
+
+        # Required values can be accessed directly
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+        sender_group = param[CISCOESA_HAT_JSON_SENDER_GROUP_NAME]
+        flow_profile = param[CISCOESA_HAT_JSON_FLOW_PROFILE]
+
+        # Optional values should use the .get() function
+        order = param.get(CISCOESA_HAT_JSON_ORDER, None)
+        description = param.get(CISCOESA_HAT_JSON_SENDER_GROUP_DESCRIPTION, None)
+        sbrs_none = {True: "true", False: "false"}.get(param.get(CISCOESA_HAT_JSON_SRBS_NONE, None), None)
+
+        external_threat_feeds = param.get(CISCOESA_HAT_JSON_EXYERNAL_THREAT_FEEDS, None)
+        external_threat_feeds = [x.strip(" ") for x in external_threat_feeds.split(",")] if external_threat_feeds else None
+
+        sbrs = param.get(CISCOESA_HAT_JSON_SBRS, None)
+
+        try:
+            sbrs = [round(float(x.strip()), 1) for x in sbrs.split(",")] if sbrs else None
+        except ValueError:
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_SBRS_VALIDATION_ERROR)
+
+        if sbrs and not (isinstance(sbrs, list) and len(sbrs) == 2 and all(isinstance(x, float) and -10.0 <= x <= 10.0 for x in sbrs)):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_SBRS_VALIDATION_ERROR)
+
+        dns_list = param.get(CISCOESA_HAT_JSON_DNS_LIST, None)
+        dns_list = [x.strip(" ") for x in dns_list.split(",")] if dns_list else None
+
+        lookup_not_matched = {True: "true", False: "false"}.get(param.get(CISCOESA_HAT_JSON_LOOKUP_NOT_MATCHED), None)
+        record_not_exist = {True: "true", False: "false"}.get(param.get(CISCOESA_HAT_JSON_RECORD_NOT_EXIST, None), None)
+        lookup_fail = {True: "true", False: "false"}.get(param.get(CISCOESA_HAT_JSON_LOOKUP_FAIL, None), None)
+
+        ip_sender_name = param.get(CISCOESA_HAT_JSON_IP_SENDER_NAME, None)
+        ip_description = param.get(CISCOESA_HAT_JSON_IP_DESCRIPTION, None)
+        geo_sender_name = param.get(CISCOESA_HAT_JSON_GEO_SENDER_NAME, None)
+        geo_description = param.get(CISCOESA_HAT_JSON_GEO_DESCRIPTION, None)
+
+        raw_json = param.get(CISCOESA_HAT_JSON_RAW_JSON, None)
+
+        senders = None
+
+        ip_address_list = (
+            [{"sender_name": ip_sender_name, **({"description": ip_description} if ip_description else {})}] if ip_sender_name else None
+        )
+        geo_list = (
+            [{"sender_name": geo_sender_name, **({"description": geo_description} if geo_description else {})}] if geo_sender_name else None
+        )
+
+        if raw_json:
+            ret_val, senders = self._validate_hat_senders_group(action_result, raw_json)
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+        if senders and any(v is not None for v in [ip_sender_name, ip_description, geo_sender_name, geo_description]):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_RAW_JSON_PARAMS)
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/listener/{listener_name}/sender_group/{sender_group}"
+
+        payload = {
+            "data": {
+                "dns_list": dns_list,
+                "external_threat_feeds": external_threat_feeds,
+                "description": description,
+                "flow_profile": flow_profile,
+                "senders": {},
+                "sbrs": sbrs,
+                "order": order,
+                "sbrs_none": sbrs_none,
+                "dns_host_verification": {},
+            }
+        }
+        if senders:
+            payload["data"]["senders"] = senders
+        if ip_address_list:
+            payload["data"]["senders"]["ip_address_list"] = ip_address_list
+        if geo_list:
+            payload["data"]["senders"]["geo_list"] = geo_list
+        if lookup_not_matched:
+            payload["data"]["dns_host_verification"]["lookup_not_matched"] = lookup_not_matched
+        if record_not_exist:
+            payload["data"]["dns_host_verification"]["record_not_exist"] = record_not_exist
+        if lookup_fail:
+            payload["data"]["dns_host_verification"]["lookup_fail"] = lookup_fail
+
+        payload["data"] = {k: v for k, v in payload["data"].items() if v is not None}
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params, method="post", json=payload)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            action_result.add_data(response["data"])
+            if response["data"].get("message", False):
+                summary["message"] = response["data"]["message"]
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_remove_hat_group(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        listener_name = param["listener_name"]
+        sender_group = param["sender_group"]
+
+        # Optional values should use the .get() function
+        # optional_parameter = param.get('optional_parameter', 'default_value')
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/listener/{listener_name}/sender_group/{sender_group}"
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params, method="delete")
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            action_result.add_data(response["data"])
+            if response["data"].get("message", False):
+                summary["message"] = response["data"]["message"]
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_add_hat_sender(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Required values can be accessed directly
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+        sender_group = param[CISCOESA_HAT_JSON_SENDER_GROUP_NAME]
+
+        # Optional values should use the .get() function
+        ip_sender_name = param.get(CISCOESA_HAT_JSON_IP_SENDER_NAME, None)
+        ip_description = param.get(CISCOESA_HAT_JSON_IP_DESCRIPTION, None)
+        geo_sender_name = param.get(CISCOESA_HAT_JSON_GEO_SENDER_NAME, None)
+        geo_description = param.get(CISCOESA_HAT_JSON_GEO_DESCRIPTION, None)
+
+        raw_json = param.get(CISCOESA_HAT_JSON_RAW_JSON, None)
+
+        senders = None
+
+        ip_address_list = (
+            [{"sender_name": ip_sender_name, **({"description": ip_description} if ip_description else {})}] if ip_sender_name else None
+        )
+        geo_list = (
+            [{"sender_name": geo_sender_name, **({"description": geo_description} if geo_description else {})}] if geo_sender_name else None
+        )
+
+        if raw_json:
+            ret_val, senders = self._validate_hat_senders_group(action_result, raw_json)
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+        if senders and any(v is not None for v in [ip_sender_name, ip_description, geo_sender_name, geo_description]):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_RAW_JSON_PARAMS)
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/sender_list/{listener_name}/{sender_group}"
+
+        payload = {"data": {"senders": {}}}
+
+        if senders:
+            payload["data"]["senders"] = senders
+        if ip_address_list:
+            payload["data"]["senders"]["ip_address_list"] = ip_address_list
+        if geo_list:
+            payload["data"]["senders"]["geo_list"] = geo_list
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params, method="post", json=payload)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            action_result.add_data(response["data"])
+            if response["data"].get("message", False):
+                summary["message"] = response["data"]["message"]
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_remove_hat_sender(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Required values can be accessed directly
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+        sender_group = param[CISCOESA_HAT_JSON_SENDER_GROUP_NAME]
+        senders = param[CISCOESA_HAT_JSON_SENDERS]
+        senders = [x.strip(" ") for x in senders.split(",") if x]
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/sender_list/{listener_name}/{sender_group}"
+
+        payload = {"data": {"senders": senders}}
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params, method="delete", json=payload)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            action_result.add_data(response["data"])
+            if response["data"].get("message", False):
+                summary["message"] = response["data"]["message"]
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _validate_hat_senders_group_order(self, action_result, raw_json):
+        try:
+            data = json.loads(raw_json)
+        except json.JSONDecodeError:
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_RAW_JSON), None
+
+        # Check if it's a dictionary
+        if not isinstance(data, dict):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_DICT), None
+
+        # Validate that all keys are strings and all values are integers
+        for key, value in data.items():
+            if not isinstance(key, str):
+                return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_KEY_STRING.format(key=key)), None
+            if not isinstance(value, int):
+                return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_VALUE_INTEGER.format(key=key, value=value)), None
+
+        # If all checks pass, return True
+        return phantom.APP_SUCCESS, data
+
+    def _handle_update_hat_order(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        # Add an action result object to self (BaseConnector) to represent the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Access action parameters passed in the 'param' dictionary
+
+        # Required values can be accessed directly
+        listener_name = param[CISCOESA_HAT_JSON_LISTENER_NAME]
+
+        # Optional values should use the .get() function
+        sender_group = param.get(CISCOESA_HAT_JSON_SENDER_GROUP_NAME, None)
+        order = param.get(CISCOESA_HAT_JSON_ORDER, None)
+        raw_json = param.get(CISCOESA_HAT_JSON_RAW_JSON, None)
+
+        new_order = None
+
+        if raw_json:
+            ret_val, new_order = self._validate_hat_senders_group_order(action_result, raw_json)
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+        if new_order and any(v is not None for v in [sender_group, order]):
+            return action_result.set_status(phantom.APP_ERROR, CISCOESA_HAT_INVALID_RAW_JSON_PARAMS_ORDER)
+
+        hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/order/{listener_name}"
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        payload = {"data": {}}
+
+        if new_order:
+            payload["data"] = new_order
+        if sender_group and order:
+            payload["data"][sender_group] = order
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params, method="put", json=payload)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            action_result.add_data(response["data"])
+            if response["data"].get("message", False):
+                summary["message"] = response["data"]["message"]
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_find_hat_group(self, param):
+        # Implement the handler here
+        # use self.save_progress(...) to send progress messages back to the platform
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        # Add an action result object to self (BaseConnector) to represent the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        search_text = param[CISCOESA_HAT_JSON_SEARCH_TEXT]
+
+        # Optional values should use the .get() function
+        listener_name = param.get(CISCOESA_HAT_JSON_LISTENER_NAME, None)
+        sender_group = param.get(CISCOESA_HAT_JSON_SENDER_GROUP_NAME, None)
+
+        if listener_name and sender_group:
+            hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/find_senders/listener/{listener_name}/sender_group/{sender_group}/find/{search_text}/"
+        else:
+            hat_endpoint = f"{CISCOESA_HAT_ENDPOINT}/find_in_all_senders/{search_text}/"
+
+        req_params = {"device_type": "esa"}
+        if self._cluster:
+            req_params["mode"] = "cluster"
+
+        # make rest call
+        ret_val, response = self._make_rest_call(hat_endpoint, action_result, params=req_params)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        # Add a dictionary that is made up of the most important values from data into the summary
+        summary = action_result.update_summary({})
+
+        data = response.get("data")
+
+        if data:
+            # Cleaning response. In some cases ESA returns dicts with keys that contain spaces.
+            data = [{k.replace(" ", "_"): v for k, v in item.items()} for item in data]
+
+            action_result.update_data(data)
+            summary["message"] = f"Succesfully found {len(data)} hat sender groups"
+        else:
+            action_result.add_data(response)
+            summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """This function gets current action identifier and calls member function of its own to handle the action.
 
@@ -1408,6 +1901,14 @@ class CiscoesaConnector(BaseConnector):
             "release_pov_quarantine": self._handle_release_pov_quarantine,
             "release_spam_quarantine": self._handle_release_spam_quarantine,
             "search_spam_quarantine": self._handle_search_spam_quarantine,
+            "list_hat_groups": self._handle_list_hat_groups,
+            "list_hat_group": self._handle_list_hat_group,
+            "add_hat_group": self._handle_add_hat_group,
+            "remove_hat_group": self._handle_remove_hat_group,
+            "add_hat_sender": self._handle_add_hat_sender,
+            "remove_hat_sender": self._handle_remove_hat_sender,
+            "update_hat_order": self._handle_update_hat_order,
+            "find_hat_group": self._handle_find_hat_group,
         }
 
         action = self.get_action_identifier()
