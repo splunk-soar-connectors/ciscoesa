@@ -18,7 +18,7 @@ import datetime
 import json
 import re
 import socket
-import urllib
+import urllib.parse
 
 import phantom.app as phantom
 import requests
@@ -27,37 +27,37 @@ from dateutil import parser
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
-from ciscoesa_consts import *
+import ciscoesa_consts as consts
 
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
-    CISCOESA_REST_RESP_BAD_REQUEST: CISCOESA_REST_RESP_BAD_REQUEST_MESSAGE,
-    CISCOESA_REST_RESP_UNAUTHORIZED: CISCOESA_REST_RESP_UNAUTHORIZED_MESSAGE,
-    CISCOESA_REST_RESP_FORBIDDEN: CISCISCOESA_REST_RESP_FORBIDDEN_MESSAGE,
-    CISCOESA_REST_RESP_NOT_FOUND: CISCOESA_REST_RESP_NOT_FOUND_MESSAGE,
-    CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR: CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR_MESSAGE,
-    CISCOESA_REST_RESP_NOT_ACCEPTABLE: CISCOESA_REST_RESP_NOT_ACCEPTABLE_MESSAGE,
-    CISCOESA_REST_RESP_ENTITY_TOO_LARGE: CISCOESA_REST_RESP_ENTITY_TOO_LARGE_MESSAGE,
-    CISCOESA_REST_RESP_URI_TOO_LONG: CISCOESA_REST_RESP_URI_TOO_LONG_MESSAGE,
-    CISCOESA_REST_RESP_NOT_IMPLEMENTED: CISCOESA_REST_RESP_NOT_IMPLEMENTED_MESSAGE,
-    CISCOESA_REST_RESP_BAD_GATEWAY: CISCOESA_REST_RESP_BAD_GATEWAY_MESSAGE,
+    consts.CISCOESA_REST_RESP_BAD_REQUEST: consts.CISCOESA_REST_RESP_BAD_REQUEST_MESSAGE,
+    consts.CISCOESA_REST_RESP_UNAUTHORIZED: consts.CISCOESA_REST_RESP_UNAUTHORIZED_MESSAGE,
+    consts.CISCOESA_REST_RESP_FORBIDDEN: consts.CISCISCOESA_REST_RESP_FORBIDDEN_MESSAGE,
+    consts.CISCOESA_REST_RESP_NOT_FOUND: consts.CISCOESA_REST_RESP_NOT_FOUND_MESSAGE,
+    consts.CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR: consts.CISCOESA_REST_RESP_INTERNAL_SERVER_ERROR_MESSAGE,
+    consts.CISCOESA_REST_RESP_NOT_ACCEPTABLE: consts.CISCOESA_REST_RESP_NOT_ACCEPTABLE_MESSAGE,
+    consts.CISCOESA_REST_RESP_ENTITY_TOO_LARGE: consts.CISCOESA_REST_RESP_ENTITY_TOO_LARGE_MESSAGE,
+    consts.CISCOESA_REST_RESP_URI_TOO_LONG: consts.CISCOESA_REST_RESP_URI_TOO_LONG_MESSAGE,
+    consts.CISCOESA_REST_RESP_NOT_IMPLEMENTED: consts.CISCOESA_REST_RESP_NOT_IMPLEMENTED_MESSAGE,
+    consts.CISCOESA_REST_RESP_BAD_GATEWAY: consts.CISCOESA_REST_RESP_BAD_GATEWAY_MESSAGE,
 }
 
 # Object that maps report title with its corresponding endpoint
 # key: report title
 # value: report endpoint
 REPORT_TITLE_TO_NAME_AND_FILTER_MAPPING = {
-    CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE: CISCOESA_MAIL_USER_DETAILS_REPORT_NAME,
-    CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_TITLE: CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_NAME,
-    CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE: CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_NAME,
-    CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_TITLE: CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_NAME,
-    CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_TITLE: CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_NAME,
-    CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE: CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_NAME,
-    CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_TITLE: CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_NAME,
-    CISCOESA_OUTGOING_DESTINATIONS_REPORT_TITLE: CISCOESA_OUTGOING_DESTINATIONS_REPORT_NAME,
-    CISCOESA_VIRUS_TYPES_REPORT_TITLE: CISCOESA_VIRUS_TYPES_REPORT_NAME,
-    CISCOESA_INBOUND_SMTP_AUTH_REPORT_TITLE: CISCOESA_INBOUND_SMTP_AUTH_REPORT_NAME,
-    CISCOESA_DLP_OUTGOING_POLICY_REPORT_TITLE: CISCOESA_DLP_OUTGOING_POLICY_REPORT_NAME,
+    consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_USER_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_NAME,
+    consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_TITLE: consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_NAME,  # noqa: E501
+    consts.CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_TITLE: consts.CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_NAME,
+    consts.CISCOESA_OUTGOING_DESTINATIONS_REPORT_TITLE: consts.CISCOESA_OUTGOING_DESTINATIONS_REPORT_NAME,
+    consts.CISCOESA_VIRUS_TYPES_REPORT_TITLE: consts.CISCOESA_VIRUS_TYPES_REPORT_NAME,
+    consts.CISCOESA_INBOUND_SMTP_AUTH_REPORT_TITLE: consts.CISCOESA_INBOUND_SMTP_AUTH_REPORT_NAME,
+    consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_TITLE: consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_NAME,
 }
 
 
@@ -175,8 +175,8 @@ class CiscoesaConnector(BaseConnector):
         :param e: Exception object
         :return: error message
         """
-        error_message = CISCOESA_ERROR_MESSAGE
-        error_code = CISCOESA_ERROR_CODE_MESSAGE
+        error_message = consts.CISCOESA_ERROR_MESSAGE
+        error_code = consts.CISCOESA_ERROR_CODE_MESSAGE
         self.error_print("Exception occurred: ", e)
 
         try:
@@ -185,7 +185,7 @@ class CiscoesaConnector(BaseConnector):
                     error_code = e.args[0]
                     error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = CISCOESA_ERROR_CODE_MESSAGE
+                    error_code = consts.CISCOESA_ERROR_CODE_MESSAGE
                     error_message = e.args[0]
         except Exception as ex:
             self.error_print("Error occurred while retrieving exception information: ", ex)
@@ -193,7 +193,7 @@ class CiscoesaConnector(BaseConnector):
         if not error_code:
             error_text = "Error Message: {}".format(error_message)
         else:
-            error_text = CISCOESA_ERROR_MESSAGE_FORMAT.format(error_code, error_message)
+            error_text = consts.CISCOESA_ERROR_MESSAGE_FORMAT.format(error_code, error_message)
 
         return error_text
 
@@ -205,25 +205,25 @@ class CiscoesaConnector(BaseConnector):
         called.
         """
         config = self.get_config()
-        self._url = config[CISCOESA_CONFIG_URL].strip("/")
-        self._sma_url = (config.get(CISCOESA_CONFIG_SMA_URL, False) or self._url).strip("/")
+        self._url = config[consts.CISCOESA_CONFIG_URL].strip("/")
+        self._sma_url = (config.get(consts.CISCOESA_CONFIG_SMA_URL, False) or self._url).strip("/")
 
         if self._url == self._sma_url:
             self._esa_is_sma = True
         else:
             self._esa_is_sma = False
 
-        self._username = config[CISCOESA_CONFIG_USERNAME]
-        self._password = config[CISCOESA_CONFIG_PASSWORD]
-        self._verify_server_cert = config.get(CISCOESA_CONFIG_VERIFY_SSL, False)
+        self._username = config[consts.CISCOESA_CONFIG_USERNAME]
+        self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
+        self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
 
-        self._cluster = config[CISCOESA_CONFIG_CLUSTER]
-        self._timeout = config.get(CISCOESA_CONFIG_TIMEOUT, CISCOESA_REQUEST_TIMEOUT)
+        self._cluster = config[consts.CISCOESA_CONFIG_CLUSTER]
+        self._timeout = config.get(consts.CISCOESA_CONFIG_TIMEOUT, consts.CISCOESA_REQUEST_TIMEOUT)
         self._auth = (self._username, self._password)
 
         # In "get report" action, if "starts_with" parameter is set, validate IP and email
-        self.set_validator(CISCOESA_CONTAINS_IP, None)
-        self.set_validator(CISCOESA_CONTAINS_EMAIL, None)
+        self.set_validator(consts.CISCOESA_CONTAINS_IP, None)
+        self.set_validator(consts.CISCOESA_CONTAINS_EMAIL, None)
 
         return phantom.APP_SUCCESS
 
@@ -238,12 +238,12 @@ class CiscoesaConnector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    action_result.set_status(phantom.APP_ERROR, CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
+                    action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
                     return None
                 parameter = int(parameter)
 
             except Exception:
-                action_result.set_status(phantom.APP_ERROR, CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
+                action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_VALIDATE_INTEGER_MESSAGE.format(key=key))
                 return None
 
             if parameter < 0:
@@ -268,25 +268,25 @@ class CiscoesaConnector(BaseConnector):
 
         # If given datetime not in expected format
         if len(date_time) <= 1:
-            self.error_print(CISCOESA_DATE_TIME_FORMAT_ERROR)
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_FORMAT_ERROR), None
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         if len(date_time[1].split(":")) != 2:
-            self.error_print(CISCOESA_DATE_TIME_FORMAT_ERROR)
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_FORMAT_ERROR), None
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         date = date_time[0].split("-")
         hour = date_time[1].split(":")[0]
 
         if len(date) != 3:
-            self.error_print(CISCOESA_DATE_TIME_FORMAT_ERROR)
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_FORMAT_ERROR), None
+            self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         try:
             parsed_date_time = datetime.datetime(year=int(date[0]), month=int(date[1]), day=int(date[2]), hour=int(hour))
         except Exception:
-            self.error_print(CISCOESA_DATE_TIME_VALIDATION_ERROR)
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_VALIDATION_ERROR), None
+            self.error_print(consts.CISCOESA_DATE_TIME_VALIDATION_ERROR)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_VALIDATION_ERROR), None
 
         return phantom.APP_SUCCESS, parsed_date_time
 
@@ -362,68 +362,74 @@ class CiscoesaConnector(BaseConnector):
         api_params = {"device_type": "esa"}
 
         # Getting mandatory parameters
-        report_title = param[CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
-        if report_title not in CISCOESA_REPORT_TITLE:
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_REPORT_TITLE_ERROR)
+        report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
+        if report_title not in consts.CISCOESA_REPORT_TITLE:
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_REPORT_TITLE_ERROR)
 
         # Getting optional parameters
-        start_time = param.get(CISCOESA_GET_REPORT_JSON_START_TIME)
-        end_time = param.get(CISCOESA_GET_REPORT_JSON_END_TIME)
-        filter_by = param.get(CISCOESA_GET_REPORT_JSON_FILTER_BY)
-        filter_value = param.get(CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
+        start_time = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
+        end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
+        filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
+        filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
         limit = self._validate_integers(
-            action_result, param.get(CISCOESA_GET_REPORT_JSON_LIMIT, CISCOESA_DEFAULT_LIMIT), CISCOESA_GET_REPORT_JSON_LIMIT
+            action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT
         )
         if limit is None:
             return action_result.get_status()
         offset = self._validate_integers(
-            action_result, param.get(CISCOESA_GET_REPORT_JSON_OFFSET, CISCOESA_DEFAULT_OFFSET), CISCOESA_GET_REPORT_JSON_OFFSET, allow_zero=True
+            action_result,
+            param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET),
+            consts.CISCOESA_GET_REPORT_JSON_OFFSET,
+            allow_zero=True,
         )
         if offset is None:
             return action_result.get_status()
-        starts_with = param.get(CISCOESA_GET_REPORT_JSON_STARTS_WITH)
-        order_by = param.get(CISCOESA_GET_REPORT_JSON_ORDER_BY)
-        order_dir = param.get(CISCOESA_GET_REPORT_JSON_ORDER_DIR)
+        starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)
+        order_by = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_BY)
+        order_dir = param.get(consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR)
 
-        api_params[CISCOESA_GET_REPORT_JSON_LIMIT] = limit
-        api_params[CISCOESA_GET_REPORT_JSON_OFFSET] = offset
+        api_params[consts.CISCOESA_GET_REPORT_JSON_LIMIT] = limit
+        api_params[consts.CISCOESA_GET_REPORT_JSON_OFFSET] = offset
 
         # If both start_time and end_time is not given, then by default, API will query report for last 250 days
         if not start_time and not end_time:
-            start_time = (datetime.datetime.now() - datetime.timedelta(days=CISCOESA_DEFAULT_SPAN_DAYS)).strftime(CISCOESA_INPUT_TIME_FORMAT)
+            start_time = (datetime.datetime.now() - datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)).strftime(
+                consts.CISCOESA_INPUT_TIME_FORMAT
+            )
 
-            end_time = datetime.datetime.now().strftime(CISCOESA_INPUT_TIME_FORMAT)
+            end_time = datetime.datetime.now().strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
 
         # If start_time is given, but end_time is not given
         elif not end_time:
             try:
                 # end_time will be calculated equivalent to given start_time
-                end_time = datetime.datetime.strptime(start_time, CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
-                    days=CISCOESA_DEFAULT_SPAN_DAYS
+                end_time = datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
+                    days=consts.CISCOESA_DEFAULT_SPAN_DAYS
                 )
                 # If calculated end_time is a future date, then it will be replaced by current date
                 if (
-                    datetime.datetime.strptime(start_time, CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(days=CISCOESA_DEFAULT_SPAN_DAYS)
+                    datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT)
+                    + datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
                     >= datetime.datetime.now()
                 ):
                     end_time = datetime.datetime.now()
             except Exception:
-                self.error_print(CISCOESA_DATE_TIME_FORMAT_ERROR)
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_FORMAT_ERROR)
+                self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
             # Converting date in string format
-            end_time = end_time.strftime(CISCOESA_INPUT_TIME_FORMAT)
+            end_time = end_time.strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
 
         # If start_time is not given, but end_time is given
         elif not start_time:
             try:
                 # start_time will be calculated equivalent to given end_time
-                temp_time1 = datetime.datetime.strptime(end_time, CISCOESA_INPUT_TIME_FORMAT)
-                temp_time2 = datetime.timedelta(days=CISCOESA_DEFAULT_SPAN_DAYS)
-                start_time = (temp_time1 - temp_time2).strftime(CISCOESA_INPUT_TIME_FORMAT)
+                temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
+                temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
+                start_time = (temp_time1 - temp_time2).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
             except Exception:
-                self.error_print(CISCOESA_DATE_TIME_FORMAT_ERROR)
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_DATE_TIME_FORMAT_ERROR)
+                self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
         # Validating start_time
         validate_status, parsed_start_time = self._validate_date_time(start_time, action_result)
@@ -437,8 +443,8 @@ class CiscoesaConnector(BaseConnector):
 
         # Comparing start time and end time
         if parsed_start_time >= parsed_end_time:
-            self.error_print(CISCOESA_START_TIME_GREATER_THEN_END_TIME)
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_START_TIME_GREATER_THEN_END_TIME)
+            self.error_print(consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_START_TIME_GREATER_THEN_END_TIME)
 
         # if starts_with parameter is not set, then IP and email must be validated
         # Search value should be validated to be either an IP address or an email, if report title is
@@ -446,58 +452,61 @@ class CiscoesaConnector(BaseConnector):
         if not starts_with and (filter_by and filter_value):
             if (
                 report_title
-                in [CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE, CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE]
+                in [
+                    consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
+                    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE,
+                ]
                 and not _is_ip(filter_value)
-            ) or (report_title == CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE and not phantom.is_email(filter_value)):
-                self.error_print(CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
+            ) or (report_title == consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE and not phantom.is_email(filter_value)):
+                self.error_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
 
         # Report will be queried for last given duration period
         # Time zone that will be considered for calculating time and date will be GMT having 00:00 offset from UTC
         # Time to query the report supports only 00 minutes
         try:
-            start_time = parsed_start_time.strftime(CISCOESA_API_TIME_FORMAT)
-            end_time = parsed_end_time.strftime(CISCOESA_API_TIME_FORMAT)
+            start_time = parsed_start_time.strftime(consts.CISCOESA_API_TIME_FORMAT)
+            end_time = parsed_end_time.strftime(consts.CISCOESA_API_TIME_FORMAT)
         except Exception as error:
             return action_result.set_status(phantom.APP_ERROR, self._get_error_message_from_exception(error))
 
-        api_params[CISCOESA_GET_REPORT_PARAM_START_DATE] = start_time
-        api_params[CISCOESA_GET_REPORT_PARAM_END_DATE] = end_time
+        api_params[consts.CISCOESA_GET_REPORT_PARAM_START_DATE] = start_time
+        api_params[consts.CISCOESA_GET_REPORT_PARAM_END_DATE] = end_time
 
         # Obtain report name
         report_name = REPORT_TITLE_TO_NAME_AND_FILTER_MAPPING[report_title]
 
         if filter_by:
-            api_params[CISCOESA_GET_REPORT_JSON_FILTER_BY_KEY] = filter_by
+            api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_BY_KEY] = filter_by
         if filter_value:
-            api_params[CISCOESA_GET_REPORT_JSON_FILTER_VALUE_KEY] = filter_value
+            api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE_KEY] = filter_value
 
         if filter_by and filter_value:
             if starts_with:
-                api_params[CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "begins_with"
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "begins_with"
             else:
-                api_params[CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "is"
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "is"
 
         if order_by:
-            api_params[CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by
+            api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by
         if order_dir:
-            if order_dir not in CISCOESA_ORDER_DIR:
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_ORDER_DIR_ERROR)
-            api_params[CISCOESA_GET_REPORT_JSON_ORDER_DIR_KEY] = order_dir
+            if order_dir not in consts.CISCOESA_ORDER_DIR:
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ORDER_DIR_ERROR)
+            api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_DIR_KEY] = order_dir
 
-        report_endpoint = CISCOESA_GET_REPORT_ENDPOINT.format(report_name=report_name)
-        self.send_progress(CISCOESA_GET_REPORT_INTERMEDIATE_MESSAGE.format(report_title=report_title))
+        report_endpoint = consts.CISCOESA_GET_REPORT_ENDPOINT.format(report_name=report_name)
+        self.send_progress(consts.CISCOESA_GET_REPORT_INTERMEDIATE_MESSAGE.format(report_title=report_title))
 
         # Making REST call to get report data
         response_status, report_data = self._make_rest_call(report_endpoint, action_result, params=api_params)
 
         # Something went wrong while querying a report
         if phantom.is_fail(response_status):
-            self.error_print(CISCOESA_GET_REPORT_ERROR.format(report_title=report_title))
+            self.error_print(consts.CISCOESA_GET_REPORT_ERROR.format(report_title=report_title))
             return action_result.get_status()
         action_result.add_data(report_data)
 
-        return action_result.set_status(phantom.APP_SUCCESS, CISCOESA_REPORTS_QUERIED_SUCCESS_MESSAGE)
+        return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REPORTS_QUERIED_SUCCESS_MESSAGE)
 
     def _test_asset_connectivity(self, param):
         """This function tests the connectivity of an asset with given credentials.
@@ -508,17 +517,17 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = ActionResult()
 
-        self.save_progress(CISCOESA_CONNECTIVITY_TEST_MESSAGE)
+        self.save_progress(consts.CISCOESA_CONNECTIVITY_TEST_MESSAGE)
         self.save_progress("Configured URL: {url}".format(url=self._url))
 
-        ret_value, _ = self._make_rest_call(endpoint=CISCOESA_TEST_CONNECTIVITY_ENDPOINT, action_result=action_result)
+        ret_value, _ = self._make_rest_call(endpoint=consts.CISCOESA_TEST_CONNECTIVITY_ENDPOINT, action_result=action_result)
 
         if phantom.is_fail(ret_value):
             self.save_progress(action_result.get_message())
-            self.set_status(phantom.APP_ERROR, CISCOESA_TEST_CONNECTIVITY_FAIL)
+            self.set_status(phantom.APP_ERROR, consts.CISCOESA_TEST_CONNECTIVITY_FAIL)
             return action_result.get_status()
 
-        self.set_status_save_progress(phantom.APP_SUCCESS, CISCOESA_TEST_CONNECTIVITY_SUCCESS)
+        self.set_status_save_progress(phantom.APP_SUCCESS, consts.CISCOESA_TEST_CONNECTIVITY_SUCCESS)
 
         return action_result.get_status()
 
@@ -527,13 +536,13 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        dictionary_name = param[CISCOESA_DICTIONARY_JSON_NAME]
+        dictionary_name = param[consts.CISCOESA_DICTIONARY_JSON_NAME]
 
         req_params = {"device_type": "esa"}
         if self._cluster:
             req_params["mode"] = "cluster"
 
-        dictionary_endpoint = f"{CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
+        dictionary_endpoint = f"{consts.CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params)
@@ -562,15 +571,15 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        dictionary_name = param[CISCOESA_DICTIONARY_JSON_NAME]
-        words = param[CISCOESA_DICTIONARY_JSON_WORDS]
+        dictionary_name = param[consts.CISCOESA_DICTIONARY_JSON_NAME]
+        words = param[consts.CISCOESA_DICTIONARY_JSON_WORDS]
 
         ret_val, validated_words = self._parse_and_validate_words(action_result, words)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        dictionary_endpoint = f"{CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}/words"
+        dictionary_endpoint = f"{consts.CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}/words"
 
         req_params = {"device_type": "esa"}
         if self._cluster:
@@ -600,12 +609,12 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        dictionary_name = param[CISCOESA_DICTIONARY_JSON_NAME]
-        words = param[CISCOESA_DICTIONARY_JSON_WORDS]
+        dictionary_name = param[consts.CISCOESA_DICTIONARY_JSON_NAME]
+        words = param[consts.CISCOESA_DICTIONARY_JSON_WORDS]
 
         validated_words = [x.lstrip(" \"'").rstrip(" \"'") for x in words.split(",")]
 
-        dictionary_endpoint = f"{CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}/words"
+        dictionary_endpoint = f"{consts.CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}/words"
 
         # device_type=esa
         req_params = {"device_type": "esa"}
@@ -636,7 +645,7 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        dictionary_endpoint = CISCOESA_DICTIONARY_ENDPOINT
+        dictionary_endpoint = consts.CISCOESA_DICTIONARY_ENDPOINT
 
         # device_type=esa
         req_params = {"device_type": "esa"}
@@ -669,7 +678,7 @@ class CiscoesaConnector(BaseConnector):
         for pair in pairs:
             match = pattern.fullmatch(pair.strip())
             if not match:
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_WORDS_MESSAGE.format(pair)), None
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_WORDS_MESSAGE.format(pair)), None
 
             word = match.group(1)
             weight = match.group(2)
@@ -682,13 +691,13 @@ class CiscoesaConnector(BaseConnector):
                 try:
                     weight_value = int(weight)
                     if not (0 <= weight_value <= 10):
-                        return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_WORDS_WEIGHT_MESSAGE.format(pair)), None
+                        return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_WORDS_WEIGHT_MESSAGE.format(pair)), None
                 except ValueError:
-                    return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_WORDS_WEIGHT_MESSAGE.format(pair)), None
+                    return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_WORDS_WEIGHT_MESSAGE.format(pair)), None
 
             # Validate the presence of "prefix" only with words starting with '*'
             if prefix and not word.startswith("*"):
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_PREFIX_MESSAGE.format(pair)), None
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_PREFIX_MESSAGE.format(pair)), None
 
             # Construct the output based on the captured values
             if prefix:
@@ -712,7 +721,7 @@ class CiscoesaConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        dictionary_endpoint = f"{CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
+        dictionary_endpoint = f"{consts.CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
 
         # device_type=esa
         req_params = {"device_type": "esa"}
@@ -746,7 +755,7 @@ class CiscoesaConnector(BaseConnector):
 
         dictionary_name = param["dictionary_name"]
 
-        dictionary_endpoint = f"{CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
+        dictionary_endpoint = f"{consts.CISCOESA_DICTIONARY_ENDPOINT}/{dictionary_name}"
 
         req_params = {"device_type": "esa"}
         if self._cluster:
@@ -770,8 +779,8 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _get_policy_items(self, action_result, param):
-        policy = param[CISCOESA_POLICY_JSON_POLICY_NAME]
-        policy_endpoint = CISCOESA_POLICY_ENDPOINT.format(policy=policy)
+        policy = param[consts.CISCOESA_POLICY_JSON_POLICY_NAME]
+        policy_endpoint = consts.CISCOESA_POLICY_ENDPOINT.format(policy=policy)
 
         req_params = {"device_type": "esa"}
         if self._cluster:
@@ -827,7 +836,7 @@ class CiscoesaConnector(BaseConnector):
                 invalid_entries.append(entry)
 
         if invalid_entries:
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_DOMAIN_ENTRIES.format(parameter, invalid_entries)), None
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_DOMAIN_ENTRIES.format(parameter, invalid_entries)), None
 
         return phantom.APP_SUCCESS, valid_entries
 
@@ -836,39 +845,39 @@ class CiscoesaConnector(BaseConnector):
 
         if raw_json:
             if any([sender, sender_not, receiver, receiver_not]):
-                errors.append(CISCOESA_INVALID_POLICY_JSON_RAW)
+                errors.append(consts.CISCOESA_INVALID_POLICY_JSON_RAW)
         else:
             if sender_config == "sender":
                 if not sender:
-                    errors.append(CISCOESA_INVALID_POLICY_REQUIRES.format("sender"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_REQUIRES.format("sender"))
                 if sender_not:
-                    errors.append(CISCOESA_INVALID_POLICY_NOT_REQUIRES("sender", "sender_not"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES("sender", "sender_not"))
             elif sender_config == "sender_not":
                 if not sender_not:
-                    errors.append(CISCOESA_INVALID_POLICY_REQUIRES.format("sender_not"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_REQUIRES.format("sender_not"))
                 if sender:
-                    errors.append(CISCOESA_INVALID_POLICY_NOT_REQUIRES("sendernot", "sender"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES("sendernot", "sender"))
             else:
-                errors.append(CISCOESA_INVALID_POLICY_UNKNOWN.format(sender_config))
+                errors.append(consts.CISCOESA_INVALID_POLICY_UNKNOWN.format(sender_config))
 
             # Check operation for receiver_not rule
             if operation == "or" and receiver_not:
-                errors.append(CISCOESA_INVALID_POLICY_RECEIVER_NOT)
+                errors.append(consts.CISCOESA_INVALID_POLICY_RECEIVER_NOT)
 
         if errors:
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_DOMAIN_ENTRIES_PARAMS.format(",".join(errors)))
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_DOMAIN_ENTRIES_PARAMS.format(",".join(errors)))
         else:
             return phantom.APP_SUCCESS
 
     def _build_esa_policy_from_param(self, action_result, param):
         # Optional values should use the .get() function
-        sender_config = param.get(CISCOESA_POLICY_JSON_SENDER_CONFIG, False)
-        sender = param.get(CISCOESA_POLICY_JSON_SENDER, False)
-        sender_not = param.get(CISCOESA_POLICY_JSON_SENDER_NOT, False)
-        receiver = param.get(CISCOESA_POLICY_JSON_RECEIVER, False)
-        receiver_not = param.get(CISCOESA_POLICY_JSON_RECEIVER_NOT, False)
-        operation = param.get(CISCOESA_POLICY_JSON_OPERATION, "and")
-        raw_json = param.get(CISCOESA_POLICY_JSON_RAW_JSON, False)
+        sender_config = param.get(consts.CISCOESA_POLICY_JSON_SENDER_CONFIG, False)
+        sender = param.get(consts.CISCOESA_POLICY_JSON_SENDER, False)
+        sender_not = param.get(consts.CISCOESA_POLICY_JSON_SENDER_NOT, False)
+        receiver = param.get(consts.CISCOESA_POLICY_JSON_RECEIVER, False)
+        receiver_not = param.get(consts.CISCOESA_POLICY_JSON_RECEIVER_NOT, False)
+        operation = param.get(consts.CISCOESA_POLICY_JSON_OPERATION, "and")
+        raw_json = param.get(consts.CISCOESA_POLICY_JSON_RAW_JSON, False)
 
         ret_val = self._validate_policy_params(action_result, sender_config, sender, sender_not, receiver, receiver_not, operation, raw_json)
 
@@ -879,7 +888,7 @@ class CiscoesaConnector(BaseConnector):
             try:
                 payload = json.loads(raw_json)
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, CISCOESA_INVALID_DOMAIN_JSON_RAW.format(e)), None
+                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_INVALID_DOMAIN_JSON_RAW.format(e)), None
         else:
             ret_val, sender = self._validate_domain_entries(action_result, "sender", sender) if sender else (phantom.APP_SUCCESS, False)
             if phantom.is_fail(ret_val):
@@ -967,7 +976,9 @@ class CiscoesaConnector(BaseConnector):
                 validation_errors.append("'receiver_not' must contain a non-empty 'domain_entries' list.")
 
         if len(validation_errors) > 0:
-            action_result.set_status(phantom.APP_ERROR, CISCOESA_IVALID_POLICY_FORMAT.format(json.dumps(policy), ",".join(validation_errors)))
+            action_result.set_status(
+                phantom.APP_ERROR, consts.CISCOESA_IVALID_POLICY_FORMAT.format(json.dumps(policy), ",".join(validation_errors))
+            )
         else:
             return phantom.APP_SUCCESS
 
@@ -977,16 +988,16 @@ class CiscoesaConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
-        policy = param[CISCOESA_POLICY_JSON_POLICY_NAME]
+        policy = param[consts.CISCOESA_POLICY_JSON_POLICY_NAME]
 
         # update takes a list
         if action == "update":
             if raw_json:
                 payload = raw_json
-            elif not param.get(CISCOESA_POLICY_JSON_RAW_JSON, False):
+            elif not param.get(consts.CISCOESA_POLICY_JSON_RAW_JSON, False):
                 payload["data"] = [payload["data"]]
 
-        policy_endpoint = CISCOESA_POLICY_ENDPOINT.format(policy=policy)
+        policy_endpoint = consts.CISCOESA_POLICY_ENDPOINT.format(policy=policy)
 
         # device_type=esa
         req_params = {"device_type": "esa"}
@@ -1134,7 +1145,7 @@ class CiscoesaConnector(BaseConnector):
 
         # Return empty array if no element was found and modified
         if not element_found:
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_ERROR_ENTRY_NOTFOUND.format(policy)), None
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_ENTRY_NOTFOUND.format(policy)), None
 
         updated_policy = {"data": updated_data}
         return phantom.APP_SUCCESS, updated_policy
@@ -1144,7 +1155,7 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        policy = param[CISCOESA_POLICY_JSON_POLICY_NAME]
+        policy = param[consts.CISCOESA_POLICY_JSON_POLICY_NAME]
         ret_val, to_remove = self._build_esa_policy_from_param(action_result, param)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -1154,7 +1165,7 @@ class CiscoesaConnector(BaseConnector):
             return action_result.get_status()
 
         if not response.get("data", False):
-            return action_result.set_status(phantom.APP_ERROR, CISCOESA_ERROR_NODATA_POLICY)
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_NODATA_POLICY)
 
         ret_val, updated_policy = self._remove_matching_element(action_result, response["data"], to_remove["data"], policy)
         if phantom.is_fail(ret_val):
@@ -1196,30 +1207,30 @@ class CiscoesaConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
-        start_date = param[CISCOESA_QUARANTINE_JSON_START_DATE]
-        end_date = param[CISCOESA_QUARANTINE_JSON_END_DATE]
-        offset = param[CISCOESA_QUARANTINE_JSON_OFFSET]
-        limit = param[CISCOESA_QUARANTINE_JSON_LIMIT]
-        quarantines = param[CISCOESA_POV_QUARANTINE_JSON_QUARANTINES]
+        start_date = param[consts.CISCOESA_QUARANTINE_JSON_START_DATE]
+        end_date = param[consts.CISCOESA_QUARANTINE_JSON_END_DATE]
+        offset = param[consts.CISCOESA_QUARANTINE_JSON_OFFSET]
+        limit = param[consts.CISCOESA_QUARANTINE_JSON_LIMIT]
+        quarantines = param[consts.CISCOESA_POV_QUARANTINE_JSON_QUARANTINES]
 
         ret_val, start_date, end_date = self._validate_and_format_dates(action_result, start_date, end_date)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        subject_filter_by = param.get(CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_BY, False)
-        subject_filter_value = param.get(CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_VALUE, False)
-        originating_esa_ip = param.get(CISCOESA_POV_QUARANTINE_JSON_ORIGINATING_ESA_IP, False)
-        attachment_name = param.get(CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_NAME, False)
-        attachment_size_filter_by = param.get(CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FILTER_BY, False)
-        attachment_size_from_value = param.get(CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FROM_VALUE, False)
-        attachment_size_to_value = param.get(CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_TO_VALUE, False)
-        order_by = param.get(CISCOESA_QUARANTINE_JSON_ORDER_BY, False)
-        order_dir = param.get(CISCOESA_QUARANTINE_JSON_ORDER_DIR, False)
-        envelope_recipient_filter_by = param.get(CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_BY, False)
-        envelope_recipient_filter_value = param.get(CISCOESA_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_VALUE, False)
-        envelope_sender_filter_by = param.get(CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_BY, False)
-        envelope_sender_filter_value = param.get(CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_VALUE, False)
+        subject_filter_by = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_BY, False)
+        subject_filter_value = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_SUBJECT_FILTER_VALUE, False)
+        originating_esa_ip = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ORIGINATING_ESA_IP, False)
+        attachment_name = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_NAME, False)
+        attachment_size_filter_by = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FILTER_BY, False)
+        attachment_size_from_value = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_FROM_VALUE, False)
+        attachment_size_to_value = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ATTACHMENT_SIZE_TO_VALUE, False)
+        order_by = param.get(consts.CISCOESA_QUARANTINE_JSON_ORDER_BY, False)
+        order_dir = param.get(consts.CISCOESA_QUARANTINE_JSON_ORDER_DIR, False)
+        envelope_recipient_filter_by = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_BY, False)
+        envelope_recipient_filter_value = param.get(consts.CISCOESA_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_VALUE, False)
+        envelope_sender_filter_by = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_BY, False)
+        envelope_sender_filter_value = param.get(consts.CISCOESA_POV_QUARANTINE_JSON_ENVELOPE_SENDER_FILTER_VALUE, False)
 
         params = {
             "startDate": start_date,
@@ -1246,7 +1257,9 @@ class CiscoesaConnector(BaseConnector):
         req_params = {k: v for k, v in params.items() if v}
 
         pov_quarantine_endpoint = (
-            CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa") if self._esa_is_sma else CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
+            consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa")
+            if self._esa_is_sma
+            else consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
         )
 
         # make rest call
@@ -1267,18 +1280,20 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _release_quarantine(self, action_result, param, quaranrantine_type="spam"):
-        mids = param[CISCOESA_POV_QUARANTINE_JSON_MIDS]
+        mids = param[consts.CISCOESA_POV_QUARANTINE_JSON_MIDS]
 
         mids = [int(x.strip(" ")) for x in mids.split(",")]
 
         quarantine_endpoint = (
-            CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa") if self._esa_is_sma else CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
+            consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa")
+            if self._esa_is_sma
+            else consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
         )
 
         payload = {"action": "release", "mids": mids, "quarantineType": quaranrantine_type}
 
         if quaranrantine_type == "pvo":
-            quarantine_name = param[CISCOESA_POV_QUARANTINE_JSON_QUARANTINE_NAME]
+            quarantine_name = param[consts.CISCOESA_POV_QUARANTINE_JSON_QUARANTINE_NAME]
             payload["quarantineName"] = quarantine_name
 
         # make rest call
@@ -1314,17 +1329,17 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        start_date = param[CISCOESA_QUARANTINE_JSON_START_DATE]
-        end_date = param[CISCOESA_QUARANTINE_JSON_END_DATE]
+        start_date = param[consts.CISCOESA_QUARANTINE_JSON_START_DATE]
+        end_date = param[consts.CISCOESA_QUARANTINE_JSON_END_DATE]
 
-        offset = param.get(CISCOESA_QUARANTINE_JSON_OFFSET, False)
-        limit = param.get(CISCOESA_QUARANTINE_JSON_LIMIT, False)
-        order_by = param.get(CISCOESA_QUARANTINE_JSON_ORDER_BY, False)
-        order_dir = param.get(CISCOESA_QUARANTINE_JSON_ORDER_DIR, False)
-        envelope_recipient_filter_operator = param.get(CISCOESA_SPAM_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_OPERATOR, False)
-        envelope_recipient_filter_value = param.get(CISCOESA_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_VALUE, False)
-        filter_operator = param.get(CISCOESA_SPAM_QUARANTINE_JSON_FILTER_OPERATOR, False)
-        filter_value = param.get(CISCOESA_SPAM_QUARANTINE_JSON_FILTER_VALUE, False)
+        offset = param.get(consts.CISCOESA_QUARANTINE_JSON_OFFSET, False)
+        limit = param.get(consts.CISCOESA_QUARANTINE_JSON_LIMIT, False)
+        order_by = param.get(consts.CISCOESA_QUARANTINE_JSON_ORDER_BY, False)
+        order_dir = param.get(consts.CISCOESA_QUARANTINE_JSON_ORDER_DIR, False)
+        envelope_recipient_filter_operator = param.get(consts.CISCOESA_SPAM_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_OPERATOR, False)
+        envelope_recipient_filter_value = param.get(consts.CISCOESA_QUARANTINE_JSON_ENVELOPE_RECIPIENT_FILTER_VALUE, False)
+        filter_operator = param.get(consts.CISCOESA_SPAM_QUARANTINE_JSON_FILTER_OPERATOR, False)
+        filter_value = param.get(consts.CISCOESA_SPAM_QUARANTINE_JSON_FILTER_VALUE, False)
 
         params = {
             "startDate": start_date,
@@ -1343,7 +1358,9 @@ class CiscoesaConnector(BaseConnector):
         req_params = {k: v for k, v in params.items() if v}
 
         quarantine_endpoint = (
-            CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa") if self._esa_is_sma else CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
+            consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="esa")
+            if self._esa_is_sma
+            else consts.CISCOESA_QUARANTINE_ENDPOINT.format(esa_sma="sma")
         )
 
         # make rest call
