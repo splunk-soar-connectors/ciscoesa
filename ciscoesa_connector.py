@@ -19,13 +19,27 @@ import json
 import re
 import socket
 import urllib.parse
+from typing import TYPE_CHECKING, Any, Iterable, Optional, cast
 
-import phantom.app as phantom
 import requests
 from bs4 import BeautifulSoup
 from dateutil import parser
-from phantom.action_result import ActionResult
-from phantom.base_connector import BaseConnector
+
+if TYPE_CHECKING:
+    from unittest.mock import MagicMock
+
+    phantom = MagicMock()
+
+    class ActionResult(MagicMock):
+        pass
+
+    class BaseConnector(MagicMock):
+        pass
+
+else:
+    import phantom.app as phantom
+    from phantom.action_result import ActionResult
+    from phantom.base_connector import BaseConnector
 
 import ciscoesa_consts as consts
 
@@ -61,7 +75,7 @@ REPORT_TITLE_TO_NAME_AND_FILTER_MAPPING = {
 }
 
 
-def _is_ip(ip_address):
+def _is_ip(ip_address: str) -> bool:
     """Function that validates IP address (IPv4 or IPv6).
 
     :param ip_address: IP address to verify
@@ -78,18 +92,12 @@ def _is_ip(ip_address):
     return True
 
 
-class RetVal(tuple):
-
-    def __new__(cls, val1, val2=None):
-        return tuple.__new__(RetVal, (val1, val2))
-
-
 class CiscoesaConnector(BaseConnector):
     """This is an AppConnector class that inherits the BaseConnector class. It implements various actions supported by
     Cisco ESA and helper methods required to run the actions.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         # Calling the BaseConnector's init function
         super(CiscoesaConnector, self).__init__()
@@ -99,13 +107,13 @@ class CiscoesaConnector(BaseConnector):
         self._password = None
         self._verify_server_cert = False
 
-    def _process_empty_response(self, response, action_result):
+    def _process_empty_response(self, response: requests.Response, action_result: ActionResult) -> tuple[bool, Optional[dict]]:
         if response.status_code == 200:
-            return RetVal(phantom.APP_SUCCESS, {})
+            return phantom.APP_SUCCESS, {}
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, "Empty response and no information in the header"), None)
+        return action_result.set_status(phantom.APP_ERROR, "Empty response and no information in the header"), None
 
-    def _process_html_response(self, response, action_result):
+    def _process_html_response(self, response: requests.Response, action_result: ActionResult) -> tuple[bool, None]:
         # An html response, treat it like an error
         status_code = response.status_code
 
@@ -115,31 +123,31 @@ class CiscoesaConnector(BaseConnector):
             split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
             error_text = "\n".join(split_lines)
-        except:
+        except Exception:
             error_text = "Cannot parse error details"
 
         message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
 
         message = message.replace("{", "{{").replace("}", "}}")
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
+        return action_result.set_status(phantom.APP_ERROR, message), None
 
-    def _process_json_response(self, r, action_result):
+    def _process_json_response(self, r: requests.Response, action_result: ActionResult) -> tuple[bool, Optional[Any]]:
         # Try a json parse
         try:
             resp_json = r.json()
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(str(e))), None)
+            return action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(str(e))), None
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
-            return RetVal(phantom.APP_SUCCESS, resp_json)
+            return phantom.APP_SUCCESS, resp_json
 
         # You should process the error returned in the json
         message = "Error from server. Status Code: {0} Data from server: {1}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
+        return action_result.set_status(phantom.APP_ERROR, message), None
 
-    def _process_response(self, r, action_result):
+    def _process_response(self, r: requests.Response, action_result: ActionResult) -> tuple[bool, Optional[Any]]:
         # store the r_text in debug data, it will get dumped in the logs if the action fails
         if hasattr(action_result, "add_debug_data"):
             action_result.add_debug_data({"r_status_code": r.status_code})
@@ -168,9 +176,9 @@ class CiscoesaConnector(BaseConnector):
             r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
+        return action_result.set_status(phantom.APP_ERROR, message), None
 
-    def _get_error_message_from_exception(self, e):
+    def _get_error_message_from_exception(self, e: Exception) -> str:
         """This function is used to get appropriate error message from the exception.
         :param e: Exception object
         :return: error message
@@ -197,7 +205,7 @@ class CiscoesaConnector(BaseConnector):
 
         return error_text
 
-    def initialize(self):
+    def initialize(self) -> bool:
         """This is an optional function that can be implemented by the AppConnector derived class. Since the
         configuration dictionary is already validated by the time this function is called, it's a good place to do any
         extra initialization of any internal modules. This function MUST return a value of either phantom.APP_SUCCESS or
@@ -227,7 +235,7 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
-    def _validate_integers(self, action_result, parameter, key, allow_zero=False):
+    def _validate_integers(self, action_result: ActionResult, parameter: Optional[Any], key: str, allow_zero: bool = False) -> Optional[int]:
         """This method is to check if the provided input parameter value
         is a non-zero positive integer and returns the integer value of the parameter itself.
         :param action_result: Action result or BaseConnector object
@@ -255,7 +263,7 @@ class CiscoesaConnector(BaseConnector):
 
         return parameter
 
-    def _validate_date_time(self, date_time_value, action_result):
+    def _validate_date_time(self, date_time_value: str, action_result: ActionResult) -> tuple[bool, Optional[datetime.datetime]]:
         """Function used to validate date and time format. As per the app configuration, date and time must be provided
         in YYYY-MM-DDTHH:00 format.
 
@@ -290,7 +298,9 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, parsed_date_time
 
-    def _make_rest_call(self, endpoint, action_result, method="get", use_sma=False, **kwargs):
+    def _make_rest_call(
+        self, endpoint: str, action_result: ActionResult, method: str = "get", use_sma: bool = False, **kwargs
+    ) -> tuple[bool, Optional[Any]]:
         """Function that makes the REST call to the device. It is a generic function that can be called from various
         action handlers.
 
@@ -307,7 +317,7 @@ class CiscoesaConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
+            return action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json
 
         # Create a URL to connect to
         url = f"{self._url}{endpoint}" if not use_sma else f"{self._sma_url}{endpoint}"
@@ -315,11 +325,11 @@ class CiscoesaConnector(BaseConnector):
         try:
             r = request_func(url, timeout=self._timeout, auth=self._auth, verify=self._verify_server_cert, **kwargs)
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(str(e))), resp_json)
+            return action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(str(e))), resp_json
 
         return self._process_response(r, action_result)
 
-    def _decode_url(self, param):
+    def _decode_url(self, param: dict[str, Any]) -> bool:
         """Process URL and return it stripped
         of the 'secure-web.cisco.com' portion and unquoted
 
@@ -351,7 +361,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
-    def _get_report(self, param):
+    def _get_report(self, param: dict[str, Any]) -> bool:
         """Function to retrieve statistical report from the Email Security appliance.
 
         :param param: dictionary of input parameters
@@ -359,7 +369,7 @@ class CiscoesaConnector(BaseConnector):
         """
 
         action_result = self.add_action_result(ActionResult(dict(param)))
-        api_params = {"device_type": "esa"}
+        api_params: dict[str, Any] = {"device_type": "esa"}
 
         # Getting mandatory parameters
         report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
@@ -367,8 +377,8 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_REPORT_TITLE_ERROR)
 
         # Getting optional parameters
-        start_time = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
-        end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
+        start_time: Optional[str] = param.get(consts.CISCOESA_GET_REPORT_JSON_START_TIME)
+        end_time: Optional[str] = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
         filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
         filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
         limit = self._validate_integers(
@@ -400,10 +410,10 @@ class CiscoesaConnector(BaseConnector):
             end_time = datetime.datetime.now().strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
 
         # If start_time is given, but end_time is not given
-        elif not end_time:
+        elif start_time and not end_time:
             try:
                 # end_time will be calculated equivalent to given start_time
-                end_time = datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
+                end_time_dt = datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
                     days=consts.CISCOESA_DEFAULT_SPAN_DAYS
                 )
                 # If calculated end_time is a future date, then it will be replaced by current date
@@ -412,16 +422,16 @@ class CiscoesaConnector(BaseConnector):
                     + datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
                     >= datetime.datetime.now()
                 ):
-                    end_time = datetime.datetime.now()
+                    end_time_dt = datetime.datetime.now()
             except Exception:
                 self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
             # Converting date in string format
-            end_time = end_time.strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
+            end_time = end_time_dt.strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
 
         # If start_time is not given, but end_time is given
-        elif not start_time:
+        elif end_time and not start_time:
             try:
                 # start_time will be calculated equivalent to given end_time
                 temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
@@ -431,14 +441,18 @@ class CiscoesaConnector(BaseConnector):
                 self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
 
+        # At this point, we should be guaranteed that neither of these are None
+        start_time = cast(str, start_time)
+        end_time = cast(str, end_time)
+
         # Validating start_time
         validate_status, parsed_start_time = self._validate_date_time(start_time, action_result)
-        if phantom.is_fail(validate_status):
+        if phantom.is_fail(validate_status) or parsed_start_time is None:
             return action_result.get_status()
 
         # Validating end_time
         validate_status, parsed_end_time = self._validate_date_time(end_time, action_result)
-        if phantom.is_fail(validate_status):
+        if phantom.is_fail(validate_status) or parsed_end_time is None:
             return action_result.get_status()
 
         # Comparing start time and end time
@@ -508,7 +522,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REPORTS_QUERIED_SUCCESS_MESSAGE)
 
-    def _test_asset_connectivity(self, param):
+    def _test_asset_connectivity(self, param: dict[str, Any]) -> bool:
         """This function tests the connectivity of an asset with given credentials.
 
         :param param: (not used in this method)
@@ -531,7 +545,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.get_status()
 
-    def _handle_list_dictionary_items(self, param):
+    def _handle_list_dictionary_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -546,6 +560,7 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -566,7 +581,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_add_dictionary_items(self, param):
+    def _handle_add_dictionary_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -589,6 +604,7 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params, method="post", json=payload)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -604,7 +620,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_remove_dictionary_items(self, param):
+    def _handle_remove_dictionary_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -625,6 +641,7 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params, method="delete", json=payload)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -640,7 +657,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_list_dictionaries(self, param):
+    def _handle_list_dictionaries(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -654,6 +671,7 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -669,7 +687,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _parse_and_validate_words(self, action_result, input_str):
+    def _parse_and_validate_words(self, action_result: ActionResult, input_str: str) -> tuple[bool, Optional[list[list[str]]]]:
         # Extended regex pattern to capture word, weight, and optional prefix
         pattern = re.compile(r"(\*?[^\|]+)(?:\|([\d.]+))?(?:\|(prefix))?")
         pairs = input_str.split(",")
@@ -707,7 +725,7 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, result
 
-    def _handle_add_dictionary(self, param):
+    def _handle_add_dictionary(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -732,6 +750,7 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params, method="post", json=payload)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -748,7 +767,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_remove_dictionary(self, param):
+    def _handle_remove_dictionary(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -763,14 +782,15 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._make_rest_call(dictionary_endpoint, action_result, params=req_params, method="delete")
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response["data"])
+        summary = action_result.update_summary({})
         if "data" in response:
             if response["data"].get("message", False):
-                summary = action_result.update_summary({})
                 summary["message"] = response["data"]["message"]
         else:
             action_result.add_data(response)
@@ -778,7 +798,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _get_policy_items(self, action_result, param):
+    def _get_policy_items(self, action_result: ActionResult, param: dict[str, Any]) -> tuple[bool, Optional[dict[str, Any]]]:
         policy = param[consts.CISCOESA_POLICY_JSON_POLICY_NAME]
         policy_endpoint = consts.CISCOESA_POLICY_ENDPOINT.format(policy=policy)
 
@@ -787,20 +807,21 @@ class CiscoesaConnector(BaseConnector):
             req_params["mode"] = "cluster"
 
         ret_val, response = self._make_rest_call(policy_endpoint, action_result, params=req_params)
+        response = cast(dict[str, Any], response)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
         return ret_val, response
 
-    def _handle_list_policy_items(self, param):
+    def _handle_list_policy_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         ret_val, response = self._get_policy_items(action_result, param)
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
         summary = action_result.update_summary({})
@@ -814,19 +835,19 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _validate_domain_entries(self, action_result, parameter, domain_entries):
+    def _validate_domain_entries(self, action_result: ActionResult, parameter: str, domain_entries: str) -> tuple[bool, Optional[list[str]]]:
         valid_domain_pattern = re.compile(r"^[^@]*\@((?:\.*?[\w]+\.)+[\w]+)*$")
         valid_ip_pattern = re.compile(r"^[^@]*\@\[ipv6:[0-9a-fA-F:]+\]$|^[^@]*\@\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]$")
 
-        domain_entries = domain_entries.split(",")
+        domain_entry_list = domain_entries.split(",")
 
         valid_entries = []
         invalid_entries = []
 
-        for entry in domain_entries:
+        for entry in domain_entry_list:
             entry = entry.strip()
             if entry == "ANY":
-                if len(domain_entries) > 1:
+                if len(domain_entry_list) > 1:
                     invalid_entries.append(entry)
                     continue
                 valid_entries.append(entry)
@@ -840,8 +861,18 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, valid_entries
 
-    def _validate_policy_params(self, action_result, sender_config, sender, sender_not, receiver, receiver_not, operation, raw_json):
-        errors = []
+    def _validate_policy_params(
+        self,
+        action_result: ActionResult,
+        sender_config: str,
+        sender: str,
+        sender_not: str,
+        receiver: str,
+        receiver_not: str,
+        operation: str,
+        raw_json: str,
+    ) -> bool:
+        errors: list[str] = []
 
         if raw_json:
             if any([sender, sender_not, receiver, receiver_not]):
@@ -851,12 +882,12 @@ class CiscoesaConnector(BaseConnector):
                 if not sender:
                     errors.append(consts.CISCOESA_INVALID_POLICY_REQUIRES.format("sender"))
                 if sender_not:
-                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES("sender", "sender_not"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES.format("sender", "sender_not"))
             elif sender_config == "sender_not":
                 if not sender_not:
                     errors.append(consts.CISCOESA_INVALID_POLICY_REQUIRES.format("sender_not"))
                 if sender:
-                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES("sendernot", "sender"))
+                    errors.append(consts.CISCOESA_INVALID_POLICY_NOT_REQUIRES.format("sendernot", "sender"))
             else:
                 errors.append(consts.CISCOESA_INVALID_POLICY_UNKNOWN.format(sender_config))
 
@@ -869,7 +900,7 @@ class CiscoesaConnector(BaseConnector):
         else:
             return phantom.APP_SUCCESS
 
-    def _build_esa_policy_from_param(self, action_result, param):
+    def _build_esa_policy_from_param(self, action_result: ActionResult, param: dict[str, Any]) -> tuple[bool, Optional[dict[str, Any]]]:
         # Optional values should use the .get() function
         sender_config = param.get(consts.CISCOESA_POLICY_JSON_SENDER_CONFIG, False)
         sender = param.get(consts.CISCOESA_POLICY_JSON_SENDER, False)
@@ -923,13 +954,13 @@ class CiscoesaConnector(BaseConnector):
                 payload["data"]["receiver_config"]["receiver_not"] = {}
                 payload["data"]["receiver_config"]["receiver_not"]["domain_entries"] = receiver_not
 
-            return phantom.APP_SUCCESS, payload
+        return phantom.APP_SUCCESS, payload
 
-    def _validate_esa_policy(self, action_result, policy):
+    def _validate_esa_policy(self, action_result: ActionResult, policy: dict[str, Any]) -> bool:
         validation_errors = []
         if "sender_config" not in policy:
             validation_errors.append("Missing 'sender_config' key.")
-        sender_config = policy.get("sender_config")
+        sender_config = policy.get("sender_config", {})
         sender = sender_config.get("sender")
         sender_not = sender_config.get("sender_not")
 
@@ -979,12 +1010,16 @@ class CiscoesaConnector(BaseConnector):
             action_result.set_status(
                 phantom.APP_ERROR, consts.CISCOESA_IVALID_POLICY_FORMAT.format(json.dumps(policy), ",".join(validation_errors))
             )
+            return action_result.get_status()
         else:
             return phantom.APP_SUCCESS
 
-    def _add_update_policy_items(self, action_result, param, action="add", raw_json=False):
+    def _add_update_policy_items(
+        self, action_result: ActionResult, param: dict[str, Any], action: str = "add", raw_json: Optional[dict[str, Any]] = None
+    ) -> tuple[bool, Optional[dict[str, Any]]]:
 
         ret_val, payload = self._build_esa_policy_from_param(action_result, param)
+        payload = cast(dict[str, Any], payload)
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
@@ -1014,48 +1049,50 @@ class CiscoesaConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, response
 
-    def _handle_add_policy_items(self, param):
+    def _handle_add_policy_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # make rest call
         ret_val, response = self._add_update_policy_items(action_result, param, action="add")
+        response = cast(dict[str, Any], response)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response["data"])
+        summary = action_result.update_summary({})
         if "data" in response:
             if response["data"].get("message", False):
-                summary = action_result.update_summary({})
                 summary["message"] = response["data"]["message"]
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_update_policy_items(self, param):
+    def _handle_update_policy_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # make rest call
         ret_val, response = self._add_update_policy_items(action_result, param, action="update")
+        response = cast(dict[str, Any], response)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response["data"])
+        summary = action_result.update_summary({})
         if "data" in response:
             if response["data"].get("message", False):
-                summary = action_result.update_summary({})
                 summary["message"] = response["data"]["message"]
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _is_subset_or_equal(self, entry_list, match_list):
+    def _is_subset_or_equal(self, entry_list: Iterable, match_list: Iterable) -> bool:
         return set(match_list).issubset(set(entry_list))
 
-    def _is_matching_element(self, original, to_match):
+    def _is_matching_element(self, original: dict[str, Any], to_match: dict[str, Any]) -> bool:
         # Check sender_config match
         original_sender_domains = original["sender_config"]["sender"]["domain_entries"]
         to_match_sender_domains = to_match["sender_config"]["sender"]["domain_entries"]
@@ -1086,7 +1123,9 @@ class CiscoesaConnector(BaseConnector):
 
         return True
 
-    def _remove_matching_element(self, action_result, data, element_to_remove, policy):
+    def _remove_matching_element(
+        self, action_result: ActionResult, data: list[dict[str, Any]], element_to_remove: dict[str, Any], policy: str
+    ) -> tuple[bool, Optional[dict[str, Any]]]:
 
         updated_data = []
         element_found = False  # To track if we find any matching element
@@ -1150,25 +1189,25 @@ class CiscoesaConnector(BaseConnector):
         updated_policy = {"data": updated_data}
         return phantom.APP_SUCCESS, updated_policy
 
-    def _handle_remove_policy_items(self, param):
+    def _handle_remove_policy_items(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         policy = param[consts.CISCOESA_POLICY_JSON_POLICY_NAME]
         ret_val, to_remove = self._build_esa_policy_from_param(action_result, param)
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or to_remove is None:
             return action_result.get_status()
 
         ret_val, response = self._get_policy_items(action_result, param)
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
         if not response.get("data", False):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_NODATA_POLICY)
 
         ret_val, updated_policy = self._remove_matching_element(action_result, response["data"], to_remove["data"], policy)
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or updated_policy is None:
             return action_result.get_status()
 
         if not updated_policy["data"]:
@@ -1176,13 +1215,13 @@ class CiscoesaConnector(BaseConnector):
 
         # make rest call
         ret_val, response = self._add_update_policy_items(action_result, param, action="update", raw_json=updated_policy)
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
         action_result.add_data(response["data"])
+        summary = action_result.update_summary({})
         if "data" in response:
             if response["data"].get("message", False):
-                summary = action_result.update_summary({})
                 summary["message"] = response["data"]["message"]
         else:
             action_result.add_data(response)
@@ -1190,7 +1229,9 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _validate_and_format_dates(self, action_result, start_date, end_date):
+    def _validate_and_format_dates(
+        self, action_result: ActionResult, start_date: str, end_date: str
+    ) -> tuple[bool, Optional[str], Optional[str]]:
         format = "%Y-%m-%dT00:00:00.000Z"
         try:
             parsed_start_date = parser.parse(start_date)
@@ -1201,7 +1242,7 @@ class CiscoesaConnector(BaseConnector):
             # Handle errors if the date format is unrecognized
             return action_result.set_status(phantom.APP_ERROR, f"Parsing date failed. Details {start_date=}, {end_date=}"), None, None
 
-    def _handle_search_pov_quarantine(self, param):
+    def _handle_search_pov_quarantine(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -1265,7 +1306,7 @@ class CiscoesaConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(pov_quarantine_endpoint, action_result, params=req_params, method="get", use_sma=True)
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
         if response.get("meta", False):
@@ -1279,7 +1320,9 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _release_quarantine(self, action_result, param, quaranrantine_type="spam"):
+    def _release_quarantine(
+        self, action_result: ActionResult, param: dict[str, Any], quaranrantine_type: str = "spam"
+    ) -> tuple[bool, Optional[dict[str, Any]]]:
         mids = param[consts.CISCOESA_POV_QUARANTINE_JSON_MIDS]
 
         mids = [int(x.strip(" ")) for x in mids.split(",")]
@@ -1299,24 +1342,24 @@ class CiscoesaConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(quarantine_endpoint, action_result, method="post", use_sma=True, json=payload)
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
-    def _handle_release_pov_quarantine(self, param):
+    def _handle_release_pov_quarantine(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         ret_val, response = self._release_quarantine(action_result, param, "pvo")
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
+        summary = action_result.update_summary({})
         if "data" in response:
             action_result.add_data(response["data"])
-            summary = action_result.update_summary({})
             summary["message"] = f"Successfully released {response['data']['totalCount']} messages"
         else:
             action_result.add_data(response)
@@ -1324,7 +1367,7 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_search_spam_quarantine(self, param):
+    def _handle_search_spam_quarantine(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -1366,7 +1409,7 @@ class CiscoesaConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(quarantine_endpoint, action_result, params=req_params, method="get", use_sma=True)
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
         if response.get("meta", False):
@@ -1380,26 +1423,26 @@ class CiscoesaConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_release_spam_quarantine(self, param):
+    def _handle_release_spam_quarantine(self, param: dict[str, Any]) -> bool:
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         ret_val, response = self._release_quarantine(action_result, param, "spam")
 
-        if phantom.is_fail(ret_val):
+        if phantom.is_fail(ret_val) or response is None:
             return action_result.get_status()
 
+        summary = action_result.update_summary({})
         if "data" in response:
             action_result.add_data(response["data"])
-            summary = action_result.update_summary({})
             summary["message"] = f"Successfully released {response['data']['totalCount']} messages"
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def handle_action(self, param):
+    def handle_action(self, param: dict[str, Any]) -> bool:
         """This function gets current action identifier and calls member function of its own to handle the action.
 
         :param param: dictionary which contains information about the actions to be executed
@@ -1436,7 +1479,7 @@ class CiscoesaConnector(BaseConnector):
 
         return run_action(param)
 
-    def finalize(self):
+    def finalize(self) -> bool:
         """This function gets called once all the param dictionary elements are looped over and no more handle_action
         calls are left to be made. It gives the AppConnector a chance to loop through all the results that were
         accumulated by multiple handle_action function calls and create any summary if required. Another usage is
