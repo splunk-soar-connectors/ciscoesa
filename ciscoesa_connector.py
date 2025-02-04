@@ -579,6 +579,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_dictionary_items(self, param: dict[str, Any]) -> bool:
@@ -618,6 +619,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_dictionary_items(self, param: dict[str, Any]) -> bool:
@@ -655,6 +657,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_dictionaries(self, param: dict[str, Any]) -> bool:
@@ -685,6 +688,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _parse_and_validate_words(self, action_result: ActionResult, input_str: str) -> tuple[bool, Optional[list[list[str]]]]:
@@ -765,6 +769,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_dictionary(self, param: dict[str, Any]) -> bool:
@@ -796,6 +801,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _get_policy_items(self, action_result: ActionResult, param: dict[str, Any]) -> tuple[bool, Optional[dict[str, Any]]]:
@@ -833,6 +839,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _validate_domain_entries(self, action_result: ActionResult, parameter: str, domain_entries: str) -> tuple[bool, Optional[list[str]]]:
@@ -1067,6 +1074,8 @@ class CiscoesaConnector(BaseConnector):
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_update_policy_items(self, param: dict[str, Any]) -> bool:
@@ -1087,6 +1096,8 @@ class CiscoesaConnector(BaseConnector):
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _is_subset_or_equal(self, entry_list: Iterable, match_list: Iterable) -> bool:
@@ -1227,6 +1238,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _validate_and_format_dates(
@@ -1318,6 +1330,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _release_quarantine(
@@ -1365,6 +1378,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_search_spam_quarantine(self, param: dict[str, Any]) -> bool:
@@ -1421,6 +1435,7 @@ class CiscoesaConnector(BaseConnector):
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
 
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_release_spam_quarantine(self, param: dict[str, Any]) -> bool:
@@ -1440,6 +1455,8 @@ class CiscoesaConnector(BaseConnector):
         else:
             action_result.add_data(response)
             summary["message"] = f"No 'data' section detected in response. Details {response}."
+
+        self.save_progress(f"Action handler for: {self.get_action_identifier()} succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param: dict[str, Any]) -> bool:
