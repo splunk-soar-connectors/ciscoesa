@@ -1,6 +1,6 @@
 # File: ciscoesa_consts.py
 #
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -116,11 +116,11 @@ CISCOESA_GET_REPORT_ERROR = "Error occurred while getting data for report: {repo
 CISCOESA_GET_REPORT_INTERMEDIATE_MESSAGE = "Querying report '{report_title}'"
 CISCOESA_GET_REPORT_PARSE_ERROR = "Error occurred while parsing report data: {error}"
 CISCOESA_LIST_DICTIONARY_SUCCESS_MESSAGE = "Successfully listed all entries of dictionary"
-CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to list dictionary \"{dictionary_name}\": {error}"
+CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to list dictionary "{dictionary_name}": {error}'
 CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE = "Successfully added entry to dictionary"
-CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to add dictionary entry to \"{dictionary_name}\": {error}"
+CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to add dictionary entry to "{dictionary_name}": {error}'
 CISCOESA_REMOVE_DICTIONARY_SUCCESS_MESSAGE = "Successfully removed entry from dictionary"
-CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE = "Error occurred while attempting to remove dictionary entry from \"{dictionary_name}\": {error}"
+CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE = 'Error occurred while attempting to remove dictionary entry from "{dictionary_name}": {error}'
 CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR = "Command contained invalid escape character:"
 CISCOESA_VALIDATE_INTEGER_MESSAGE = "Please provide a valid integer value in the {key} parameter"
 CISCOESA_ERROR_MESSAGE = "Unknown error occurred. Please check the asset configuration and|or action parameters"
@@ -137,13 +137,10 @@ CISCOESA_REPORT_TITLE = [
     "Outgoing Content Filters",
     "Virus Types",
     "Inbound SMTP Authentication",
-    "DLP Outgoing Policy"
+    "DLP Outgoing Policy",
 ]
 CISCOESA_REPORT_TITLE_ERROR = "Please provide valid value for 'report title' parameter"
-CISCOESA_ORDER_DIR = [
-    "asc",
-    "desc"
-]
+CISCOESA_ORDER_DIR = ["asc", "desc"]
 CISCOESA_ORDER_DIR_ERROR = "Please provide valid value for 'order dir' parameter"
 CISCOESA_PRESS_KEY_MESSAGE = "-Press Any Key For More-"
 CISCOESA_OUTPUT_SIZE = 8192
