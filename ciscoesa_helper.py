@@ -1,6 +1,6 @@
 # File: ciscoesa_helper.py
 #
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
 #
 #
 import os
-import socket
 import time
 
 import paramiko
 from bs4 import UnicodeDammit
 
 import ciscoesa_consts as consts
+
 
 os.sys.path.insert(0, "{}/paramikossh".format(os.path.dirname(os.path.abspath(__file__))))  # noqa
 
@@ -32,12 +32,12 @@ except Exception:
 
 ENABLE_CLUSTERMODE_COMMAND_STR = "clustermode cluster;"
 LIST_DICTIONARY_COMMAND_STR = "dictionaryconfig print {dictionary_name};"
-ADD_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} new \"{entry_value}\";"
-REMOVE_DICTIONARY_ENTRY_COMMAND_STR = "dictionaryconfig edit {dictionary_name} delete \"{entry_value}\";"
-MODIFY_DICTIONARY_COMMIT_COMMAND_STR = "commit \"{commit_message}\";"
+ADD_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} new "{entry_value}";'
+REMOVE_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} delete "{entry_value}";'
+MODIFY_DICTIONARY_COMMIT_COMMAND_STR = 'commit "{commit_message}";'
 
 
-class CiscoEsaHelper():
+class CiscoEsaHelper:
     OS_LINUX = 0
     OS_MAC = 1
 
@@ -48,7 +48,6 @@ class CiscoEsaHelper():
         self._endpoint = urlparse(endpoint).hostname
 
     def _start_connection(self, server):
-
         user = self._username
         password = self._password
 
@@ -56,9 +55,7 @@ class CiscoEsaHelper():
         self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            self._ssh_client.connect(hostname=server, username=user,
-                    password=password, allow_agent=False, look_for_keys=True,
-                    timeout=30)
+            self._ssh_client.connect(hostname=server, username=user, password=password, allow_agent=False, look_for_keys=True, timeout=30)
         except Exception as e:
             return False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e
 
@@ -66,8 +63,8 @@ class CiscoEsaHelper():
 
     def _get_output(self, timeout):
         """
-            returns:
-                success, data, exit_status
+        returns:
+            success, data, exit_status
         """
         sendpw = True
         self._shell_channel.settimeout(2)
@@ -87,34 +84,34 @@ class CiscoEsaHelper():
                         if consts.CISCOESA_PRESS_KEY_MESSAGE in recv_output:
                             try:
                                 self._shell_channel.send("\n")
-                            except socket.error:
+                            except OSError:
                                 pass
                     else:
                         break
 
                     # This is pretty messy but it's just the way it is I guess
-                    if (sendpw and self._password):
+                    if sendpw and self._password:
                         try:
                             self._shell_channel.send(f"{self._password}\n")
-                        except socket.error:
+                        except OSError:
                             pass
                         sendpw = False
-                elif (timeout and ctime - stime >= timeout):
+                elif timeout and ctime - stime >= timeout:
                     return False, "Error: Timeout", None
-                elif (self._shell_channel.exit_status_ready() and not self._shell_channel.recv_ready()):
+                elif self._shell_channel.exit_status_ready() and not self._shell_channel.recv_ready():
                     break
                 time.sleep(1)
         except Exception as e:
-            self._connector.save_progress(f'Error attempting to retrieve command output: {e}')
+            self._connector.save_progress(f"Error attempting to retrieve command output: {e}")
             return False, "Error", str(e)
 
         return True, output, self._shell_channel.recv_exit_status()
 
     def _send_command(self, command, timeout=0):
         """
-           Args:
-               command: command to send
-               timeout: how long to wait before terminating program
+        Args:
+            command: command to send
+            timeout: how long to wait before terminating program
         """
         # attempt to establish connection first
         status_code, msg, uname_str = self._start_connection(self._endpoint)
@@ -145,14 +142,18 @@ class CiscoEsaHelper():
         try:
             lines = []
             for index, line in enumerate(stdout.splitlines()):
-                if (self._password and self._password in line) or ("[sudo] password for" in line) or \
-                        (line == consts.CISCOESA_PRESS_KEY_MESSAGE) or (line == ""):
+                if (
+                    (self._password and self._password in line)
+                    or ("[sudo] password for" in line)
+                    or (line == consts.CISCOESA_PRESS_KEY_MESSAGE)
+                    or (line == "")
+                ):
                     continue
                 lines.append(line)
         except Exception:
             return None
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
         cmd = ""
@@ -171,7 +172,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = entry_value.replace('\\', '\\\\').replace('\"', '\\\"')
+        escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += ADD_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
@@ -185,7 +186,7 @@ class CiscoEsaHelper():
             cmd += ENABLE_CLUSTERMODE_COMMAND_STR
 
         # escape special characters
-        escaped_entry = entry_value.replace('\\', '\\\\').replace('\"', '\\\"')
+        escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += REMOVE_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
         cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)

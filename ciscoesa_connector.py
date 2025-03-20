@@ -1,6 +1,6 @@
 # File: ciscoesa_connector.py
 #
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ from phantom.base_connector import BaseConnector
 import ciscoesa_consts as consts
 import ciscoesa_helper
 
+
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
     consts.CISCOESA_REST_RESP_BAD_REQUEST: consts.CISCOESA_REST_RESP_BAD_REQUEST_MESSAGE,
@@ -40,7 +41,7 @@ ERROR_RESPONSE_DICT = {
     consts.CISCOESA_REST_RESP_ENTITY_TOO_LARGE: consts.CISCOESA_REST_RESP_ENTITY_TOO_LARGE_MESSAGE,
     consts.CISCOESA_REST_RESP_URI_TOO_LONG: consts.CISCOESA_REST_RESP_URI_TOO_LONG_MESSAGE,
     consts.CISCOESA_REST_RESP_NOT_IMPLEMENTED: consts.CISCOESA_REST_RESP_NOT_IMPLEMENTED_MESSAGE,
-    consts.CISCOESA_REST_RESP_BAD_GATEWAY: consts.CISCOESA_REST_RESP_BAD_GATEWAY_MESSAGE
+    consts.CISCOESA_REST_RESP_BAD_GATEWAY: consts.CISCOESA_REST_RESP_BAD_GATEWAY_MESSAGE,
 }
 
 # Object that maps report title with its corresponding endpoint
@@ -49,28 +50,20 @@ ERROR_RESPONSE_DICT = {
 REPORT_TITLE_TO_NAME_AND_FILTER_MAPPING = {
     consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_USER_DETAILS_REPORT_NAME,
     consts.CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_DOMAIN_DETAILS_REPORT_NAME,
-    consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE:
-        consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_NAME,
-
-    consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_TITLE:
-        consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_NAME,
-
-    consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_TITLE:
-        consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_NAME,
-
-    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE:
-        consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_NAME,
-
+    consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_INCOMING_NETWORK_OWNER_DETAILS_REPORT_NAME,
+    consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_TITLE: consts.CISCOESA_OUTGOING_SENDERS_DOMAIN_DETAILS_REPORT_NAME,
+    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE: consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_NAME,
     consts.CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_TITLE: consts.CISCOESA_OUTGOING_CONTENT_FILTERS_REPORT_NAME,
     consts.CISCOESA_OUTGOING_DESTINATIONS_REPORT_TITLE: consts.CISCOESA_OUTGOING_DESTINATIONS_REPORT_NAME,
     consts.CISCOESA_VIRUS_TYPES_REPORT_TITLE: consts.CISCOESA_VIRUS_TYPES_REPORT_NAME,
     consts.CISCOESA_INBOUND_SMTP_AUTH_REPORT_TITLE: consts.CISCOESA_INBOUND_SMTP_AUTH_REPORT_NAME,
-    consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_TITLE: consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_NAME
+    consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_TITLE: consts.CISCOESA_DLP_OUTGOING_POLICY_REPORT_NAME,
 }
 
 
 def _is_ip(ip_address):
-    """ Function that validates IP address (IPv4 or IPv6).
+    """Function that validates IP address (IPv4 or IPv6).
 
     :param ip_address: IP address to verify
     :return: True or False
@@ -80,21 +73,20 @@ def _is_ip(ip_address):
     if not phantom.is_ip(ip_address):
         try:
             socket.inet_pton(socket.AF_INET6, ip_address)
-        except socket.error:
+        except OSError:
             return False
 
     return True
 
 
 class CiscoesaConnector(BaseConnector):
-    """ This is an AppConnector class that inherits the BaseConnector class. It implements various actions supported by
+    """This is an AppConnector class that inherits the BaseConnector class. It implements various actions supported by
     Cisco ESA and helper methods required to run the actions.
     """
 
     def __init__(self):
-
         # Calling the BaseConnector's init function
-        super(CiscoesaConnector, self).__init__()
+        super().__init__()
 
         self._url = None
         self._username = None
@@ -124,14 +116,14 @@ class CiscoesaConnector(BaseConnector):
             self.error_print("Error occurred while retrieving exception information: ", ex)
 
         if not error_code:
-            error_text = "Error Message: {}".format(error_message)
+            error_text = f"Error Message: {error_message}"
         else:
             error_text = consts.CISCOESA_ERROR_MESSAGE_FORMAT.format(error_code, error_message)
 
         return error_text
 
     def initialize(self):
-        """ This is an optional function that can be implemented by the AppConnector derived class. Since the
+        """This is an optional function that can be implemented by the AppConnector derived class. Since the
         configuration dictionary is already validated by the time this function is called, it's a good place to do any
         extra initialization of any internal modules. This function MUST return a value of either phantom.APP_SUCCESS or
         phantom.APP_ERROR. If this function returns phantom.APP_ERROR, then AppConnector::handle_action will not get
@@ -144,10 +136,7 @@ class CiscoesaConnector(BaseConnector):
         self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
         self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
-            self,
-            config.get(consts.CISCOESA_CONFIG_SSH_USERNAME),
-            config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD),
-            self._url
+            self, config.get(consts.CISCOESA_CONFIG_SSH_USERNAME), config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD), self._url
         )
 
         # In "get report" action, if "starts_with" parameter is set, validate IP and email
@@ -157,7 +146,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _validate_integers(self, action_result, parameter, key, allow_zero=False):
-        """ This method is to check if the provided input parameter value
+        """This method is to check if the provided input parameter value
         is a non-zero positive integer and returns the integer value of the parameter itself.
         :param action_result: Action result or BaseConnector object
         :param parameter: input parameter
@@ -176,16 +165,16 @@ class CiscoesaConnector(BaseConnector):
                 return None
 
             if parameter < 0:
-                action_result.set_status(phantom.APP_ERROR, "Please provide a valid non-negative integer value in the {} parameter".format(key))
+                action_result.set_status(phantom.APP_ERROR, f"Please provide a valid non-negative integer value in the {key} parameter")
                 return None
             if not allow_zero and parameter == 0:
-                action_result.set_status(phantom.APP_ERROR, "Please provide non-zero positive integer in {}".format(key))
+                action_result.set_status(phantom.APP_ERROR, f"Please provide non-zero positive integer in {key}")
                 return None
 
         return parameter
 
     def _validate_date_time(self, date_time_value, action_result):
-        """ Function used to validate date and time format. As per the app configuration, date and time must be provided
+        """Function used to validate date and time format. As per the app configuration, date and time must be provided
         in YYYY-MM-DDTHH:00 format.
 
         :param date_time_value: date and time value that needs to be split and validated
@@ -212,9 +201,7 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR), None
 
         try:
-            parsed_date_time = datetime.datetime(
-                year=int(date[0]), month=int(date[1]), day=int(date[2]), hour=int(hour)
-            )
+            parsed_date_time = datetime.datetime(year=int(date[0]), month=int(date[1]), day=int(date[2]), hour=int(hour))
         except Exception:
             self.error_print(consts.CISCOESA_DATE_TIME_VALIDATION_ERROR)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_VALIDATION_ERROR), None
@@ -222,7 +209,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, parsed_date_time
 
     def _make_rest_call(self, endpoint, action_result, params=None, method="get", timeout=None):
-        """ Function that makes the REST call to the device. It is a generic function that can be called from various
+        """Function that makes the REST call to the device. It is a generic function that can be called from various
         action handlers.
 
         :param endpoint: REST endpoint that needs to be appended to the service address
@@ -240,25 +227,25 @@ class CiscoesaConnector(BaseConnector):
 
         except AttributeError:
             self.error_print(consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD.format(method=method))
-            return action_result.set_status(
-                phantom.APP_ERROR, consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD
-            ), response_data
+            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_API_UNSUPPORTED_METHOD), response_data
 
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_EXCEPTION_OCCURRED, e), response_data
 
-        auth_string = "{username}:{password}".format(username=self._username, password=self._password)
+        auth_string = f"{self._username}:{self._password}"
 
-        credentials = base64.b64encode(auth_string.encode('utf-8')).decode()
+        credentials = base64.b64encode(auth_string.encode("utf-8")).decode()
 
-        headers = {
-            "Accept": "application/json",
-            "Authorization": "Basic {credentials}".format(credentials=credentials)
-        }
+        headers = {"Accept": "application/json", "Authorization": f"Basic {credentials}"}
 
         try:
-            response = request_func("{base_url}{endpoint}".format(base_url=self._url, endpoint=endpoint),
-                                    params=params, headers=headers, timeout=consts.CISCOESA_REQUEST_TIMEOUT, verify=self._verify_server_cert)
+            response = request_func(
+                f"{self._url}{endpoint}",
+                params=params,
+                headers=headers,
+                timeout=consts.CISCOESA_REQUEST_TIMEOUT,
+                verify=self._verify_server_cert,
+            )
         except Exception as e:
             self.error_print(consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e)
             return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_SERVER_CONNECTIVITY, e), response_data
@@ -285,17 +272,18 @@ class CiscoesaConnector(BaseConnector):
                 message = response_data.get("error", {}).get("message", message)
 
             self.error_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
-            return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER,
-                                            status=response.status_code, detail=message), response_data
+            return action_result.set_status(
+                phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER, status=response.status_code, detail=message
+            ), response_data
 
         # In case of success scenario
         if response.status_code == consts.CISCOESA_REST_RESP_SUCCESS:
             # If response obtained is not in object format
             if not isinstance(response_data, dict):
                 self.error_print(consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data))
-                return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_UNEXPECTED_RESPONSE.format(
-                    report_name=response_data
-                )), response_data
+                return action_result.set_status(
+                    phantom.APP_ERROR, consts.CISCOESA_UNEXPECTED_RESPONSE.format(report_name=response_data)
+                ), response_data
 
             return phantom.APP_SUCCESS, response_data
 
@@ -307,12 +295,12 @@ class CiscoesaConnector(BaseConnector):
 
         self.error_print(consts.CISCOESA_ERROR_FROM_SERVER.format(status=response.status_code, detail=message))
 
-        return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER,
-                                        status=response.status_code,
-                                        detail=message), response_data
+        return action_result.set_status(
+            phantom.APP_ERROR, consts.CISCOESA_ERROR_FROM_SERVER, status=response.status_code, detail=message
+        ), response_data
 
     def _decode_url(self, param):
-        """ Process URL and return it stripped
+        """Process URL and return it stripped
         of the 'secure-web.cisco.com' portion and unquoted
 
         :param param: dictionary of input parameters
@@ -323,37 +311,35 @@ class CiscoesaConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        encoded_url = param['encoded_url']
-        sw_match = re.match(r'^(https?://)?secure-web\.cisco\.com/.+/(?P<quoted>.+)$', encoded_url)
+        encoded_url = param["encoded_url"]
+        sw_match = re.match(r"^(https?://)?secure-web\.cisco\.com/.+/(?P<quoted>.+)$", encoded_url)
 
         # Parse the URL if it looks like what we are expecting otherwise return the whole URL unquoted.
         if sw_match:
-            message = 'Parsed from secure-web.cisco.com URL and decoded'
-            if sw_match.group('quoted'):
-                decode_me = sw_match.group('quoted')
+            message = "Parsed from secure-web.cisco.com URL and decoded"
+            if sw_match.group("quoted"):
+                decode_me = sw_match.group("quoted")
             else:
-                decode_me = encoded_url.split('/')[-1]
+                decode_me = encoded_url.split("/")[-1]
         else:
-            message = 'Decoded entire URL'
+            message = "Decoded entire URL"
             decode_me = encoded_url
 
-        action_result.add_data({'decoded_url': urllib.parse.unquote(decode_me)})
+        action_result.add_data({"decoded_url": urllib.parse.unquote(decode_me)})
 
         self.save_progress("Decoding URL succeeded")
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _get_report(self, param):
-        """ Function to retrieve statistical report from the Email Security appliance.
+        """Function to retrieve statistical report from the Email Security appliance.
 
         :param param: dictionary of input parameters
         :return: status success/failure
         """
 
         action_result = self.add_action_result(ActionResult(dict(param)))
-        api_params = {
-            'device_type': 'esa'
-        }
+        api_params = {"device_type": "esa"}
 
         # Getting mandatory parameters
         report_title = param[consts.CISCOESA_GET_REPORT_JSON_REPORT_TITLE]
@@ -365,12 +351,17 @@ class CiscoesaConnector(BaseConnector):
         end_time = param.get(consts.CISCOESA_GET_REPORT_JSON_END_TIME)
         filter_by = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_BY)
         filter_value = param.get(consts.CISCOESA_GET_REPORT_JSON_FILTER_VALUE)
-        limit = self._validate_integers(action_result, param.get(
-            consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT)
+        limit = self._validate_integers(
+            action_result, param.get(consts.CISCOESA_GET_REPORT_JSON_LIMIT, consts.CISCOESA_DEFAULT_LIMIT), consts.CISCOESA_GET_REPORT_JSON_LIMIT
+        )
         if limit is None:
             return action_result.get_status()
-        offset = self._validate_integers(action_result, param.get(
-            consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET), consts.CISCOESA_GET_REPORT_JSON_OFFSET, allow_zero=True)
+        offset = self._validate_integers(
+            action_result,
+            param.get(consts.CISCOESA_GET_REPORT_JSON_OFFSET, consts.CISCOESA_DEFAULT_OFFSET),
+            consts.CISCOESA_GET_REPORT_JSON_OFFSET,
+            allow_zero=True,
+        )
         if offset is None:
             return action_result.get_status()
         starts_with = param.get(consts.CISCOESA_GET_REPORT_JSON_STARTS_WITH)
@@ -382,9 +373,9 @@ class CiscoesaConnector(BaseConnector):
 
         # If both start_time and end_time is not given, then by default, API will query report for last 250 days
         if not start_time and not end_time:
-            start_time = (datetime.datetime.now() - datetime.timedelta(
-                days=consts.CISCOESA_DEFAULT_SPAN_DAYS
-            )).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
+            start_time = (datetime.datetime.now() - datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)).strftime(
+                consts.CISCOESA_INPUT_TIME_FORMAT
+            )
 
             end_time = datetime.datetime.now().strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
 
@@ -392,11 +383,15 @@ class CiscoesaConnector(BaseConnector):
         elif not end_time:
             try:
                 # end_time will be calculated equivalent to given start_time
-                end_time = datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + \
-                           datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
+                end_time = datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
+                    days=consts.CISCOESA_DEFAULT_SPAN_DAYS
+                )
                 # If calculated end_time is a future date, then it will be replaced by current date
-                if datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT) + datetime.timedelta(
-                        days=consts.CISCOESA_DEFAULT_SPAN_DAYS) >= datetime.datetime.now():
+                if (
+                    datetime.datetime.strptime(start_time, consts.CISCOESA_INPUT_TIME_FORMAT)
+                    + datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
+                    >= datetime.datetime.now()
+                ):
                     end_time = datetime.datetime.now()
             except Exception:
                 self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
@@ -411,7 +406,7 @@ class CiscoesaConnector(BaseConnector):
                 # start_time will be calculated equivalent to given end_time
                 temp_time1 = datetime.datetime.strptime(end_time, consts.CISCOESA_INPUT_TIME_FORMAT)
                 temp_time2 = datetime.timedelta(days=consts.CISCOESA_DEFAULT_SPAN_DAYS)
-                start_time = ( temp_time1 - temp_time2 ).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
+                start_time = (temp_time1 - temp_time2).strftime(consts.CISCOESA_INPUT_TIME_FORMAT)
             except Exception:
                 self.error_print(consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_DATE_TIME_FORMAT_ERROR)
@@ -435,9 +430,14 @@ class CiscoesaConnector(BaseConnector):
         # Search value should be validated to be either an IP address or an email, if report title is
         # "Incoming Mail: IP Addresses", "Outgoing Senders: IP Addresses" or "Internal Users"
         if not starts_with and (filter_by and filter_value):
-            if (report_title in [consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
-                     consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE] and not _is_ip(filter_value)) or \
-                    (report_title == consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE and not phantom.is_email(filter_value)):
+            if (
+                report_title
+                in [
+                    consts.CISCOESA_MAIL_INCOMING_IP_HOSTNAME_DETAILS_REPORT_TITLE,
+                    consts.CISCOESA_MAIL_OUTGOING_SENDERS_IP_HOSTNAME_DETAILS_REPORT_TITLE,
+                ]
+                and not _is_ip(filter_value)
+            ) or (report_title == consts.CISCOESA_MAIL_USER_DETAILS_REPORT_TITLE and not phantom.is_email(filter_value)):
                 self.error_print(consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
                 return action_result.set_status(phantom.APP_ERROR, consts.CISCOESA_SEARCH_VALUE_VALIDATION_FAIL)
 
@@ -463,9 +463,9 @@ class CiscoesaConnector(BaseConnector):
 
         if filter_by and filter_value:
             if starts_with:
-                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'begins_with'
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "begins_with"
             else:
-                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = 'is'
+                api_params[consts.CISCOESA_GET_REPORT_JSON_FILTER_OPERATOR] = "is"
 
         if order_by:
             api_params[consts.CISCOESA_GET_REPORT_JSON_ORDER_BY_KEY] = order_by
@@ -489,7 +489,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REPORTS_QUERIED_SUCCESS_MESSAGE)
 
     def _test_asset_connectivity(self, param):
-        """ This function tests the connectivity of an asset with given credentials.
+        """This function tests the connectivity of an asset with given credentials.
 
         :param param: (not used in this method)
         :return: status success/failure
@@ -498,10 +498,11 @@ class CiscoesaConnector(BaseConnector):
         action_result = ActionResult()
 
         self.save_progress(consts.CISCOESA_CONNECTIVITY_TEST_MESSAGE)
-        self.save_progress("Configured URL: {url}".format(url=self._url))
+        self.save_progress(f"Configured URL: {self._url}")
 
-        ret_value, response = self._make_rest_call(endpoint=consts.CISCOESA_TEST_CONNECTIVITY_ENDPOINT,
-                                                   action_result=action_result, timeout=consts.CISCOESA_REQUEST_TIMEOUT)
+        ret_value, response = self._make_rest_call(
+            endpoint=consts.CISCOESA_TEST_CONNECTIVITY_ENDPOINT, action_result=action_result, timeout=consts.CISCOESA_REQUEST_TIMEOUT
+        )
 
         if phantom.is_fail(ret_value):
             self.save_progress(action_result.get_message())
@@ -513,7 +514,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.get_status()
 
     def _handle_list_dictionary_items(self, param):
-        """ Function to list all entries of an ESA dictionary.
+        """Function to list all entries of an ESA dictionary.
         :param param: dictionary of input parameters
         :return: status success/failure
         """
@@ -521,33 +522,34 @@ class CiscoesaConnector(BaseConnector):
         dictionary_name = param[consts.CISCOESA_JSON_NAME]
         cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
-        self.save_progress("Using ESA Helper to list dictionary entries for: {}".format(dictionary_name))
+        self.save_progress(f"Using ESA Helper to list dictionary entries for: {dictionary_name}")
         # use helper to execute commands on ESA
         success, output, exit_status = self._esa_helper.list_dictionary_items(dictionary_name, cluster_mode)
-        if (not success):
-            return action_result.set_status(phantom.APP_ERROR,
-                consts.CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output))
-        self.save_progress("Fetched dictionary entries for: {}".format(dictionary_name))
+        if not success:
+            return action_result.set_status(
+                phantom.APP_ERROR, consts.CISCOESA_LIST_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
+            )
+        self.save_progress(f"Fetched dictionary entries for: {dictionary_name}")
         dictionary_items = output.splitlines()
         item_count = 0
         for item in dictionary_items:
             if len(item.strip()):
-                details = item.split(',')
+                details = item.split(",")
                 # expecting at least two values in each item
                 if len(details) < 2:
                     continue
-                details_dict = {'value': ",".join(str(val) for val in details[:-1])}
+                details_dict = {"value": ",".join(str(val) for val in details[:-1])}
                 if len(details) > 1:
-                    details_dict['weight'] = details[-1].strip()
+                    details_dict["weight"] = details[-1].strip()
 
                 action_result.add_data(details_dict)
                 item_count = item_count + 1
-        summary = {'total_items': item_count}
+        summary = {"total_items": item_count}
         action_result.set_summary(summary)
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_dictionary_item(self, param):
-        """ Function to add an entry to an ESA dictionary.
+        """Function to add an entry to an ESA dictionary.
         :param param: dictionary of input parameters
         :return: status success/failure
         """
@@ -557,30 +559,22 @@ class CiscoesaConnector(BaseConnector):
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
         cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
-        self.save_progress("Using ESA Helper to add dictionary entries for: {}".format(dictionary_name))
+        self.save_progress(f"Using ESA Helper to add dictionary entries for: {dictionary_name}")
         # use helper to execute commands on ESA
-        success, output, exit_status = self._esa_helper.add_dictionary_item(
-            dictionary_name,
-            entry_value,
-            commit_message,
-            cluster_mode
-        )
+        success, output, exit_status = self._esa_helper.add_dictionary_item(dictionary_name, entry_value, commit_message, cluster_mode)
         if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
             return action_result.set_status(
-                phantom.APP_ERROR,
-                consts.CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
+                phantom.APP_ERROR, consts.CISCOESA_ADD_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
             )
-        self.save_progress("Added entry to dictionary: {}".format(dictionary_name))
+        self.save_progress(f"Added entry to dictionary: {dictionary_name}")
         if output:
-            action_result.add_data({
-                'message': output
-            })
+            action_result.add_data({"message": output})
             return action_result.set_status(phantom.APP_ERROR, output)
         else:
             return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_ADD_DICTIONARY_SUCCESS_MESSAGE)
 
     def _handle_remove_dictionary_item(self, param):
-        """ Function to remove an entry from an ESA dictionary.
+        """Function to remove an entry from an ESA dictionary.
         :param param: dictionary of input parameters
         :return: status success/failure
         """
@@ -590,30 +584,22 @@ class CiscoesaConnector(BaseConnector):
         commit_message = param[consts.CISCOESA_JSON_COMMIT_MESSAGE]
         cluster_mode = param.get(consts.CISCOESA_JSON_CLUSTER_MODE, False)
 
-        self.save_progress("Using ESA Helper to remove dictionary entries for: {}".format(dictionary_name))
+        self.save_progress(f"Using ESA Helper to remove dictionary entries for: {dictionary_name}")
         # use helper to execute commands on ESA
-        success, output, exit_status = self._esa_helper.remove_dictionary_item(
-            dictionary_name,
-            entry_value,
-            commit_message,
-            cluster_mode
-        )
+        success, output, exit_status = self._esa_helper.remove_dictionary_item(dictionary_name, entry_value, commit_message, cluster_mode)
         if not success or (output and consts.CISCOESA_MODIFY_DICTIONARY_INVALID_ESCAPE_CHAR in output):
             return action_result.set_status(
-                phantom.APP_ERROR,
-                consts.CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
+                phantom.APP_ERROR, consts.CISCOESA_REMOVE_DICTIONARY_ERROR_MESSAGE.format(dictionary_name=dictionary_name, error=output)
             )
-        self.save_progress("Removed entry from dictionary: {}".format(dictionary_name))
+        self.save_progress(f"Removed entry from dictionary: {dictionary_name}")
         if output:
-            action_result.add_data({
-                'message': output
-            })
+            action_result.add_data({"message": output})
             return action_result.set_status(phantom.APP_ERROR, output)
         else:
             return action_result.set_status(phantom.APP_SUCCESS, consts.CISCOESA_REMOVE_DICTIONARY_SUCCESS_MESSAGE)
 
     def handle_action(self, param):
-        """ This function gets current action identifier and calls member function of its own to handle the action.
+        """This function gets current action identifier and calls member function of its own to handle the action.
 
         :param param: dictionary which contains information about the actions to be executed
         :return: status success/failure
@@ -625,8 +611,8 @@ class CiscoesaConnector(BaseConnector):
             "get_report": self._get_report,
             "decode_url": self._decode_url,
             "list_dictionary_items": self._handle_list_dictionary_items,
-            'add_dictionary_item': self._handle_add_dictionary_item,
-            'remove_dictionary_item': self._handle_remove_dictionary_item
+            "add_dictionary_item": self._handle_add_dictionary_item,
+            "remove_dictionary_item": self._handle_remove_dictionary_item,
         }
 
         action = self.get_action_identifier()
@@ -634,12 +620,12 @@ class CiscoesaConnector(BaseConnector):
         try:
             run_action = action_mapping[action]
         except Exception:
-            raise ValueError("action {action} is not supported".format(action=action))
+            raise ValueError(f"action {action} is not supported")
 
         return run_action(param)
 
     def finalize(self):
-        """ This function gets called once all the param dictionary elements are looped over and no more handle_action
+        """This function gets called once all the param dictionary elements are looped over and no more handle_action
         calls are left to be made. It gives the AppConnector a chance to loop through all the results that were
         accumulated by multiple handle_action function calls and create any summary if required. Another usage is
         cleanup, disconnect from remote devices etc.
@@ -649,7 +635,6 @@ class CiscoesaConnector(BaseConnector):
 
 
 if __name__ == "__main__":
-
     import sys
 
     import pudb

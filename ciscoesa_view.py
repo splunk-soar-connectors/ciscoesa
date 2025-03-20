@@ -1,6 +1,6 @@
 # File: ciscoesa_view.py
 #
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 def get_ctx_result(result):
-    """ Function to collect information to be rendered for "get report" action
+    """Function to collect information to be rendered for "get report" action
 
     :param result: report data
     :return result containing summary, data and parameter values
@@ -37,13 +37,13 @@ def get_ctx_result(result):
         ctx_result["data"] = dict()
         return ctx_result
 
-    ctx_result['data'] = data
+    ctx_result["data"] = data
 
     return ctx_result
 
 
 def display_reports(provides, all_app_runs, context):
-    """ Function to render HTML file to display report generated
+    """Function to render HTML file to display report generated
 
     :param provides: Action name
     :param all_app_runs: Object containing summary and action_result data
@@ -61,8 +61,8 @@ def display_reports(provides, all_app_runs, context):
 
             results.append(ctx_result)
 
-    if provides == 'list dictionary items':
+    if provides == "list dictionary items":
         return "ciscoesa_list_dictionary_items.html"
 
-    if provides in ['add dictionary item', 'remove dictionary item']:
+    if provides in ["add dictionary item", "remove dictionary item"]:
         return "ciscoesa_add_remove_dictionary_item.html"
