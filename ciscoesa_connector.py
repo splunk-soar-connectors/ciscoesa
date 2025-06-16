@@ -1,6 +1,6 @@
 # File: ciscoesa_connector.py
 #
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 from ciscoesa_consts import *
+
 
 # Dictionary that maps each error code with its corresponding message
 ERROR_RESPONSE_DICT = {
@@ -72,14 +73,13 @@ def _is_ip(ip_address):
     if not phantom.is_ip(ip_address):
         try:
             socket.inet_pton(socket.AF_INET6, ip_address)
-        except socket.error:
+        except OSError:
             return False
 
     return True
 
 
 class RetVal(tuple):
-
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
 
@@ -90,9 +90,8 @@ class CiscoesaConnector(BaseConnector):
     """
 
     def __init__(self):
-
         # Calling the BaseConnector's init function
-        super(CiscoesaConnector, self).__init__()
+        super().__init__()
 
         self._url = None
         self._username = None
@@ -118,7 +117,7 @@ class CiscoesaConnector(BaseConnector):
         except:
             error_text = "Cannot parse error details"
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
+        message = f"Status Code: {status_code}. Data from server:\n{error_text}\n"
 
         message = message.replace("{", "{{").replace("}", "}}")
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
@@ -128,14 +127,14 @@ class CiscoesaConnector(BaseConnector):
         try:
             resp_json = r.json()
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(str(e))), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to parse JSON response. Error: {e!s}"), None)
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} Data from server: {1}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
+        message = "Error from server. Status Code: {} Data from server: {}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -164,7 +163,7 @@ class CiscoesaConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
-        message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
+        message = "Can't process response from server. Status Code: {} Data from server: {}".format(
             r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
@@ -191,7 +190,7 @@ class CiscoesaConnector(BaseConnector):
             self.error_print("Error occurred while retrieving exception information: ", ex)
 
         if not error_code:
-            error_text = "Error Message: {}".format(error_message)
+            error_text = f"Error Message: {error_message}"
         else:
             error_text = CISCOESA_ERROR_MESSAGE_FORMAT.format(error_code, error_message)
 
@@ -247,10 +246,10 @@ class CiscoesaConnector(BaseConnector):
                 return None
 
             if parameter < 0:
-                action_result.set_status(phantom.APP_ERROR, "Please provide a valid non-negative integer value in the {} parameter".format(key))
+                action_result.set_status(phantom.APP_ERROR, f"Please provide a valid non-negative integer value in the {key} parameter")
                 return None
             if not allow_zero and parameter == 0:
-                action_result.set_status(phantom.APP_ERROR, "Please provide non-zero positive integer in {}".format(key))
+                action_result.set_status(phantom.APP_ERROR, f"Please provide non-zero positive integer in {key}")
                 return None
 
         return parameter
@@ -307,7 +306,7 @@ class CiscoesaConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"), resp_json)
 
         # Create a URL to connect to
         url = f"{self._url}{endpoint}" if not use_sma else f"{self._sma_url}{endpoint}"
@@ -315,7 +314,7 @@ class CiscoesaConnector(BaseConnector):
         try:
             r = request_func(url, timeout=self._timeout, auth=self._auth, verify=self._verify_server_cert, **kwargs)
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(str(e))), resp_json)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error Connecting to server. Details: {e!s}"), resp_json)
 
         return self._process_response(r, action_result)
 
@@ -509,7 +508,7 @@ class CiscoesaConnector(BaseConnector):
         action_result = ActionResult()
 
         self.save_progress(CISCOESA_CONNECTIVITY_TEST_MESSAGE)
-        self.save_progress("Configured URL: {url}".format(url=self._url))
+        self.save_progress(f"Configured URL: {self._url}")
 
         ret_value, _ = self._make_rest_call(endpoint=CISCOESA_TEST_CONNECTIVITY_ENDPOINT, action_result=action_result)
 
@@ -523,7 +522,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.get_status()
 
     def _handle_list_dictionary_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -558,7 +557,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_dictionary_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -596,8 +595,13 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_dictionary_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
+    def _handle_remove_dictionary_item(self, param):
+        """Function to remove an entry from an ESA dictionary.
+        :param param: dictionary of input parameters
+        :return: status success/failure
+        """
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         dictionary_name = param[CISCOESA_DICTIONARY_JSON_NAME]
@@ -632,7 +636,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_dictionaries(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -699,7 +703,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, result
 
     def _handle_add_dictionary(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -740,7 +744,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_dictionary(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -785,7 +789,7 @@ class CiscoesaConnector(BaseConnector):
         return ret_val, response
 
     def _handle_list_policy_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -972,7 +976,6 @@ class CiscoesaConnector(BaseConnector):
             return phantom.APP_SUCCESS
 
     def _add_update_policy_items(self, action_result, param, action="add", raw_json=False):
-
         ret_val, payload = self._build_esa_policy_from_param(action_result, param)
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
@@ -1004,7 +1007,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_add_policy_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # make rest call
@@ -1023,7 +1026,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_update_policy_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # make rest call
@@ -1076,7 +1079,6 @@ class CiscoesaConnector(BaseConnector):
         return True
 
     def _remove_matching_element(self, action_result, data, element_to_remove, policy):
-
         updated_data = []
         element_found = False  # To track if we find any matching element
 
@@ -1140,7 +1142,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, updated_policy
 
     def _handle_remove_policy_items(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1191,7 +1193,7 @@ class CiscoesaConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, f"Parsing date failed. Details {start_date=}, {end_date=}"), None, None
 
     def _handle_search_pov_quarantine(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1290,7 +1292,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_release_pov_quarantine(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1310,7 +1312,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_search_spam_quarantine(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1364,7 +1366,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_release_spam_quarantine(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1383,7 +1385,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_hat_groups(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1421,7 +1423,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_hat_group(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1487,7 +1489,7 @@ class CiscoesaConnector(BaseConnector):
     def _handle_add_hat_group(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -1604,7 +1606,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_hat_group(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1641,7 +1643,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_hat_sender(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -1711,7 +1713,7 @@ class CiscoesaConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_remove_hat_sender(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
@@ -1770,7 +1772,7 @@ class CiscoesaConnector(BaseConnector):
         return phantom.APP_SUCCESS, data
 
     def _handle_update_hat_order(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -1832,7 +1834,7 @@ class CiscoesaConnector(BaseConnector):
     def _handle_find_hat_group(self, param):
         # Implement the handler here
         # use self.save_progress(...) to send progress messages back to the platform
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -1916,7 +1918,7 @@ class CiscoesaConnector(BaseConnector):
         try:
             run_action = action_mapping[action]
         except Exception:
-            raise ValueError("action {action} is not supported".format(action=action))
+            raise ValueError(f"action {action} is not supported")
 
         return run_action(param)
 
@@ -1931,7 +1933,6 @@ class CiscoesaConnector(BaseConnector):
 
 
 if __name__ == "__main__":
-
     import sys
 
     import pudb
