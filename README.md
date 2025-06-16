@@ -1,10 +1,10 @@
 # Cisco ESA
 
 Publisher: Splunk \
-Connector Version: 3.0.1 \
+Connector Version: 4.1.0 \
 Product Vendor: Cisco \
 Product Name: Cisco ESA \
-Minimum Product Version: 5.4.0
+Minimum Product Version: 6.3.0
 
 This app supports investigation on the Cisco Email Security Appliance (ESA) device
 
@@ -15,20 +15,40 @@ This table lists the configuration variables required to operate Cisco ESA. Thes
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **url** | required | string | URL (e.g. https://10.10.10.10:6443) |
+**sma_url** | optional | string | SMA URL (e.g. https://10.20.20.20:6443) |
+**username** | required | string | Username (for both ESA and SMA) |
+**password** | required | password | Password (for both ESA and SMA) |
 **verify_server_cert** | optional | boolean | Verify server certificate |
-**username** | required | string | Username |
-**password** | required | password | Password |
-**ssh_username** | optional | string | SSH Username (Used for dictionary related actions) |
-**ssh_password** | optional | password | SSH Password (Used for dictionary related actions) |
+**cluster_mode** | optional | boolean | Check if ESA is deployed in cluster mode |
+**timeout** | optional | numeric | REST API timeout |
 
 ### Supported Actions
 
 [test connectivity](#action-test-connectivity) - Validate credentials provided for connectivity \
 [decode url](#action-decode-url) - Process Cisco encoded URL \
 [get report](#action-get-report) - Retrieve statistical reports from ESA \
+[list dictionaries](#action-list-dictionaries) - List all dictionaries available in Cisco ESA \
 [list dictionary items](#action-list-dictionary-items) - List all entries of an ESA dictionary \
-[add dictionary item](#action-add-dictionary-item) - Add an entry to an ESA dictionary \
-[remove dictionary item](#action-remove-dictionary-item) - Remove an entry from an ESA dictionary
+[add dictionary](#action-add-dictionary) - Adds a new ESA dictionary \
+[add dictionary items](#action-add-dictionary-items) - Add an entry to an ESA dictionary \
+[remove dictionary](#action-remove-dictionary) - Removes an existing ESA dictionary \
+[remove dictionary items](#action-remove-dictionary-items) - Remove an entry from an ESA dictionary \
+[add policy items](#action-add-policy-items) - Add users to an Incoming Mail Policy \
+[list policy items](#action-list-policy-items) - List information of all users of an Incoming Mail Policy \
+[remove policy items](#action-remove-policy-items) - Remove users from an Incoming Mail Policy \
+[update policy items](#action-update-policy-items) - Update users in an Incoming Mail Policy \
+[search pov quarantine](#action-search-pov-quarantine) - Search messages in the other quarantine that match multiple attributes \
+[release pov quarantine](#action-release-pov-quarantine) - Release a message that matches the mid attribute from a pov quarantine \
+[search spam quarantine](#action-search-spam-quarantine) - Search messages in the spam quarantine that match multiple attributes \
+[release spam quarantine](#action-release-spam-quarantine) - Release a message that matches the mid attribute from spam quarantine \
+[list hat groups](#action-list-hat-groups) - Retrieves HAT configuration details of all sender groups in listener \
+[list hat group](#action-list-hat-group) - Retrieves HAT Configuration Details for Specific Sender Group \
+[add hat group](#action-add-hat-group) - Creates HAT sender group with specific configuration \
+[remove hat group](#action-remove-hat-group) - Deletes specific HAT sender group \
+[add hat sender](#action-add-hat-sender) - Adds HAT senders to existing sender group \
+[remove hat sender](#action-remove-hat-sender) - Deletes specific HAT senders from sender group \
+[update hat order](#action-update-hat-order) - Updates order of HAT sender groups for listener \
+[find hat group](#action-find-hat-group) - Finds HAT senders in sender groups
 
 ## action: 'test connectivity'
 
@@ -346,6 +366,37 @@ action_result.message | string | | Report queried successfully |
 summary.total_objects | numeric | | 12 |
 summary.total_objects_successful | numeric | | 34 |
 
+## action: 'list dictionaries'
+
+List all dictionaries available in Cisco ESA
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+No parameters are required for this action
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\*.name | string | | |
+action_result.data.\*.encoding | string | | |
+action_result.data.\*.ignorecase | numeric | | |
+action_result.data.\*.wholewords | numeric | | |
+action_result.data.\*.words_count | numeric | | |
+action_result.data.\*.words_count.term_count | numeric | | |
+action_result.data.\*.words_count.smart_identifier_count | numeric | | |
+action_result.data.\*.words | string | | |
+action_result.data.\*.words.\*.0 | string | | |
+action_result.data.\*.words.\*.1 | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
 ## action: 'list dictionary items'
 
 List all entries of an ESA dictionary
@@ -357,28 +408,52 @@ Read only: **True**
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**name** | required | Name of dictionary to list | string | `ciscoesa dictionary name` |
-**cluster_mode** | optional | Enable machine mode as cluster on ESA | boolean | |
+**dictionary_name** | required | Name of dictionary to list | string | `ciscoesa dictionary name` |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.cluster_mode | boolean | | True False |
-action_result.parameter.name | string | `ciscoesa dictionary name` | Mail_To |
-action_result.data.\*.value | string | `ciscoesa item value` | test@user.com |
-action_result.data.\*.weight | string | | 1 |
-action_result.summary.total_items | numeric | | 36 |
-action_result.message | string | | Successfully listed all entries of dictionary |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
+action_result.parameter.dictionary_name | string | `ciscoesa dictionary name` | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
 
-## action: 'add dictionary item'
+## action: 'add dictionary'
+
+Adds a new ESA dictionary
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**dictionary_name** | required | Name of the ESA dictionary. | string | |
+**ignorecase** | required | Indicates if the term that needs to be matched is case-sensitive (False) or not case-sensitive (True) | boolean | |
+**wholewords** | required | Indicates if the words need to be matched completely (True) or not completely (False). | boolean | |
+**words** | required | A list of terms to add to a dictionary. It takes a comma separated list with the structure "word1|weight1" or "word1|weigh1|prefix" (for smart identifiers) | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.dictionary_name | string | | |
+action_result.parameter.ignorecase | boolean | | |
+action_result.parameter.wholewords | boolean | | |
+action_result.parameter.words | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'add dictionary items'
 
 Add an entry to an ESA dictionary
 
-Type: **contain** \
+Type: **investigate** \
 Read only: **False**
 
 Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.
@@ -387,31 +462,48 @@ Per the documentation, the action will handle escaping special regex character p
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**name** | required | Name of dictionary to add an item to | string | `ciscoesa dictionary name` |
-**value** | required | Value of entry to add to dictionary | string | `ciscoesa item value` |
-**commit_message** | required | Commit message to add the item to the dictionary on the server at the end of this action | string | |
-**cluster_mode** | optional | Enable machine mode as cluster on ESA | boolean | |
+**dictionary_name** | required | Name of dictionary to add an item to | string | `ciscoesa dictionary name` |
+**words** | required | A list of terms to add to a dictionary. It takes a comma separated list with the structure "word1|weight1" or "word1|weigh1|prefix" (for smart identifiers). | string | `ciscoesa item value` |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.cluster_mode | boolean | | True False |
-action_result.parameter.commit_message | string | | This is a test message |
-action_result.parameter.name | string | `ciscoesa dictionary name` | test_dict |
-action_result.parameter.value | string | `ciscoesa item value` | test_value |
-action_result.data.\*.message | string | | Successfully added entry to dictionary |
-action_result.summary.status | string | | Successfully added entry to dictionary |
-action_result.message | string | | Successfully added entry to dictionary |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
+action_result.parameter.dictionary_name | string | `ciscoesa dictionary name` | |
+action_result.parameter.words | string | `ciscoesa item value` | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
 
-## action: 'remove dictionary item'
+## action: 'remove dictionary'
+
+Removes an existing ESA dictionary
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**dictionary_name** | required | Name of the ESA dictionary. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.dictionary_name | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'remove dictionary items'
 
 Remove an entry from an ESA dictionary
 
-Type: **correct** \
+Type: **investigate** \
 Read only: **False**
 
 Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.
@@ -420,25 +512,650 @@ Per the documentation, the action will handle escaping special regex character p
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**name** | required | Name of dictionary to remove an item from | string | `ciscoesa dictionary name` |
-**value** | required | Value of entry to remove from dictionary | string | `ciscoesa item value` |
-**commit_message** | required | Commit message to remove the item from the dictionary on the server at the end of this action | string | |
-**cluster_mode** | optional | Enable machine mode as cluster on ESA | boolean | |
+**dictionary_name** | required | Name of dictionary to remove an item from | string | `ciscoesa dictionary name` |
+**words** | required | A list of terms to remove from the dictionary. It takes a comma separated list of words. | string | `ciscoesa item value` |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.cluster_mode | boolean | | True False |
-action_result.parameter.commit_message | string | | This is a test message |
-action_result.parameter.name | string | `ciscoesa dictionary name` | test_dict |
-action_result.parameter.value | string | `ciscoesa item value` | test_value |
-action_result.data.\*.message | string | | Successfully removed entry from dictionary |
-action_result.summary.status | string | | Successfully removed entry from dictionary |
-action_result.message | string | | Successfully removed entry from dictionary |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
+action_result.parameter.dictionary_name | string | `ciscoesa dictionary name` | |
+action_result.parameter.words | string | `ciscoesa item value` | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'add policy items'
+
+Add users to an Incoming Mail Policy
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**policy** | required | Incoming Email Policy | string | |
+**sender_config** | optional | This is either "sender" or "sender_not" which then contains the list of domain_entries. | string | |
+**sender** | optional | Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**sender_not** | optional | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver** | optional | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver_not** | optional | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**operation** | optional | Boolean logic between receiver and receiver_not domain_entries. The values can be "and" or "or" . | string | |
+**raw_json** | optional | Raw JSON payload for add policy items action. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.policy | string | | |
+action_result.parameter.sender_config | string | | |
+action_result.parameter.sender | string | | |
+action_result.parameter.sender_not | string | | |
+action_result.parameter.receiver | string | | |
+action_result.parameter.receiver_not | string | | |
+action_result.parameter.operation | string | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'list policy items'
+
+List information of all users of an Incoming Mail Policy
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**policy** | required | Incoming Mail Policy | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.policy | string | | |
+action_result.data | string | | |
+action_result.data.\*.sender_config | string | | |
+action_result.data.\*.sender_config.sender | string | | |
+action_result.data.\*.sender_config.sender.domain_entries | string | | |
+action_result.data.\*.sender_config.sender.domain_entries.0 | string | | |
+action_result.data.\*.receiver_config | string | | |
+action_result.data.\*.receiver_config.operation | string | | |
+action_result.data.\*.receiver_config.receiver | string | | |
+action_result.data.\*.receiver_config.receiver.domain_entries | string | | |
+action_result.data.\*.receiver_config.receiver.domain_entries.0 | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'remove policy items'
+
+Remove users from an Incoming Mail Policy
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**policy** | required | Incoming Email Policy | string | |
+**sender_config** | optional | This is either "sender" or "sender_not" which then contains the list of domain_entries. | string | |
+**sender** | optional | Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**sender_not** | optional | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver** | optional | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver_not** | optional | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**operation** | optional | Boolean logic between receiver and receiver_not domain_entries. The values can be "and" or "or" . raw_json: Raw JSON payload for add policy items action. | string | |
+**raw_json** | optional | Raw JSON payload for add policy items action. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.policy | string | | |
+action_result.parameter.sender_config | string | | |
+action_result.parameter.sender | string | | |
+action_result.parameter.sender_not | string | | |
+action_result.parameter.receiver | string | | |
+action_result.parameter.receiver_not | string | | |
+action_result.parameter.operation | string | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'update policy items'
+
+Update users in an Incoming Mail Policy
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**policy** | required | Incoming Email Policy | string | |
+**sender_config** | optional | This is either "sender" or "sender_not" which then contains the list of domain_entries. | string | |
+**sender** | optional | Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**sender_not** | optional | Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver** | optional | Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**receiver_not** | optional | Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1]) | string | |
+**operation** | optional | Boolean logic between receiver domain_entries. The values can be "and" or "or" | string | |
+**raw_json** | optional | Raw JSON payload for update policy items action. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.policy | string | | |
+action_result.parameter.sender_config | string | | |
+action_result.parameter.sender | string | | |
+action_result.parameter.sender_not | string | | |
+action_result.parameter.receiver | string | | |
+action_result.parameter.receiver_not | string | | |
+action_result.parameter.operation | string | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'search pov quarantine'
+
+Search messages in the other quarantine that match multiple attributes
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**start_date** | required | The starting point of the time period for the query. It specifies the date and time from which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z. | string | |
+**end_date** | required | The ending point of the time period for the query. It specifies the date and time up to which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z. | string | |
+**quarantines** | required | This parameter defines the quarantines to search for. Comma separated list of quarantines (e.g.: Outbreak,Virus,File Analysis,Unclassified,Policy). | string | |
+**offset** | required | Specify an offset value to retrieve a subset of records starting with the offset value. Offset works with limit, which determines how many records to retrieve starting from the offset. | string | |
+**limit** | required | Specify the number of records to retrieve. | string | |
+**subject_filter_by** | optional | Filter logic to filter the Subject field. | string | |
+**subject_filter_value** | optional | Subject value to used to filter Subjects using subjectFilterBy logic. | string | |
+**originating_esa_ip** | optional | The IP address of the ESA in which the message was processed. | string | |
+**attachment_name** | optional | The name of the attachment available in the searched emails. | string | |
+**attachment_size_filter_by** | optional | Filter logic to filter the attachments. | string | |
+**attachment_size_from_value** | optional | Specify an attachment size in KB. This is applicable only for attachmentSizeFilterBy=ragne or attachmentSizeFilterBy=more_than | string | |
+**attachment_size_to_value** | optional | Specify an attachment size in KB. This is applicable only for attachmentSizeFilterBy=ragne or attachmentSizeFilterBy=less_than | string | |
+**order_by** | optional | Specify how to order to retrieved messages. | string | |
+**order_dir** | optional | Specify order direction for retrieved messages. | string | |
+**envelope_recipient_filter_by** | optional | Filter logic to filter the email Recipient. | string | |
+**envelope_recipient_filter_value** | optional | The value to search for. This is a user defined value. For example: envelopeRecipientFilterValue=user. | string | |
+**envelope_sender_filter_by** | optional | Filter logic to filter the email Sender. | string | |
+**envelope_sender_filter_value** | optional | The value to search for. This is a user defined value. For example: envelopeSenderFilterValue=user. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.start_date | string | | |
+action_result.parameter.end_date | string | | |
+action_result.parameter.quarantines | string | | |
+action_result.parameter.offset | string | | |
+action_result.parameter.limit | string | | |
+action_result.parameter.subject_filter_by | string | | |
+action_result.parameter.subject_filter_value | string | | |
+action_result.parameter.originating_esa_ip | string | | |
+action_result.parameter.attachment_name | string | | |
+action_result.parameter.attachment_size_filter_by | string | | |
+action_result.parameter.attachment_size_from_value | string | | |
+action_result.parameter.attachment_size_to_value | string | | |
+action_result.parameter.order_by | string | | |
+action_result.parameter.order_dir | string | | |
+action_result.parameter.envelope_recipient_filter_by | string | | |
+action_result.parameter.envelope_recipient_filter_value | string | | |
+action_result.parameter.envelope_sender_filter_by | string | | |
+action_result.parameter.envelope_sender_filter_value | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\*.mid | numeric | | |
+action_result.data.\*.attributes | string | | |
+action_result.data.\*.attributes.size | string | | |
+action_result.data.\*.attributes.esaMid | numeric | | |
+action_result.data.\*.attributes.sender | string | | |
+action_result.data.\*.attributes.subject | string | | |
+action_result.data.\*.attributes.received | string | | |
+action_result.data.\*.attributes.recipient | string | | |
+action_result.data.\*.attributes.esaHostName | string | | |
+action_result.data.\*.attributes.inQuarantines | string | | |
+action_result.data.\*.attributes.scheduledExit | string | | |
+action_result.data.\*.attributes.originatingEsaIp | string | | |
+action_result.data.\*.attributes.quarantineForReason | string | | |
+action_result.data.\*.attributes.quarantineForReasonDict | string | | |
+action_result.data.\*.attributes.quarantineForReasonDict.\*.reason | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'release pov quarantine'
+
+Release a message that matches the mid attribute from a pov quarantine
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**mids** | required | POV quarantine message ids to be released. | string | |
+**quarantine_name** | required | POV quarantine name. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.mids | string | | |
+action_result.parameter.quarantine_name | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'search spam quarantine'
+
+Search messages in the spam quarantine that match multiple attributes
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**start_date** | required | The starting point of the time period for the query. It specifies the date and time from which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z. | string | |
+**end_date** | required | The ending point of the time period for the query. It specifies the date and time up to which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z. | string | |
+**offset** | optional | Specify an offset value to retrieve a subset of records starting with the offset value. Offset works with limit, which determines how many records to retrieve starting from the offset. | string | |
+**limit** | optional | Specify the number of records to retrieve. | string | |
+**order_by** | optional | Specify how to order to retrieved messages. | string | |
+**order_dir** | optional | Specify order direction for retrieved messages. | string | |
+**envelope_recipient_filter_operator** | optional | Filter logic to filter the email Recipient. | string | |
+**envelope_recipient_filter_value** | optional | The value to search for. This is a user defined value. For example: envelopeRecipientFilterValue=user. | string | |
+**filter_operator** | optional | Filter logic to filter the email. | string | |
+**filter_value** | optional | The value to search for. This is a user defined value. For example: filterValue=abc.com. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.start_date | string | | |
+action_result.parameter.end_date | string | | |
+action_result.parameter.offset | string | | |
+action_result.parameter.limit | string | | |
+action_result.parameter.order_by | string | | |
+action_result.parameter.order_dir | string | | |
+action_result.parameter.envelope_recipient_filter_operator | string | | |
+action_result.parameter.envelope_recipient_filter_value | string | | |
+action_result.parameter.filter_operator | string | | |
+action_result.parameter.filter_value | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\*.mid | numeric | | |
+action_result.data.\*.attributes | string | | |
+action_result.data.\*.attributes.envelopeRecipient | string | | |
+action_result.data.\*.attributes.toAddress | string | | |
+action_result.data.\*.attributes.subject | string | | |
+action_result.data.\*.attributes.date | string | | |
+action_result.data.\*.attributes.fromAddress | string | | |
+action_result.data.\*.attributes.size | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'release spam quarantine'
+
+Release a message that matches the mid attribute from spam quarantine
+
+Type: **generic** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**mids** | required | Spam quarantine message ids to be released (comma separated list of ids) | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.mids | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'list hat groups'
+
+Retrieves HAT configuration details of all sender groups in listener
+
+Type: **investigate** \
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to retrieve configuration from | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.name | string | | |
+action_result.data.\*.sbrs | string | | |
+action_result.data.\*.sbrs.\* | numeric | | |
+action_result.data.\*.order | string | | |
+action_result.data.\*.senders | string | | |
+action_result.data.\*.senders.ip_address_list | string | | |
+action_result.data.\*.senders.ip_address_list.\* | string | | |
+action_result.data.\*.senders.ip_address_list.\*.description | string | | |
+action_result.data.\*.senders.ip_address_list.\*.sender_name | string | | |
+action_result.data.\*.senders.geo_list | string | | |
+action_result.data.\*.senders.geo_list.\* | string | | |
+action_result.data.\*.senders.geo_list.\*.description | string | | |
+action_result.data.\*.senders.geo_list.\*.sender_name | string | | |
+action_result.data.\*.dns_list | string | | |
+action_result.data.\*.dns_list.\* | string | | |
+action_result.data.\*.sbrs_none | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.flow_profile | string | | |
+action_result.data.\*.dns_host_verification | string | | |
+action_result.data.\*.dns_host_verification.lookup_fail | string | | |
+action_result.data.\*.dns_host_verification.record_not_exist | string | | |
+action_result.data.\*.dns_host_verification.lookup_not_matched | string | | |
+action_result.data.\*.dns_host_verification.external_threat_feeds | string | | |
+action_result.data.\*.dns_host_verification.external_threat_feeds.\* | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'list hat group'
+
+Retrieves HAT Configuration Details for Specific Sender Group
+
+Type: **investigate** \
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to retrieve configuration from | string | |
+**sender_group** | required | Sender group to retrieve configuration for | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.name | string | | |
+action_result.data.\*.sbrs | string | | |
+action_result.data.\*.sbrs.\* | numeric | | |
+action_result.data.\*.order | string | | |
+action_result.data.\*.senders | string | | |
+action_result.data.\*.senders.ip_address_list | string | | |
+action_result.data.\*.senders.ip_address_list.\* | string | | |
+action_result.data.\*.senders.ip_address_list.\*.description | string | | |
+action_result.data.\*.senders.ip_address_list.\*.sender_name | string | | |
+action_result.data.\*.senders.geo_list | string | | |
+action_result.data.\*.senders.geo_list.\* | string | | |
+action_result.data.\*.senders.geo_list.\*.description | string | | |
+action_result.data.\*.senders.geo_list.\*.sender_name | string | | |
+action_result.data.\*.dns_list | string | | |
+action_result.data.\*.dns_list.\* | string | | |
+action_result.data.\*.sbrs_none | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.flow_profile | string | | |
+action_result.data.\*.dns_host_verification | string | | |
+action_result.data.\*.dns_host_verification.lookup_fail | string | | |
+action_result.data.\*.dns_host_verification.record_not_exist | string | | |
+action_result.data.\*.dns_host_verification.lookup_not_matched | string | | |
+action_result.data.\*.dns_host_verification.external_threat_feeds | string | | |
+action_result.data.\*.dns_host_verification.external_threat_feeds.\* | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+action_result.parameter.sender_group | string | | |
+
+## action: 'add hat group'
+
+Creates HAT sender group with specific configuration
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to add the sender group to | string | |
+**sender_group** | required | Sender group name to be added | string | |
+**flow_profile** | required | The name of the Mail Flow Policy associated with the sender group. | string | |
+**order** | optional | The index is used to define the position of the sender group. | numeric | |
+**description** | optional | The description for the sender group. | string | |
+**sbrs_none** | optional | Include SBRS Scores of "None" | boolean | |
+**external_threat_feeds** | optional | A comma separated list of External Threat Feed sources ((configured in the Mail Policy > External Threat Feed Manager page in the web interface). | string | |
+**sbrs** | optional | SenderBase Reputation Score (SBRS) for the sender group. The values can be from -10.0 to 10.0: e.g. -1.5,8.5 | string | |
+**dns_list** | optional | Remote blocked list queries such as 'query.blocked_list.example' are allowed. Separate multiple entries with commas | string | |
+**lookup_not_matched** | optional | The value - "true " indicates that the - Connecting host reverse DNS lookup (PTR) does not match the forward DNS lookup (A). | boolean | |
+**record_not_exist** | optional | The value - "true " indicates that the Connecting host PTR record does not exist in DNS. | boolean | |
+**lookup_fail** | optional | The value - "true " indicates that the Connecting host PTR lookup fails because of temporary DNS failure. | boolean | |
+**ip_sender_name** | optional | IPv4 or IPv6 addresses, hostname, and partial hostname for the ip_address_list. | string | |
+**ip_description** | optional | The key contains data that describes the sender in the sender group. | string | |
+**geo_sender_name** | optional | Country name for the geo_list. | string | |
+**geo_description** | optional | The key contains data that describes the sender in the sender group. | string | |
+**raw_json** | optional | Raw JSON for senders keys. Example: {"ip_address_list":[{"sender_name":".cisco.com","description":"Cisco"},{"sender_name":"example_none_d.com","description":""}],"geo_list":[{"sender_name":"India","description":""}]} | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.parameter.flow_profile | string | | |
+action_result.parameter.order | numeric | | |
+action_result.parameter.description | string | | |
+action_result.parameter.sbrs_none | boolean | | |
+action_result.parameter.external_threat_feeds | string | | |
+action_result.parameter.sbrs | string | | |
+action_result.parameter.dns_list | string | | |
+action_result.parameter.lookup_not_matched | boolean | | |
+action_result.parameter.record_not_exist | boolean | | |
+action_result.parameter.lookup_fail | boolean | | |
+action_result.parameter.ip_sender_name | string | | |
+action_result.parameter.ip_description | string | | |
+action_result.parameter.geo_sender_name | string | | |
+action_result.parameter.geo_description | string | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'remove hat group'
+
+Deletes specific HAT sender group
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to remove the sender group from | string | |
+**sender_group** | required | Sender groupto remove | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.message | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'add hat sender'
+
+Adds HAT senders to existing sender group
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to add sender to | string | |
+**sender_group** | required | Sender group name to add sender to | string | |
+**ip_sender_name** | optional | IPv4 or IPv6 addresses, hostname, and partial hostname for the ip_address_list | string | |
+**ip_description** | optional | The key contains data describing the sender in the sender group | string | |
+**geo_sender_name** | optional | Country name for the geo_list | string | |
+**geo_description** | optional | The key contains data describing the sender in the sender group | string | |
+**raw_json** | optional | Raw JSON for senders keys. Example: {"ip_address_list":[{"sender_name":".cisco.com","description":"Cisco"},{"sender_name":"example_none_d.com","description":""}],"geo_list":[{"sender_name":"India","description":""}]} | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.parameter.ip_sender_name | string | | |
+action_result.parameter.ip_description | string | | |
+action_result.parameter.geo_sender_name | string | | |
+action_result.parameter.geo_description | string | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'remove hat sender'
+
+Deletes specific HAT senders from sender group
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to remove senders from | string | |
+**sender_group** | required | Sender group name to add sender to | string | |
+**senders** | required | Comma separated list containing the names of the senders to delete. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.parameter.senders | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.message | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'update hat order'
+
+Updates order of HAT sender groups for listener
+
+Type: **investigate** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | required | Listener to update sender groups order for | string | |
+**sender_group** | optional | Sender group to change order for | string | |
+**order** | optional | New order for the specified sender group | numeric | |
+**raw_json** | optional | Raw JSON for data key: e.g. {"BLOCKED_LIST":3,"ALLOWED_LIST":1,"SUSPECTLIST":4,"UNKNOWNLIST":2} | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.parameter.order | numeric | | |
+action_result.parameter.raw_json | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.message | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
+## action: 'find hat group'
+
+Finds HAT senders in sender groups
+
+Type: **investigate** \
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**listener_name** | optional | Listener to search term in | string | |
+**sender_group** | optional | Sender group to search term in | string | |
+**search_text** | required | Search text to be searched | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.listener_name | string | | |
+action_result.parameter.sender_group | string | | |
+action_result.parameter.search_text | string | | |
+action_result.status | string | | |
+action_result.data | string | | |
+action_result.data.\* | string | | |
+action_result.data.\*.sender_name | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.sender_group | string | | |
+action_result.data.\*.listener | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
 
 ______________________________________________________________________
 

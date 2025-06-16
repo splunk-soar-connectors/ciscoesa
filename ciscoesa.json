@@ -7,53 +7,85 @@
     "license": "Copyright (c) 2017-2025 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
-    "app_version": "3.0.1",
-    "utctime_updated": "2022-01-28T19:25:20.000000Z",
+    "app_version": "4.1.0",
+    "utctime_updated": "2024-10-15T12:40:27.594330Z",
     "product_vendor": "Cisco",
     "product_name": "Cisco ESA",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.4.0",
+    "min_phantom_version": "6.3.0",
     "logo": "logo_cisco.svg",
     "logo_dark": "logo_cisco_dark.svg",
     "latest_tested_versions": [
-        "Cisco Secure Email Gateway Virtual C100V Version: 14.2.0-620"
+        "Cisco Secure Email Gateway C100V Version: 16.0.0-050"
     ],
     "python_version": "3",
     "fips_compliant": true,
     "configuration": {
         "url": {
-            "required": true,
             "description": "URL (e.g. https://10.10.10.10:6443)",
             "data_type": "string",
-            "order": 0
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 0,
+            "name": "url",
+            "id": 0
         },
-        "verify_server_cert": {
-            "default": false,
-            "description": "Verify server certificate",
-            "data_type": "boolean",
-            "order": 1
+        "sma_url": {
+            "description": "SMA URL  (e.g. https://10.20.20.20:6443)",
+            "data_type": "string",
+            "required": false,
+            "value_list": [],
+            "default": "",
+            "order": 1,
+            "name": "sma_url",
+            "id": 1
         },
         "username": {
-            "required": true,
-            "description": "Username",
+            "description": "Username (for both ESA and SMA)",
             "data_type": "string",
-            "order": 2
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 2,
+            "name": "username",
+            "id": 2
         },
         "password": {
+            "description": "Password (for both ESA and SMA)",
+            "data_type": "password",
             "required": true,
-            "description": "Password",
-            "data_type": "password",
-            "order": 3
+            "order": 3,
+            "name": "password",
+            "id": 3
         },
-        "ssh_username": {
-            "description": "SSH Username (Used for dictionary related actions)",
-            "data_type": "string",
-            "order": 4
+        "verify_server_cert": {
+            "description": "Verify server certificate",
+            "data_type": "boolean",
+            "required": false,
+            "default": "False",
+            "order": 4,
+            "name": "verify_server_cert",
+            "id": 4
         },
-        "ssh_password": {
-            "description": "SSH Password (Used for dictionary related actions)",
-            "data_type": "password",
-            "order": 5
+        "cluster_mode": {
+            "description": "Check if ESA is deployed in cluster mode",
+            "data_type": "boolean",
+            "required": false,
+            "default": "False",
+            "order": 5,
+            "name": "cluster_mode",
+            "id": 5
+        },
+        "timeout": {
+            "description": "REST API timeout",
+            "data_type": "numeric",
+            "required": false,
+            "value_list": [],
+            "default": "",
+            "order": 6,
+            "name": "timeout",
+            "id": 6
         }
     },
     "actions": [
@@ -84,7 +116,10 @@
                         "encoded url"
                     ],
                     "order": 0,
-                    "primary": true
+                    "primary": true,
+                    "name": "encoded_url",
+                    "id": 1,
+                    "param_name": "encoded_url"
                 }
             },
             "render": {
@@ -183,49 +218,76 @@
                     "primary": true,
                     "contains": [
                         "ciscoesa report title"
-                    ]
+                    ],
+                    "name": "report_title",
+                    "id": 1,
+                    "param_name": "report_title"
                 },
                 "filter_by": {
                     "description": "Entity to filter the results",
                     "data_type": "string",
-                    "order": 1
+                    "order": 1,
+                    "name": "filter_by",
+                    "id": 2,
+                    "param_name": "filter_by"
                 },
                 "filter_value": {
                     "description": "Entity value to filter the results",
                     "data_type": "string",
-                    "order": 2
+                    "order": 2,
+                    "name": "filter_value",
+                    "id": 3,
+                    "param_name": "filter_value"
                 },
                 "starts_with": {
                     "description": "Retrieve items starting with specified filter value",
                     "data_type": "boolean",
-                    "order": 3
+                    "order": 3,
+                    "name": "starts_with",
+                    "id": 4,
+                    "param_name": "starts_with"
                 },
                 "start_time": {
                     "description": "Start time (YYYY-MM-DDTHH:00)",
                     "data_type": "string",
-                    "order": 4
+                    "order": 4,
+                    "name": "start_time",
+                    "id": 5,
+                    "param_name": "start_time"
                 },
                 "end_time": {
                     "description": "End time (YYYY-MM-DDTHH:00)",
                     "data_type": "string",
-                    "order": 5
+                    "order": 5,
+                    "name": "end_time",
+                    "id": 6,
+                    "param_name": "end_time"
                 },
                 "limit": {
                     "default": 10,
                     "description": "Maximum number of items to retrieve",
                     "data_type": "numeric",
-                    "order": 6
+                    "order": 6,
+                    "name": "limit",
+                    "id": 7,
+                    "param_name": "limit"
                 },
                 "offset": {
                     "default": 0,
                     "description": "Starting index of overall result set",
                     "data_type": "numeric",
-                    "order": 7
+                    "order": 7,
+                    "name": "offset",
+                    "id": 8,
+                    "param_name": "offset"
                 },
                 "order_by": {
                     "description": "The attribute by which to order the data in the response",
                     "data_type": "string",
-                    "order": 8
+                    "order": 8,
+                    "name": "order_by",
+                    "id": 9,
+                    "param_name": "order_by"
                 },
                 "order_dir": {
                     "description": "Sort direction of results",
@@ -234,7 +296,10 @@
                     "value_list": [
                         "asc",
                         "desc"
-                    ]
+                    ],
+                    "name": "order_dir",
+                    "id": 10,
+                    "param_name": "order_dir"
                 }
             },
             "render": {
@@ -1817,369 +1882,3310 @@
             "versions": "EQ(*)"
         },
         {
-            "action": "list dictionary items",
-            "description": "List all entries of an ESA dictionary",
+            "action": "list dictionaries",
+            "identifier": "list_dictionaries",
+            "description": "List all dictionaries available in Cisco ESA",
+            "verbose": "",
             "type": "investigate",
+            "read_only": false,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.encoding",
+                    "data_type": "string",
+                    "column_name": "encoding",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.ignorecase",
+                    "data_type": "numeric",
+                    "column_name": "ignorecase",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.wholewords",
+                    "data_type": "numeric",
+                    "column_name": "wholewords",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.words_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.words_count.term_count",
+                    "data_type": "numeric",
+                    "column_name": "term_count",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.words_count.smart_identifier_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.words",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.words.*.0",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.words.*.1",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list dictionary items",
             "identifier": "list_dictionary_items",
+            "description": "List all entries of an ESA dictionary",
+            "verbose": "",
+            "type": "investigate",
             "read_only": true,
             "parameters": {
-                "name": {
+                "dictionary_name": {
                     "description": "Name of dictionary to list",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
-                    "order": 0,
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
-                },
-                "cluster_mode": {
-                    "description": "Enable machine mode as cluster on ESA",
-                    "data_type": "boolean",
-                    "order": 1
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "dictionary_name",
+                    "id": 1,
+                    "param_name": "dictionary_name"
                 }
             },
             "output": [
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.parameter.dictionary_name",
                     "data_type": "string",
-                    "example_values": [
-                        "success",
-                        "failed"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.cluster_mode",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "Mail_To"
-                    ],
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.value",
-                    "data_type": "string",
-                    "example_values": [
-                        "test@user.com"
                     ],
-                    "contains": [
-                        "ciscoesa item value"
-                    ]
+                    "column_name": "dictionary_name",
+                    "column_order": 0
                 },
                 {
-                    "data_path": "action_result.data.*.weight",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "example_values": [
-                        " 1"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.total_items",
-                    "data_type": "numeric",
-                    "example_values": [
-                        36
-                    ]
+                    "column_name": "status",
+                    "column_order": 1
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully listed all entries of dictionary"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
-                "width": 12,
-                "title": "List Dictionary Items",
-                "type": "custom",
-                "height": 5,
-                "view": "ciscoesa_view.display_reports"
-            }
+                "type": "table"
+            },
+            "versions": "EQ(*)"
         },
         {
-            "action": "add dictionary item",
-            "description": "Add an entry to an ESA dictionary",
-            "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.",
-            "type": "contain",
-            "identifier": "add_dictionary_item",
-            "undo": "remove dictionary item",
+            "action": "add dictionary",
+            "identifier": "add_dictionary",
+            "description": "Adds a new ESA dictionary",
+            "verbose": "",
+            "type": "investigate",
             "read_only": false,
             "parameters": {
-                "name": {
+                "dictionary_name": {
+                    "description": "Name  of the ESA dictionary.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "dictionary_name",
+                    "id": 1,
+                    "param_name": "dictionary_name"
+                },
+                "ignorecase": {
+                    "description": "Indicates if the term that needs to be matched is case-sensitive (False) or not case-sensitive (True)",
+                    "data_type": "boolean",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "default": true,
+                    "order": 1,
+                    "name": "ignorecase",
+                    "id": 2,
+                    "param_name": "ignorecase"
+                },
+                "wholewords": {
+                    "description": "Indicates if the words need to be matched completely (True) or not completely (False).",
+                    "data_type": "boolean",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "default": true,
+                    "order": 2,
+                    "name": "wholewords",
+                    "id": 3,
+                    "param_name": "wholewords"
+                },
+                "words": {
+                    "description": "A list of terms to add to a dictionary. It takes a comma separated list with the structure \"word1|weight1\" or \"word1|weigh1|prefix\" (for smart identifiers)",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "words",
+                    "id": 4,
+                    "param_name": "words"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.dictionary_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "dictionary_name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.ignorecase",
+                    "data_type": "boolean",
+                    "contains": [],
+                    "column_name": "ignorecase",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.wholewords",
+                    "data_type": "boolean",
+                    "contains": [],
+                    "column_name": "wholewords",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.words",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "words",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add dictionary items",
+            "identifier": "add_dictionary_items",
+            "description": "Add an entry to an ESA dictionary",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "dictionary_name": {
                     "description": "Name of dictionary to add an item to",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
-                    "order": 0,
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "dictionary_name",
+                    "id": 1,
+                    "param_name": "dictionary_name"
                 },
-                "value": {
-                    "description": "Value of entry to add to dictionary",
+                "words": {
+                    "description": "A list of terms to add to a dictionary. It takes a comma separated list with the structure \"word1|weight1\" or \"word1|weigh1|prefix\" (for smart identifiers).",
                     "data_type": "string",
                     "required": true,
-                    "order": 1,
                     "primary": true,
                     "contains": [
                         "ciscoesa item value"
-                    ]
-                },
-                "commit_message": {
-                    "description": "Commit message to add the item to the dictionary on the server at the end of this action",
-                    "data_type": "string",
-                    "required": true,
-                    "order": 2
-                },
-                "cluster_mode": {
-                    "description": "Enable machine mode as cluster on ESA",
-                    "data_type": "boolean",
-                    "order": 3
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "words",
+                    "id": 2,
+                    "param_name": "words"
                 }
             },
             "output": [
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.parameter.dictionary_name",
                     "data_type": "string",
-                    "example_values": [
-                        "success",
-                        "failed"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.cluster_mode",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.commit_message",
-                    "data_type": "string",
-                    "example_values": [
-                        "This is a test message"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "test_dict"
-                    ],
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
+                    ],
+                    "column_name": "dictionary_name",
+                    "column_order": 0
                 },
                 {
-                    "data_path": "action_result.parameter.value",
+                    "data_path": "action_result.parameter.words",
                     "data_type": "string",
-                    "example_values": [
-                        "test_value"
-                    ],
                     "contains": [
                         "ciscoesa item value"
-                    ]
+                    ],
+                    "column_name": "words",
+                    "column_order": 1
                 },
                 {
-                    "data_path": "action_result.data.*.message",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "example_values": [
-                        "Successfully added entry to dictionary"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.status",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully added entry to dictionary"
-                    ]
+                    "column_name": "status",
+                    "column_order": 2
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully added entry to dictionary"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
-                "width": 12,
-                "title": "Added Dictionary Items",
-                "type": "custom",
-                "height": 5,
-                "view": "ciscoesa_view.display_reports"
-            }
+                "type": "table"
+            },
+            "versions": "EQ(*)"
         },
         {
-            "action": "remove dictionary item",
-            "description": "Remove an entry from an ESA dictionary",
-            "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.",
-            "type": "correct",
-            "identifier": "remove_dictionary_item",
-            "undo": "add dictionary item",
+            "action": "remove dictionary",
+            "identifier": "remove_dictionary",
+            "description": "Removes an existing ESA dictionary",
+            "verbose": "",
+            "type": "investigate",
             "read_only": false,
             "parameters": {
-                "name": {
+                "dictionary_name": {
+                    "description": "Name  of the ESA dictionary.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "dictionary_name",
+                    "id": 1,
+                    "param_name": "dictionary_name"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.dictionary_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "dictionary_name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove dictionary items",
+            "identifier": "remove_dictionary_items",
+            "description": "Remove an entry from an ESA dictionary",
+            "verbose": "Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "dictionary_name": {
                     "description": "Name of dictionary to remove an item from",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
-                    "order": 0,
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "dictionary_name",
+                    "id": 1,
+                    "param_name": "dictionary_name"
                 },
-                "value": {
-                    "description": "Value of entry to remove from dictionary",
+                "words": {
+                    "description": "A list of terms to remove from the dictionary. It takes a comma separated list of words.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
-                    "order": 1,
                     "contains": [
                         "ciscoesa item value"
-                    ]
-                },
-                "commit_message": {
-                    "description": "Commit message to remove the item from the dictionary on the server at the end of this action",
-                    "data_type": "string",
-                    "required": true,
-                    "order": 2
-                },
-                "cluster_mode": {
-                    "description": "Enable machine mode as cluster on ESA",
-                    "data_type": "boolean",
-                    "order": 3
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "words",
+                    "id": 2,
+                    "param_name": "words"
                 }
             },
             "output": [
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.parameter.dictionary_name",
                     "data_type": "string",
-                    "example_values": [
-                        "success",
-                        "failed"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.cluster_mode",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.commit_message",
-                    "data_type": "string",
-                    "example_values": [
-                        "This is a test message"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "test_dict"
-                    ],
                     "contains": [
                         "ciscoesa dictionary name"
-                    ]
+                    ],
+                    "column_name": "dictionary_name",
+                    "column_order": 0
                 },
                 {
-                    "data_path": "action_result.parameter.value",
+                    "data_path": "action_result.parameter.words",
                     "data_type": "string",
-                    "example_values": [
-                        "test_value"
-                    ],
                     "contains": [
                         "ciscoesa item value"
-                    ]
+                    ],
+                    "column_name": "words",
+                    "column_order": 1
                 },
                 {
-                    "data_path": "action_result.data.*.message",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "example_values": [
-                        "Successfully removed entry from dictionary"
-                    ]
+                    "column_name": "status",
+                    "column_order": 2
                 },
                 {
-                    "data_path": "action_result.summary.status",
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add policy items",
+            "identifier": "add_policy_items",
+            "description": "Add users to an Incoming Mail Policy",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "policy": {
+                    "description": "Incoming Email Policy",
                     "data_type": "string",
-                    "example_values": [
-                        "Successfully removed entry from dictionary"
-                    ]
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "policy",
+                    "id": 1,
+                    "param_name": "policy"
+                },
+                "sender_config": {
+                    "description": "This is either \"sender\" or \"sender_not\" which then contains the list of domain_entries.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "sender_not",
+                        "sender"
+                    ],
+                    "default": "sender",
+                    "order": 1,
+                    "name": "sender_config",
+                    "id": 2,
+                    "param_name": "sender_config"
+                },
+                "sender": {
+                    "description": "Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "sender",
+                    "id": 3,
+                    "param_name": "sender"
+                },
+                "sender_not": {
+                    "description": "Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "sender_not",
+                    "id": 4,
+                    "param_name": "sender_not"
+                },
+                "receiver": {
+                    "description": "Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "receiver",
+                    "id": 5,
+                    "param_name": "receiver"
+                },
+                "receiver_not": {
+                    "description": "Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5,
+                    "name": "receiver_not",
+                    "id": 6,
+                    "param_name": "receiver_not"
+                },
+                "operation": {
+                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be \"and\" or \"or\" .",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "and",
+                        "or"
+                    ],
+                    "default": "and",
+                    "order": 6,
+                    "name": "operation",
+                    "id": 7,
+                    "param_name": "operation"
+                },
+                "raw_json": {
+                    "description": "Raw JSON payload for add policy items action.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "raw_json",
+                    "id": 8,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "policy",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.sender_config",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_config",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.sender_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_not",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.receiver",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.parameter.receiver_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver_not",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.parameter.operation",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "operation",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "raw_json",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list policy items",
+            "identifier": "list_policy_items",
+            "description": "List information of all users of an Incoming Mail Policy",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "policy": {
+                    "description": "Incoming Mail Policy",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "policy",
+                    "id": 1,
+                    "param_name": "policy"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "policy",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sender_config",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sender_config.sender",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sender_config.sender.domain_entries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sender_config.sender.domain_entries.0",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.receiver_config",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.receiver_config.operation",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.receiver_config.receiver",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.receiver_config.receiver.domain_entries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.receiver_config.receiver.domain_entries.0",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove policy items",
+            "identifier": "remove_policy_items",
+            "description": "Remove users from an Incoming Mail Policy",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "policy": {
+                    "description": "Incoming Email Policy",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "policy",
+                    "id": 1,
+                    "param_name": "policy"
+                },
+                "sender_config": {
+                    "description": "This is either \"sender\" or \"sender_not\" which then contains the list of domain_entries.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "sender",
+                        "sender_not"
+                    ],
+                    "default": "sender",
+                    "order": 1,
+                    "name": "sender_config",
+                    "id": 2,
+                    "param_name": "sender_config"
+                },
+                "sender": {
+                    "description": "Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "sender",
+                    "id": 3,
+                    "param_name": "sender"
+                },
+                "sender_not": {
+                    "description": "Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "sender_not",
+                    "id": 4,
+                    "param_name": "sender_not"
+                },
+                "receiver": {
+                    "description": "Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "receiver",
+                    "id": 5,
+                    "param_name": "receiver"
+                },
+                "receiver_not": {
+                    "description": "Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5,
+                    "name": "receiver_not",
+                    "id": 6,
+                    "param_name": "receiver_not"
+                },
+                "operation": {
+                    "description": "Boolean logic between receiver  and receiver_not domain_entries. The values can be \"and\" or \"or\" . raw_json: Raw JSON payload for add policy items action.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "or",
+                        "and"
+                    ],
+                    "default": "and",
+                    "order": 6,
+                    "name": "operation",
+                    "id": 7,
+                    "param_name": "operation"
+                },
+                "raw_json": {
+                    "description": "Raw JSON payload for add policy items action.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "raw_json",
+                    "id": 8,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "policy",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.sender_config",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_config",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.sender_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_not",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.receiver",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.parameter.receiver_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver_not",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.parameter.operation",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "operation",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "raw_json",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "update policy items",
+            "identifier": "update_policy_items",
+            "description": "Update users in an Incoming Mail Policy",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "policy": {
+                    "description": "Incoming Email Policy",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "policy",
+                    "id": 1,
+                    "param_name": "policy"
+                },
+                "sender_config": {
+                    "description": "This is either \"sender\" or \"sender_not\" which then contains the list of domain_entries.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "sender",
+                        "sender_not"
+                    ],
+                    "default": "sender",
+                    "order": 1,
+                    "name": "sender_config",
+                    "id": 2,
+                    "param_name": "sender_config"
+                },
+                "sender": {
+                    "description": "Comma separated list of domain_entries for sender (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "sender",
+                    "id": 3,
+                    "param_name": "sender"
+                },
+                "sender_not": {
+                    "description": "Comma separated list of domain_entries for sender_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "sender_not",
+                    "id": 4,
+                    "param_name": "sender_not"
+                },
+                "receiver": {
+                    "description": "Comma separated list of domain_entries for receiver (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "receiver",
+                    "id": 5,
+                    "param_name": "receiver"
+                },
+                "receiver_not": {
+                    "description": "Comma separated list of domain_entries for receiver_not (e.g.: user@example.com,User@,@example.com,@.example.com,user@[1.2.3.4],@[1.1.2.3], user@[ipv6:2001:db8::1])",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5,
+                    "name": "receiver_not",
+                    "id": 6,
+                    "param_name": "receiver_not"
+                },
+                "operation": {
+                    "description": "Boolean logic between receiver  domain_entries. The values can be \"and\" or \"or\"",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [
+                        "and",
+                        "or"
+                    ],
+                    "default": "and",
+                    "order": 6,
+                    "name": "operation",
+                    "id": 7,
+                    "param_name": "operation"
+                },
+                "raw_json": {
+                    "description": "Raw JSON payload for update policy items action.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "raw_json",
+                    "id": 8,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "policy",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.sender_config",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_config",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.sender_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_not",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.receiver",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.parameter.receiver_not",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "receiver_not",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.parameter.operation",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "operation",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "raw_json",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "search pov quarantine",
+            "identifier": "search_pov_quarantine",
+            "description": "Search messages in  the other quarantine that match multiple attributes",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "start_date": {
+                    "description": "The starting point of the time period for the query. It specifies the date and time from which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "start_date",
+                    "id": 1,
+                    "param_name": "start_date"
+                },
+                "end_date": {
+                    "description": "The ending point of the time period for the query. It specifies the date and time up to which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "end_date",
+                    "id": 2,
+                    "param_name": "end_date"
+                },
+                "quarantines": {
+                    "description": "This parameter defines the quarantines to search for. Comma separated list of quarantines (e.g.: Outbreak,Virus,File Analysis,Unclassified,Policy).",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "quarantines",
+                    "id": 3,
+                    "param_name": "quarantines"
+                },
+                "offset": {
+                    "description": "Specify an offset value to retrieve a subset of records starting with the offset value. Offset works with limit, which determines how many records to retrieve starting from the offset.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "offset",
+                    "id": 4,
+                    "param_name": "offset"
+                },
+                "limit": {
+                    "description": "Specify the number of records to retrieve.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "limit",
+                    "id": 5,
+                    "param_name": "limit"
+                },
+                "subject_filter_by": {
+                    "description": "Filter logic to filter the Subject field.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "contains",
+                        "starts_with",
+                        "ends_with",
+                        "matches_exactly",
+                        "does_not_contain",
+                        "does_not_start_with",
+                        "does_not_end_with",
+                        "does_not_match"
+                    ],
+                    "default": "",
+                    "order": 5,
+                    "name": "subject_filter_by",
+                    "id": 6,
+                    "param_name": "subject_filter_by"
+                },
+                "subject_filter_value": {
+                    "description": "Subject value to used to filter Subjects using subjectFilterBy logic.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 6,
+                    "name": "subject_filter_value",
+                    "id": 7,
+                    "param_name": "subject_filter_value"
+                },
+                "originating_esa_ip": {
+                    "description": "The IP address of the ESA in which the message was processed.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "originating_esa_ip",
+                    "id": 8,
+                    "param_name": "originating_esa_ip"
+                },
+                "attachment_name": {
+                    "description": "The name of the attachment available in the searched emails.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 8,
+                    "name": "attachment_name",
+                    "id": 9,
+                    "param_name": "attachment_name"
+                },
+                "attachment_size_filter_by": {
+                    "description": "Filter logic to filter the attachments.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "range",
+                        "less_than",
+                        "more_than"
+                    ],
+                    "default": "",
+                    "order": 9,
+                    "name": "attachment_size_filter_by",
+                    "id": 10,
+                    "param_name": "attachment_size_filter_by"
+                },
+                "attachment_size_from_value": {
+                    "description": "Specify an attachment size in KB. This is applicable only for attachmentSizeFilterBy=ragne or attachmentSizeFilterBy=more_than",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 10,
+                    "name": "attachment_size_from_value",
+                    "id": 11,
+                    "param_name": "attachment_size_from_value"
+                },
+                "attachment_size_to_value": {
+                    "description": "Specify an attachment size in KB. This is applicable only for attachmentSizeFilterBy=ragne or attachmentSizeFilterBy=less_than",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 11,
+                    "name": "attachment_size_to_value",
+                    "id": 12,
+                    "param_name": "attachment_size_to_value"
+                },
+                "order_by": {
+                    "description": "Specify how to order to retrieved messages.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "sender",
+                        "subject",
+                        "received",
+                        "scheduledExit",
+                        "size"
+                    ],
+                    "default": "",
+                    "order": 12,
+                    "name": "order_by",
+                    "id": 13,
+                    "param_name": "order_by"
+                },
+                "order_dir": {
+                    "description": "Specify order direction for retrieved messages.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "asc",
+                        "desc"
+                    ],
+                    "default": "",
+                    "order": 13,
+                    "name": "order_dir",
+                    "id": 14,
+                    "param_name": "order_dir"
+                },
+                "envelope_recipient_filter_by": {
+                    "description": "Filter logic to filter the email Recipient.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "contains",
+                        "starts_with",
+                        "ends_with",
+                        "matches_exactly",
+                        "does_not_contain",
+                        "does_not_start_with",
+                        "does_not_end_with",
+                        "does_not_match"
+                    ],
+                    "default": "",
+                    "order": 14,
+                    "name": "envelope_recipient_filter_by",
+                    "id": 15,
+                    "param_name": "envelope_recipient_filter_by"
+                },
+                "envelope_recipient_filter_value": {
+                    "description": "The value to search for. This is a user defined value. For example: envelopeRecipientFilterValue=user.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 15,
+                    "name": "envelope_recipient_filter_value",
+                    "id": 16,
+                    "param_name": "envelope_recipient_filter_value"
+                },
+                "envelope_sender_filter_by": {
+                    "description": "Filter logic to filter the email Sender.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "contains",
+                        "starts_with",
+                        "ends_with",
+                        "matches_exactly",
+                        "does_not_contain",
+                        "does_not_start_with",
+                        "does_not_end_with",
+                        "does_not_match"
+                    ],
+                    "default": "",
+                    "order": 16,
+                    "name": "envelope_sender_filter_by",
+                    "id": 17,
+                    "param_name": "envelope_sender_filter_by"
+                },
+                "envelope_sender_filter_value": {
+                    "description": "The value to search for. This is a user defined value. For example: envelopeSenderFilterValue=user.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 17,
+                    "name": "envelope_sender_filter_value",
+                    "id": 18,
+                    "param_name": "envelope_sender_filter_value"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.start_date",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "start_date",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.end_date",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "end_date",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.quarantines",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.subject_filter_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.subject_filter_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.originating_esa_ip",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.attachment_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.attachment_size_filter_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.attachment_size_from_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.attachment_size_to_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.order_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.order_dir",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_recipient_filter_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_recipient_filter_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_sender_filter_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_sender_filter_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.mid",
+                    "data_type": "numeric",
+                    "column_name": "mid",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.attributes",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.size",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.esaMid",
+                    "data_type": "numeric",
+                    "column_name": "esaMid",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.sender",
+                    "data_type": "string",
+                    "column_name": "sender",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.subject",
+                    "data_type": "string",
+                    "column_name": "subject",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.received",
+                    "data_type": "string",
+                    "column_name": "received",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.esaHostName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.inQuarantines",
+                    "data_type": "string",
+                    "column_name": "inQuarantines",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.scheduledExit",
+                    "data_type": "string",
+                    "column_name": "scheduledExit",
+                    "column_order": 9
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.originatingEsaIp",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.quarantineForReason",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.quarantineForReasonDict",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.quarantineForReasonDict.*.reason",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "release pov quarantine",
+            "identifier": "release_pov_quarantine",
+            "description": "Release a message that matches the mid attribute from a pov quarantine",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "mids": {
+                    "description": "POV quarantine message ids to be released.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "mids",
+                    "id": 1,
+                    "param_name": "mids"
+                },
+                "quarantine_name": {
+                    "description": "POV quarantine name.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "quarantine_name",
+                    "id": 2,
+                    "param_name": "quarantine_name"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.mids",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "mids",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.quarantine_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "quarantine_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "search spam quarantine",
+            "identifier": "search_spam_quarantine",
+            "description": "Search messages in  the spam quarantine that match multiple attributes",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "start_date": {
+                    "description": "The starting point of the time period for the query. It specifies the date and time from which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "start_date",
+                    "id": 1,
+                    "param_name": "start_date"
+                },
+                "end_date": {
+                    "description": "The ending point of the time period for the query. It specifies the date and time up to which data should be retrieved, formatted as YYYY-MM-DDThh:mm:00.000Z.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "end_date",
+                    "id": 2,
+                    "param_name": "end_date"
+                },
+                "offset": {
+                    "description": "Specify an offset value to retrieve a subset of records starting with the offset value. Offset works with limit, which determines how many records to retrieve starting from the offset.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "offset",
+                    "id": 3,
+                    "param_name": "offset"
+                },
+                "limit": {
+                    "description": "Specify the number of records to retrieve.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "limit",
+                    "id": 4,
+                    "param_name": "limit"
+                },
+                "order_by": {
+                    "description": "Specify how to order to retrieved messages.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "from_address",
+                        "to_address",
+                        "subject"
+                    ],
+                    "default": "",
+                    "order": 4,
+                    "name": "order_by",
+                    "id": 5,
+                    "param_name": "order_by"
+                },
+                "order_dir": {
+                    "description": "Specify order direction for retrieved messages.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "asc",
+                        "desc"
+                    ],
+                    "default": "",
+                    "order": 5,
+                    "name": "order_dir",
+                    "id": 6,
+                    "param_name": "order_dir"
+                },
+                "envelope_recipient_filter_operator": {
+                    "description": "Filter logic to filter the email Recipient.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "contains",
+                        "is",
+                        "begins_with",
+                        "ends_with",
+                        "does_not_contain"
+                    ],
+                    "default": "",
+                    "order": 6,
+                    "name": "envelope_recipient_filter_operator",
+                    "id": 7,
+                    "param_name": "envelope_recipient_filter_operator"
+                },
+                "envelope_recipient_filter_value": {
+                    "description": "The value to search for. This is a user defined value. For example: envelopeRecipientFilterValue=user.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "envelope_recipient_filter_value",
+                    "id": 8,
+                    "param_name": "envelope_recipient_filter_value"
+                },
+                "filter_operator": {
+                    "description": "Filter logic to filter the email.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [
+                        "contains",
+                        "is",
+                        "begins_with",
+                        "ends_with",
+                        "does_not_contain"
+                    ],
+                    "default": "",
+                    "order": 8,
+                    "name": "filter_operator",
+                    "id": 9,
+                    "param_name": "filter_operator"
+                },
+                "filter_value": {
+                    "description": "The value to search for. This is a user defined value. For example: filterValue=abc.com.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 9,
+                    "name": "filter_value",
+                    "id": 10,
+                    "param_name": "filter_value"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.start_date",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "start_date",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.end_date",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "end_date",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.order_by",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.order_dir",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_recipient_filter_operator",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.envelope_recipient_filter_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.filter_operator",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.filter_value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.mid",
+                    "data_type": "numeric",
+                    "column_name": "mid",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.attributes",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.envelopeRecipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.toAddress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.subject",
+                    "data_type": "string",
+                    "column_name": "subject",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.date",
+                    "data_type": "string",
+                    "column_name": "date",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.fromAddress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.attributes.size",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "release spam quarantine",
+            "identifier": "release_spam_quarantine",
+            "description": "Release a message that matches the mid attribute from spam quarantine",
+            "verbose": "",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "mids": {
+                    "description": "Spam quarantine message ids to be released (comma separated list of ids)",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "mids"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.mids",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "mids",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list hat groups",
+            "identifier": "list_hat_groups",
+            "description": "Retrieves HAT configuration details of all sender groups in listener",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to retrieve configuration  from",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs.*",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.order",
+                    "data_type": "string",
+                    "column_name": "order",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.senders",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*.sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*.sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs_none",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_name": "description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.flow_profile",
+                    "data_type": "string",
+                    "column_name": "flow_profile",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.lookup_fail",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.record_not_exist",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.lookup_not_matched",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.external_threat_feeds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.external_threat_feeds.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list hat group",
+            "identifier": "list_hat_group",
+            "description": "Retrieves HAT Configuration Details for Specific Sender Group",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to retrieve configuration from",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group to retrieve configuration for",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs.*",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.order",
+                    "data_type": "string",
+                    "column_name": "order",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.senders",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.ip_address_list.*.sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.senders.geo_list.*.sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sbrs_none",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_name": "description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.flow_profile",
+                    "data_type": "string",
+                    "column_name": "flow_profile",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.lookup_fail",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.record_not_exist",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.lookup_not_matched",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.external_threat_feeds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dns_host_verification.external_threat_feeds.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add hat group",
+            "identifier": "add_hat_group",
+            "description": "Creates HAT sender group with specific configuration",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to add the sender group to",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group name to be added",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                },
+                "flow_profile": {
+                    "description": "The name of the Mail Flow Policy associated with the sender group.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "flow_profile",
+                    "id": 3,
+                    "param_name": "flow_profile"
+                },
+                "order": {
+                    "description": "The index is used to define the position of the sender group.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "order",
+                    "id": 4,
+                    "param_name": "order"
+                },
+                "description": {
+                    "description": "The description for the sender group.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "description",
+                    "id": 5,
+                    "param_name": "description"
+                },
+                "sbrs_none": {
+                    "description": "Include SBRS Scores of \"None\"",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "default": "",
+                    "order": 5,
+                    "name": "sbrs_none",
+                    "id": 6,
+                    "param_name": "sbrs_none"
+                },
+                "external_threat_feeds": {
+                    "description": "A comma separated list of External Threat Feed sources ((configured in the Mail Policy > External Threat Feed Manager page in the web interface).",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 6,
+                    "name": "external_threat_feeds",
+                    "id": 7,
+                    "param_name": "external_threat_feeds"
+                },
+                "sbrs": {
+                    "description": "SenderBase Reputation Score (SBRS) for the sender group. The values can be from -10.0 to 10.0: e.g. -1.5,8.5",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7,
+                    "name": "sbrs",
+                    "id": 8,
+                    "param_name": "sbrs"
+                },
+                "dns_list": {
+                    "description": "Remote blocked list queries such as 'query.blocked_list.example' are allowed. Separate multiple entries with commas",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 8,
+                    "name": "dns_list",
+                    "id": 9,
+                    "param_name": "dns_list"
+                },
+                "lookup_not_matched": {
+                    "description": "The value - \"true \" indicates that the - Connecting host reverse DNS lookup (PTR) does not match the forward DNS lookup (A).",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "default": "",
+                    "order": 9,
+                    "name": "lookup_not_matched",
+                    "id": 10,
+                    "param_name": "lookup_not_matched"
+                },
+                "record_not_exist": {
+                    "description": "The value - \"true \" indicates that the Connecting host PTR record does not exist in DNS.",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "default": "",
+                    "order": 10,
+                    "name": "record_not_exist",
+                    "id": 11,
+                    "param_name": "record_not_exist"
+                },
+                "lookup_fail": {
+                    "description": "The value - \"true \" indicates that the Connecting host PTR lookup fails because of temporary DNS failure.",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "default": "",
+                    "order": 11,
+                    "name": "lookup_fail",
+                    "id": 12,
+                    "param_name": "lookup_fail"
+                },
+                "ip_sender_name": {
+                    "description": "IPv4 or IPv6 addresses, hostname, and partial hostname for the ip_address_list.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 12,
+                    "name": "ip_sender_name",
+                    "id": 13,
+                    "param_name": "ip_sender_name"
+                },
+                "ip_description": {
+                    "description": "The key contains data that describes the sender in the sender group.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 13,
+                    "name": "ip_description",
+                    "id": 14,
+                    "param_name": "ip_description"
+                },
+                "geo_sender_name": {
+                    "description": "Country name for the geo_list.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 14,
+                    "name": "geo_sender_name",
+                    "id": 15,
+                    "param_name": "geo_sender_name"
+                },
+                "geo_description": {
+                    "description": "The key contains data that describes the sender in the sender group.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 15,
+                    "name": "geo_description",
+                    "id": 16,
+                    "param_name": "geo_description"
+                },
+                "raw_json": {
+                    "description": "Raw JSON for senders keys. Example: {\"ip_address_list\":[{\"sender_name\":\".cisco.com\",\"description\":\"Cisco\"},{\"sender_name\":\"example_none_d.com\",\"description\":\"\"}],\"geo_list\":[{\"sender_name\":\"India\",\"description\":\"\"}]}",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 16,
+                    "name": "raw_json",
+                    "id": 17,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string",
+                    "column_name": "listener_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string",
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.flow_profile",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.order",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.sbrs_none",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.parameter.external_threat_feeds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.sbrs",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.dns_list",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.lookup_not_matched",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.parameter.record_not_exist",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.parameter.lookup_fail",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.parameter.ip_sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.ip_description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.geo_sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.geo_description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
-                    "example_values": [
-                        "Successfully removed entry from dictionary"
-                    ]
+                    "column_name": "message",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
+                    "data_type": "numeric"
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
-                "width": 12,
-                "title": "Removed Dictionary Items",
-                "type": "custom",
-                "height": 5,
-                "view": "ciscoesa_view.display_reports"
-            }
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove hat group",
+            "identifier": "remove_hat_group",
+            "description": "Deletes specific HAT sender group",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to remove the sender group from",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender groupto remove",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "listener_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "message",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add hat sender",
+            "identifier": "add_hat_sender",
+            "description": "Adds HAT senders to existing sender group",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to add sender to",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group name to add sender to",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                },
+                "ip_sender_name": {
+                    "description": "IPv4 or IPv6 addresses, hostname, and partial hostname for the ip_address_list",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "ip_sender_name",
+                    "id": 3,
+                    "param_name": "ip_sender_name"
+                },
+                "ip_description": {
+                    "description": "The key contains data describing the sender in the sender group",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "ip_description",
+                    "id": 4,
+                    "param_name": "ip_description"
+                },
+                "geo_sender_name": {
+                    "description": "Country name for the geo_list",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4,
+                    "name": "geo_sender_name",
+                    "id": 5,
+                    "param_name": "geo_sender_name"
+                },
+                "geo_description": {
+                    "description": "The key contains data describing the sender in the sender group",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5,
+                    "name": "geo_description",
+                    "id": 6,
+                    "param_name": "geo_description"
+                },
+                "raw_json": {
+                    "description": "Raw JSON for senders keys. Example: {\"ip_address_list\":[{\"sender_name\":\".cisco.com\",\"description\":\"Cisco\"},{\"sender_name\":\"example_none_d.com\",\"description\":\"\"}],\"geo_list\":[{\"sender_name\":\"India\",\"description\":\"\"}]}",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 6,
+                    "name": "raw_json",
+                    "id": 7,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "listener_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.ip_sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.ip_description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.geo_sender_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.geo_description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "message",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove hat sender",
+            "identifier": "remove_hat_sender",
+            "description": "Deletes specific HAT senders from sender group",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to remove senders from",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group name to add sender to",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                },
+                "senders": {
+                    "description": "Comma separated list containing the names of the senders to delete.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "senders",
+                    "id": 3,
+                    "param_name": "senders"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "listener_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.senders",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "message",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "update hat order",
+            "identifier": "update_hat_order",
+            "description": "Updates order of HAT sender groups for listener",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to update sender groups order for",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group to change order for",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                },
+                "order": {
+                    "description": "New order for the specified sender group",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "order",
+                    "id": 3,
+                    "param_name": "order"
+                },
+                "raw_json": {
+                    "description": "Raw JSON for data key: e.g. {\"BLOCKED_LIST\":3,\"ALLOWED_LIST\":1,\"SUSPECTLIST\":4,\"UNKNOWNLIST\":2}",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3,
+                    "name": "raw_json",
+                    "id": 4,
+                    "param_name": "raw_json"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "listener_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.order",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "order",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.raw_json",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "message",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "find hat group",
+            "identifier": "find_hat_group",
+            "description": "Finds HAT senders in sender groups",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "listener_name": {
+                    "description": "Listener to search term in",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "listener_name",
+                    "id": 1,
+                    "param_name": "listener_name"
+                },
+                "sender_group": {
+                    "description": "Sender group to search term in",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1,
+                    "name": "sender_group",
+                    "id": 2,
+                    "param_name": "sender_group"
+                },
+                "search_text": {
+                    "description": "Search text to be searched",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2,
+                    "name": "search_text",
+                    "id": 3,
+                    "param_name": "search_text"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.listener_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.sender_group",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.search_text",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sender_name",
+                    "data_type": "string",
+                    "column_name": "sender_name",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_name": "description",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.sender_group",
+                    "data_type": "string",
+                    "column_name": "sender_group",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.listener",
+                    "data_type": "string",
+                    "column_name": "listener",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
         }
     ]
 }
