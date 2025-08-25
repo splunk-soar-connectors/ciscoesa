@@ -6,3 +6,6 @@ on:
 jobs:
   call-push-workflow:
     uses: splunk-soar-connectors/.github/.github/workflows/push.yml@mnordby/add-test-result-aggregation
+    with:
+      repository: ${{ github.repository }}  # Test the current repo
+      ref: ${{ github.ref_name }}           # Test the current branch
