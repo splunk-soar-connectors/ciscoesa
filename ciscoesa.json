@@ -2181,5 +2181,11 @@
                 "view": "ciscoesa_view.display_reports"
             }
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }
