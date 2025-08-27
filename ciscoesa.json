@@ -18,7 +18,7 @@
     "latest_tested_versions": [
         "Cisco Secure Email Gateway Virtual C100V Version: 14.2.0-620"
     ],
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "fips_compliant": true,
     "configuration": {
         "url": {
@@ -2181,5 +2181,11 @@
                 "view": "ciscoesa_view.display_reports"
             }
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }
