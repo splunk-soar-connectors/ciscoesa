@@ -1,7 +1,7 @@
 # Cisco ESA
 
 Publisher: Splunk <br>
-Connector Version: 3.0.1 <br>
+Connector Version: 3.0.2 <br>
 Product Vendor: Cisco <br>
 Product Name: Cisco ESA <br>
 Minimum Product Version: 5.4.0
