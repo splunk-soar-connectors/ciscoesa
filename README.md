@@ -1,10 +1,10 @@
 # Cisco ESA
 
-Publisher: Splunk \
-Connector Version: 4.1.0 \
-Product Vendor: Cisco \
-Product Name: Cisco ESA \
-Minimum Product Version: 6.3.0
+Publisher: Splunk <br>
+Connector Version: 3.0.2 <br>
+Product Vendor: Cisco <br>
+Product Name: Cisco ESA <br>
+Minimum Product Version: 5.4.0
 
 This app supports investigation on the Cisco Email Security Appliance (ESA) device
 
@@ -54,7 +54,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 Validate credentials provided for connectivity
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -69,7 +69,7 @@ No Output
 
 Process Cisco encoded URL
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Parse and decode URL from "secure-web.cisco.com" to get the redirected URL.<ul><li>It will accept the entire URL:<p><code>http://secure-web.cisco.com/{random_chars}/https%3A%2F%2Fmy.phantom.us%2F4.1%2Fdocs%2Fapp_reference%2Fphantom_ciscoesa</code></li><li>Everything except the protocol:<p><code>secure-web.cisco.com/{random_chars}/https%3A%2F%2Fmy.phantom.us%2F4.1%2Fdocs%2Fapp_reference%2Fphantom_ciscoesa</code></li><li>Or just the quoted section:<p><code>https%3A%2F%2Fmy.phantom.us%2F4.1%2Fdocs%2Fapp_reference%2Fphantom_ciscoesa</code></li></ul>
@@ -96,7 +96,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve statistical reports from ESA
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action is used to query "Query-based Reports" which counts various events in your appliance against a user-specified entity such as IP address, domain name, etc. for a specified duration.<br>If <b>start_time</b> and <b>end_time</b> are not given, then the report will be queried for the last 250 days.<br>If either <b>start_time</b> or <b>end_time</b> is provided, then the report will be queried for 250 days relative to the given parameter.<br>Following is the mapping of the report title and its corresponding entity that can be provided to filter reports:<table><tbody><tr class='plain'><th>Report Title</th><th>Entity Value</th></tr><tr><td>Internal Users</td><td>Email ID of the internal user (e.g. user@example.com)</td></tr><tr><td>Incoming Mail: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Incoming Mail: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Incoming Mail: Network Owners</td><td>Name of the network owner (e.g. Xyz Corporation)</td></tr><tr><td>Outgoing Senders: Domains</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Senders: IP Addresses</td><td>IPv4 or IPv6 address</td></tr><tr><td>Outgoing Destinations</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Outgoing Content Filters</td><td>Name of the outgoing Content Filter</td></tr><tr><td>Virus Types</td><td>Name of virus</td></tr><tr><td>Inbound SMTP Authentication</td><td>Domain name (e.g. abc.com)</td></tr><tr><td>Data Loss Prevention (DLP) Outgoing Policy</td><td>Name of the DLP policy</td></tr></tbody></table><br>The action supports limiting the number of items returned using the <b>limit</b> parameter. If the <b>limit</b> parameter is 0, then the action will fetch no data for the selected report(s). If the limit is not specified, the action will fetch by default 10 items for all specified reports. For a particular report, if the limit specified is greater than the available data, the action will fetch all data for that report.
@@ -401,7 +401,7 @@ summary.total_objects_successful | numeric | | |
 
 List all entries of an ESA dictionary
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -453,7 +453,7 @@ summary.total_objects_successful | numeric | | |
 
 Add an entry to an ESA dictionary
 
-Type: **investigate** \
+Type: **contain** <br>
 Read only: **False**
 
 Per the documentation, the action will handle escaping special regex character prior to adding to the dictionary.
@@ -503,7 +503,7 @@ summary.total_objects_successful | numeric | | |
 
 Remove an entry from an ESA dictionary
 
-Type: **investigate** \
+Type: **correct** <br>
 Read only: **False**
 
 Per the documentation, the action will handle escaping special regex character prior to removing from the dictionary.
