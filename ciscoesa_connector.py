@@ -91,7 +91,7 @@ class CiscoesaConnector(BaseConnector):
         self._url = None
         self._username = None
         self._password = None
-        self._verify_server_cert = False
+        self._verify_server_cert = True
 
         return
 
@@ -134,7 +134,7 @@ class CiscoesaConnector(BaseConnector):
         self._url = config[consts.CISCOESA_CONFIG_URL].strip("/")
         self._username = config[consts.CISCOESA_CONFIG_USERNAME]
         self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
-        self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
+        self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, True)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
             self, config.get(consts.CISCOESA_CONFIG_SSH_USERNAME), config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD), self._url
         )
