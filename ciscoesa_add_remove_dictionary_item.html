@@ -112,14 +112,14 @@ and limitations under the License.
         <tbody style="vertical-align: top">
           <td>
             <a href="javascript:;"
-               onclick="context_menu(this, [{'contains': [ 'ciscoesa dictionary name' ], 'value': '{{ result.param.name }}' }], 0, {{ container.id }}, null, false);">
+               onclick="context_menu(this, [{'contains': [ 'ciscoesa dictionary name' ], 'value': '{{ result.param.name|escapejs }}' }], 0, {{ container.id }}, null, false);">
               {{ result.param.name }}
               &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
             </a>
           </td>
           <td>
             <a href="javascript:;"
-               onclick="context_menu(this, [{'contains': [ 'ciscoesa item value' ], 'value': '{{ result.param.value }}' }], 0, {{ container.id }}, null, false);">
+               onclick="context_menu(this, [{'contains': [ 'ciscoesa item value' ], 'value': '{{ result.param.value|escapejs }}' }], 0, {{ container.id }}, null, false);">
               {{ result.param.value }}
               &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
             </a>
