@@ -49,10 +49,11 @@ class CiscoEsaHelper:
     OS_LINUX = 0
     OS_MAC = 1
 
-    def __init__(self, connector, username, password, endpoint):
+    def __init__(self, connector, username, password, host_key, endpoint):
         self._connector = connector
         self._username = username
         self._password = password
+        self._host_key = host_key
         self._endpoint = urlparse(endpoint).hostname
 
     def _start_connection(self, server):
@@ -60,12 +61,23 @@ class CiscoEsaHelper:
         password = self._password
 
         self._ssh_client = paramiko.SSHClient()
-        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self._ssh_client.set_missing_host_key_policy(paramiko.RejectPolicy())
+
+        if not self._host_key:
+            return False, "SSH host public key is required for dictionary actions", None
+
+        try:
+            host_key_entry = paramiko.hostkeys.HostKeyEntry.from_line(f"{server} {self._host_key.strip()}")
+            if not host_key_entry or not host_key_entry.key:
+                raise ValueError("Unable to parse SSH host public key")
+            self._ssh_client.get_host_keys().add(server, host_key_entry.key.get_name(), host_key_entry.key)
+        except Exception as e:
+            return False, f"Invalid SSH host public key: {e!s}", e
 
         try:
             self._ssh_client.connect(hostname=server, username=user, password=password, allow_agent=False, look_for_keys=True, timeout=30)
         except Exception as e:
-            return False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e
+            return False, "SSH connection failed. Verify the SSH credentials and configured host public key", e
 
         return True, "SSH connection successful", None
 

@@ -54,6 +54,11 @@
             "description": "SSH Password (Used for dictionary related actions)",
             "data_type": "password",
             "order": 5
+        },
+        "ssh_host_key": {
+            "description": "SSH host public key in OpenSSH format (required for dictionary related actions, for example: ssh-ed25519 AAAA...)",
+            "data_type": "string",
+            "order": 6
         }
     },
     "actions": [

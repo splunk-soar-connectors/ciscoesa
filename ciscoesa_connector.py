@@ -136,7 +136,11 @@ class CiscoesaConnector(BaseConnector):
         self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
         self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, True)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
-            self, config.get(consts.CISCOESA_CONFIG_SSH_USERNAME), config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD), self._url
+            self,
+            config.get(consts.CISCOESA_CONFIG_SSH_USERNAME),
+            config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD),
+            config.get(consts.CISCOESA_CONFIG_SSH_HOST_KEY),
+            self._url,
         )
 
         # In "get report" action, if "starts_with" parameter is set, validate IP and email
