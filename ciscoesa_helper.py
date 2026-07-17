@@ -15,6 +15,7 @@
 #
 #
 import os
+import re
 import time
 
 import paramiko
@@ -35,6 +36,7 @@ LIST_DICTIONARY_COMMAND_STR = "dictionaryconfig print {dictionary_name};"
 ADD_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} new "{entry_value}";'
 REMOVE_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} delete "{entry_value}";'
 MODIFY_DICTIONARY_COMMIT_COMMAND_STR = 'commit "{commit_message}";'
+DICTIONARY_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
 
 
 class CiscoEsaHelper:
@@ -156,6 +158,9 @@ class CiscoEsaHelper:
         return "\n".join(lines)
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
         cmd = ""
 
         if cluster_mode:
@@ -166,6 +171,9 @@ class CiscoEsaHelper:
         return self._send_command(cmd)
 
     def add_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
         cmd = ""
 
         if cluster_mode:
@@ -180,6 +188,9 @@ class CiscoEsaHelper:
         return self._send_command(cmd)
 
     def remove_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
         cmd = ""
 
         if cluster_mode:
