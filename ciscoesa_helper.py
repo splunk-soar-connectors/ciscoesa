@@ -39,6 +39,12 @@ MODIFY_DICTIONARY_COMMIT_COMMAND_STR = 'commit "{commit_message}";'
 DICTIONARY_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
 
 
+def _escape_commit_message(commit_message):
+    if not isinstance(commit_message, str) or any(character in commit_message for character in ";\r\n"):
+        raise ValueError("Commit messages cannot contain semicolons or newlines")
+    return commit_message.replace("\\", "\\\\").replace('"', '\\"')
+
+
 class CiscoEsaHelper:
     OS_LINUX = 0
     OS_MAC = 1
@@ -174,6 +180,11 @@ class CiscoEsaHelper:
         if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
             return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
 
+        try:
+            escaped_commit_message = _escape_commit_message(commit_message)
+        except ValueError as e:
+            return False, str(e), None
+
         cmd = ""
 
         if cluster_mode:
@@ -183,13 +194,18 @@ class CiscoEsaHelper:
         escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += ADD_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
-        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
+        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=escaped_commit_message)
 
         return self._send_command(cmd)
 
     def remove_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
         if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
             return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
+        try:
+            escaped_commit_message = _escape_commit_message(commit_message)
+        except ValueError as e:
+            return False, str(e), None
 
         cmd = ""
 
@@ -200,6 +216,6 @@ class CiscoEsaHelper:
         escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += REMOVE_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
-        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
+        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=escaped_commit_message)
 
         return self._send_command(cmd)
