@@ -1,6 +1,6 @@
 # File: ciscoesa_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ class CiscoesaConnector(BaseConnector):
         self._url = None
         self._username = None
         self._password = None
-        self._verify_server_cert = False
+        self._verify_server_cert = True
 
         return
 
@@ -134,9 +134,13 @@ class CiscoesaConnector(BaseConnector):
         self._url = config[consts.CISCOESA_CONFIG_URL].strip("/")
         self._username = config[consts.CISCOESA_CONFIG_USERNAME]
         self._password = config[consts.CISCOESA_CONFIG_PASSWORD]
-        self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, False)
+        self._verify_server_cert = config.get(consts.CISCOESA_CONFIG_VERIFY_SSL, True)
         self._esa_helper = ciscoesa_helper.CiscoEsaHelper(
-            self, config.get(consts.CISCOESA_CONFIG_SSH_USERNAME), config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD), self._url
+            self,
+            config.get(consts.CISCOESA_CONFIG_SSH_USERNAME),
+            config.get(consts.CISCOESA_CONFIG_SSH_PASSWORD),
+            config.get(consts.CISCOESA_CONFIG_SSH_HOST_KEY),
+            self._url,
         )
 
         # In "get report" action, if "starts_with" parameter is set, validate IP and email

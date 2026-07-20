@@ -1,6 +1,6 @@
 # File: ciscoesa_consts.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ CISCOESA_CONFIG_USERNAME = "username"
 CISCOESA_CONFIG_PASSWORD = "password"  # pragma: allowlist secret
 CISCOESA_CONFIG_SSH_USERNAME = "ssh_username"
 CISCOESA_CONFIG_SSH_PASSWORD = "ssh_password"  # pragma: allowlist secret
+CISCOESA_CONFIG_SSH_HOST_KEY = "ssh_host_key"
 CISCOESA_CONFIG_VERIFY_SSL = "verify_server_cert"
 CISCOESA_JSON_NAME = "name"
 CISCOESA_JSON_CLUSTER_MODE = "cluster_mode"

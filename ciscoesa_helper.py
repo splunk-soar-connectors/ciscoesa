@@ -1,6 +1,6 @@
 # File: ciscoesa_helper.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 #
 #
 import os
+import re
 import time
 
 import paramiko
@@ -35,16 +36,24 @@ LIST_DICTIONARY_COMMAND_STR = "dictionaryconfig print {dictionary_name};"
 ADD_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} new "{entry_value}";'
 REMOVE_DICTIONARY_ENTRY_COMMAND_STR = 'dictionaryconfig edit {dictionary_name} delete "{entry_value}";'
 MODIFY_DICTIONARY_COMMIT_COMMAND_STR = 'commit "{commit_message}";'
+DICTIONARY_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
+
+
+def _escape_commit_message(commit_message):
+    if not isinstance(commit_message, str) or any(character in commit_message for character in ";\r\n"):
+        raise ValueError("Commit messages cannot contain semicolons or newlines")
+    return commit_message.replace("\\", "\\\\").replace('"', '\\"')
 
 
 class CiscoEsaHelper:
     OS_LINUX = 0
     OS_MAC = 1
 
-    def __init__(self, connector, username, password, endpoint):
+    def __init__(self, connector, username, password, host_key, endpoint):
         self._connector = connector
         self._username = username
         self._password = password
+        self._host_key = host_key
         self._endpoint = urlparse(endpoint).hostname
 
     def _start_connection(self, server):
@@ -52,12 +61,23 @@ class CiscoEsaHelper:
         password = self._password
 
         self._ssh_client = paramiko.SSHClient()
-        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self._ssh_client.set_missing_host_key_policy(paramiko.RejectPolicy())
+
+        if not self._host_key:
+            return False, "SSH host public key is required for dictionary actions", None
+
+        try:
+            host_key_entry = paramiko.hostkeys.HostKeyEntry.from_line(f"{server} {self._host_key.strip()}")
+            if not host_key_entry or not host_key_entry.key:
+                raise ValueError("Unable to parse SSH host public key")
+            self._ssh_client.get_host_keys().add(server, host_key_entry.key.get_name(), host_key_entry.key)
+        except Exception as e:
+            return False, f"Invalid SSH host public key: {e!s}", e
 
         try:
             self._ssh_client.connect(hostname=server, username=user, password=password, allow_agent=False, look_for_keys=True, timeout=30)
         except Exception as e:
-            return False, "SSH connection attempt failed. Please enter valid values for 'ssh_username' and 'ssh_password' asset parameters", e
+            return False, "SSH connection failed. Verify the SSH credentials and configured host public key", e
 
         return True, "SSH connection successful", None
 
@@ -156,6 +176,9 @@ class CiscoEsaHelper:
         return "\n".join(lines)
 
     def list_dictionary_items(self, dictionary_name, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
         cmd = ""
 
         if cluster_mode:
@@ -166,6 +189,14 @@ class CiscoEsaHelper:
         return self._send_command(cmd)
 
     def add_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
+        try:
+            escaped_commit_message = _escape_commit_message(commit_message)
+        except ValueError as e:
+            return False, str(e), None
+
         cmd = ""
 
         if cluster_mode:
@@ -175,11 +206,19 @@ class CiscoEsaHelper:
         escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += ADD_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
-        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
+        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=escaped_commit_message)
 
         return self._send_command(cmd)
 
     def remove_dictionary_item(self, dictionary_name, entry_value, commit_message, cluster_mode=False):
+        if not DICTIONARY_NAME_PATTERN.fullmatch(dictionary_name):
+            return False, "Dictionary names may contain only letters, numbers, dash, dot, and underscore (maximum 128 characters)", None
+
+        try:
+            escaped_commit_message = _escape_commit_message(commit_message)
+        except ValueError as e:
+            return False, str(e), None
+
         cmd = ""
 
         if cluster_mode:
@@ -189,6 +228,6 @@ class CiscoEsaHelper:
         escaped_entry = entry_value.replace("\\", "\\\\").replace('"', '\\"')
 
         cmd += REMOVE_DICTIONARY_ENTRY_COMMAND_STR.format(dictionary_name=dictionary_name, entry_value=escaped_entry)
-        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=commit_message)
+        cmd += MODIFY_DICTIONARY_COMMIT_COMMAND_STR.format(commit_message=escaped_commit_message)
 
         return self._send_command(cmd)

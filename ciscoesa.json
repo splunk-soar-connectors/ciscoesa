@@ -4,7 +4,7 @@
     "description": "This app supports investigation on the Cisco Email Security Appliance (ESA) device",
     "publisher": "Splunk",
     "package_name": "phantom_ciscoesa",
-    "license": "Copyright (c) 2017-2025 Splunk Inc.",
+    "license": "Copyright (c) 2017-2026 Splunk Inc.",
     "main_module": "ciscoesa_connector.py",
     "type": "investigative",
     "app_version": "3.0.2",
@@ -28,7 +28,7 @@
             "order": 0
         },
         "verify_server_cert": {
-            "default": false,
+            "default": true,
             "description": "Verify server certificate",
             "data_type": "boolean",
             "order": 1
@@ -54,6 +54,11 @@
             "description": "SSH Password (Used for dictionary related actions)",
             "data_type": "password",
             "order": 5
+        },
+        "ssh_host_key": {
+            "description": "SSH host public key in OpenSSH format (required for dictionary related actions, for example: ssh-ed25519 AAAA...)",
+            "data_type": "string",
+            "order": 6
         }
     },
     "actions": [

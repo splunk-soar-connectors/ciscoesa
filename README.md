@@ -20,6 +20,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **password** | required | password | Password |
 **ssh_username** | optional | string | SSH Username (Used for dictionary related actions) |
 **ssh_password** | optional | password | SSH Password (Used for dictionary related actions) |
+**ssh_host_key** | optional | string | SSH host public key in OpenSSH format (required for dictionary related actions, for example: ssh-ed25519 AAAA...) |
 
 ### Supported Actions
 
@@ -444,7 +445,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
